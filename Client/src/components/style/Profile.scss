@@ -1,0 +1,80 @@
+.profile-content {
+    flex: 1;
+    height: 100%;
+
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .profile-picture {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+
+        img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+
+        }
+
+       
+    }
+
+    form {
+        width: 70%;
+
+        .flex {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            gap: 1rem;
+
+            .form-group {
+                width: 100%;
+
+            }
+
+            @media screen and (max-width:800px) {
+                flex-wrap: wrap;
+
+            }
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+
+            label {
+                display: block;
+                margin-bottom: 5px;
+                color: #555;
+            }
+
+            input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 14px;
+                color: #333;
+            }
+        }
+
+        .save-btn {
+            background-color: rgb(71 250 198);
+            color: #333;
+            font-weight: 700;
+            height: 48px;
+            min-width: 128px;
+            border-radius: 5px;
+            margin-right: 1rem;
+            border: none;
+
+            &:hover {
+                background-color: #000;
+                color: #f1f5fe;
+            }
+        }
+    }
+}

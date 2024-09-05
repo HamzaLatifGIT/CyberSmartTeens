@@ -1,0 +1,102 @@
+.myaccount-container {
+    display: flex;
+    background-color: #f9f9f9;
+    height: 100vh;
+
+
+    .sidebar {
+        width: 250px;
+        background-color: #fff;
+        padding: 20px 1px;
+
+        .mobile-logo {
+            display: none;
+            margin-left: 5px;
+            margin-bottom: 5px;
+        }
+
+        @media screen and (max-width:800px) {
+
+            .mobile-logo {
+                display: initial;
+            }
+
+            .web-logo {
+                display: none;
+            }
+        }
+
+        img {
+            height: auto;
+            max-width: 100%;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+                a {
+                    padding: 15px 10px;
+                    color: #555;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 1rem;
+                    list-style: none;
+                    text-decoration: none;
+
+                    &.active {
+                        font-weight: bold;
+                        color: #434343;
+                        background-color: rgb(71 250 198 / 26%);
+
+
+                    }
+
+                    .flex {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.3rem;
+                    }
+                }
+            }
+        }
+    }
+
+    .content {
+        width: 100%;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: auto;
+    }
+
+
+}
+
+@media screen and (max-width:800px) {
+    input {
+        min-width: 250px;
+    }
+
+    .sidebar {
+        width: unset !important;
+
+        ul {
+            li {
+                a {
+                    .flex {
+                        span {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
