@@ -1,6 +1,6 @@
-import React from "react";
-import { Table, Tag, Button } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import { Table, Tag, Button, Modal } from "antd";
+import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 const data = [
   {
@@ -38,66 +38,113 @@ const data = [
   // Add more data as needed
 ];
 
-const columns = [
-  {
-    title: '#',
-    dataIndex: 'key',
-    key: 'key',
-  },
-  {
-    title: 'User Name',
-    dataIndex: 'username',
-    key: 'username',
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
-  },
-  {
-    title: 'Role',
-    dataIndex: 'role',
-    key: 'role',
-  },
-  {
-    title: 'Score',
-    dataIndex: 'score',
-    key: 'score',
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
-    render: status => {
-      let color = status === 'Verified' ? 'green' : status === 'Pending' ? 'blue' : 'volcano';
-      return (
-        <Tag color={color} key={status}>
-          {status.toUpperCase()}
-        </Tag>
-      );
-    }
-  },
-  {
-    title: 'Actions',
-    key: 'actions',
-    render: (_, record) => (
-      <Button
-        type="danger"
-        icon={<DeleteOutlined />}
-        onClick={() => handleDelete(record.key)}
-      >
-        Delete
-      </Button>
-    ),
-  },
-];
-
-const handleDelete = (key) => {
-  console.log("Deleted user with key:", key);
-};
-
 const MyTable = () => {
-  return <Table columns={columns} dataSource={data} pagination={false} />;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  // Function to handle deleting a user
+  const handleDelete = (key) => {
+    console.log("Deleted user with key:", key);
+  };
+
+  // Function to show modal with user details
+  const handleView = (record) => {
+    setSelectedUser(record);  // Set the selected user
+    setIsModalVisible(true);  // Show modal
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const columns = [
+    {
+      title: '#',
+      dataIndex: 'key',
+      key: 'key',
+    },
+    {
+      title: 'User Name',
+      dataIndex: 'username',
+      key: 'username',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+    },
+    {
+      title: 'Score',
+      dataIndex: 'score',
+      key: 'score',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => {
+        let color = status === 'Verified' ? 'green' : status === 'Pending' ? 'blue' : 'volcano';
+        return (
+          <Tag color={color} key={status}>
+            {status.toUpperCase()}
+          </Tag>
+        );
+      }
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <span>
+          <Button
+            type="primary"
+            icon={<EyeOutlined />}
+            onClick={() => handleView(record)}
+            style={{ marginRight: 8, backgroundColor:'rgb(71 250 198 / 26%)' }}
+          >
+            View
+          </Button>
+          <Button
+            type="danger"
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record.key)}
+          >
+            Delete
+          </Button>
+        </span>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Table columns={columns} dataSource={data} pagination={false} />
+
+      {/* Modal to show user details */}
+      <Modal
+        title="User Details"
+        visible={isModalVisible}
+        onCancel={handleCloseModal}
+        footer={null}  // You can add buttons if needed
+      >
+        {selectedUser && (
+          <div>
+            <p><strong>Username:</strong> {selectedUser.username}</p>
+            <p><strong>Email:</strong> {selectedUser.email}</p>
+            <p><strong>Role:</strong> {selectedUser.role}</p>
+            <p><strong>Score:</strong> {selectedUser.score}</p>
+            <p><strong>Status:</strong> {selectedUser.status}</p>
+          </div>
+        )}
+      </Modal>
+    </>
+  );
 };
 
 export default MyTable;

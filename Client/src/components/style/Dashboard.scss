@@ -3,13 +3,19 @@
     .dashboard-content {
         display: flex;
         justify-content: space-between;
+        flex-wrap: wrap;
         gap: 1rem;
 
+        .left-side{
+            max-width: 100%;
+        }
         .boxs {
             display: flex;
             justify-content: center;
             gap: 1rem;
             flex: 1;
+
+         
 
             .box {
                 width: 300px;
@@ -27,7 +33,7 @@
                 span {
                     font-size: 30px;
                     font-weight: 600;
-                    color: rgb(51, 158, 254);
+                    color: rgb(254 51 77 / 84%);
                 }
 
             }
