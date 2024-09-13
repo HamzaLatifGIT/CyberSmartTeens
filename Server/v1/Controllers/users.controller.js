@@ -36,24 +36,32 @@ exports.Loginuser = async (req, res) => {
 // Register User
 exports.RegisterUser = async (req, res) => {
   try {
-    var { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, role } = req.body;
 
-    const result = await Users.findOne({ email: email });
-    if (result) return res.status(400).json({ status: "failed", message: "Email already Exists" })
+   
+    const existingUser = await Users.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ status: "failed", message: "Email already exists" });
+    }
 
-    let UserData = await Users.create({
+   
+    const newUser = new Users({
       email,
       password,
       firstName,
       lastName,
-      password
-    })
-    res.status(200).json({
+      role 
+    });
+
+    await newUser.save();
+    console.log(newUser)
+
+    res.status(201).json({
       status: "success",
-      message: "User Register Successful",
+      message: "User registered successfully",
     });
   } catch (err) {
-    res.status(404).json({ message: "Something went Wrong", err });
+    res.status(500).json({ message: "Something went wrong", err });
   }
 };
 

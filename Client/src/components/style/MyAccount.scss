@@ -2,6 +2,7 @@
     display: flex;
     background-color: #f9f9f9;
     min-height: 100vh;
+    height: 100vh;
 
 
     .sidebar {
@@ -68,7 +69,8 @@
     .content {
         width: 100%;
         padding: 20px;
-        background-color: #fff;
+        background-color: #f8f8f8;
+        overflow: auto;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
        
     }

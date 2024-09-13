@@ -13,10 +13,12 @@ import { IoIosArrowForward } from "react-icons/io";
 import logo from "../assets/zeropark-logo-color-cm.svg";
 import { RiProfileFill, RiDashboardFill } from "react-icons/ri";
 import { MdLibraryBooks, MdQuiz, MdSettingsApplications  } from "react-icons/md";
+import { FaListAlt } from "react-icons/fa";
 import resposivelogo from '../assets/Untitled (4).svg'
 
 // CSS:
 import './style/MyAccount.scss';
+import List from './List';
 
 const MyAccount = () => {
     const [fileList, setFileList] = useState([]);
@@ -75,6 +77,16 @@ const MyAccount = () => {
                 <ul>
                     <li>
                         <NavLink
+                            to="list"
+                            className={({ isActive }) => (isActive ? "active" : "")}
+                        >
+                            <div className="flex"> <FaListAlt size={19} /> <span> Students List</span></div>    <IoIosArrowForward />
+                        </NavLink>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <NavLink
                             to="courses"
                             className={({ isActive }) => (isActive ? "active" : "")}
                         >
@@ -108,6 +120,7 @@ const MyAccount = () => {
                     <Route path="profile" element={<Profile />} />
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="courses" element={<Courses />} />
+                    <Route path="list" element={<List />} />
                     <Route path="quiz" element={<Quiz />} />
                     <Route path="setting" element={<Settings />} />
                     <Route path="*" element={<Navigate to="profile" />} />

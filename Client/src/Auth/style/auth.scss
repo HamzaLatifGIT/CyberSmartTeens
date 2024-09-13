@@ -34,6 +34,25 @@
 
 
                 }
+                .select {
+                    width: 100%;
+                    max-width: 400px;
+                    height: 40px;
+              
+            
+                    .ant-select-selector {
+                      padding: 12px !important;
+                    }
+          
+                  
+                    .ant-select-selection-placeholder {
+                        color: #505061;
+                        opacity: 1;
+                        font-size: 12px;
+                        text-decoration: none;
+                    }
+                  }
+          
 
                 .ant-input::placeholder {
                     color: #505061;

@@ -13,6 +13,7 @@
 }
 
 body {
+  overflow-x: hidden;
   font-family: "DM Sans", sans-serif;
 
 }
@@ -27,4 +28,33 @@ body {
       color: white !important;
     }
   }
+}
+.btn{
+  background-color: rgb(71, 250, 198);
+  color: #333;
+  font-weight: 700;
+  height: 48px;
+  min-width: 128px;
+  border-radius: 5px;
+  margin-right: 1rem;
+  border: none;
+
+}
+.btn:hover{
+  background-color: black !important;
+  color: aliceblue;
+}
+
+.flex{
+  display: flex;
+  justify-content: space-between;
+}
+
+.custome-input{
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #333;
 }

@@ -31,7 +31,7 @@ const UserActivityLineChart = () => {
     ],
     datasets: [
       {
-        label: 'User Activity', // Label for the dataset
+        label: 'Students Activity', // Label for the dataset
         data: [30, 45, 60, 80, 90, 100, 75, 65, 95, 70, 55, 85], // Example user activity data
         borderColor: 'rgba(75, 192, 192, 1)', // Line color
         backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color below the line
@@ -54,7 +54,7 @@ const UserActivityLineChart = () => {
       },
       title: {
         display: true,
-        text: 'User Activity Over the Year' // Title of the chart
+        text: 'Students Activity Over the Year' // Title of the chart
       }
     },
     scales: {

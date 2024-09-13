@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+
+// ANT-D :
 import { Table, Tag, Button, Modal } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
@@ -106,7 +108,7 @@ const MyTable = () => {
             type="primary"
             icon={<EyeOutlined />}
             onClick={() => handleView(record)}
-            style={{ marginRight: 8, backgroundColor:'rgb(71 250 198 / 26%)' }}
+            style={{ marginRight: 8, backgroundColor: 'rgb(71 250 198 / 26%)' }}
           >
             View
           </Button>
