@@ -1,48 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // ANT-D :
 import { Table, Tag, Button, Modal } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
-const data = [
+// Sample Data for Students
+const studentData = [
   {
     key: '1',
-    username: 'Ada Evans',
-    email: 'jablawpuh@gmail.com',
-    role: 'Student',
+    teacher: 'John Doe',
+    subject: 'Cybersecurity',
     score: 75,
-    status: 'Rejected',
   },
   {
     key: '2',
-    username: 'Adele McDaniel',
-    email: 'li@gmail.com',
-    role: 'Teacher',
-    score: 90,
-    status: 'Verified',
-  },
-  {
-    key: '3',
-    username: 'Adele Mills',
-    email: 'hogmultep@gmail.com',
-    role: 'Student',
+    teacher: 'Jane Smith',
+    subject: 'Ethical Hacking',
     score: 85,
+  },
+];
+
+// Sample Data for Teachers
+const teacherData = [
+  {
+    key: '1',
+    username: 'Ada Evans',
+    email: 'student1@gmail.com',
+    score: 75,
     status: 'Verified',
   },
   {
-    key: '4',
-    username: 'Aiden Fletcher',
-    email: 'arhepo@gmail.com',
-    role: 'Teacher',
-    score: 60,
-    status: 'Rejected',
+    key: '2',
+    username: 'Adele Mills',
+    email: 'student2@gmail.com',
+    score: 85,
+    status: 'Pending',
   },
-  // Add more data as needed
 ];
 
 const MyTable = () => {
+  const [role, setRole] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+
+  // Fetch user data from localStorage and get role
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('CyberTeensUserData'));
+    if (userData && userData.role) {
+      setRole(userData.role);
+    }
+  }, []);
 
   // Function to handle deleting a user
   const handleDelete = (key) => {
@@ -60,14 +67,42 @@ const MyTable = () => {
     setIsModalVisible(false);
   };
 
-  const columns = [
+  // Columns for Students
+  const studentColumns = [
     {
-      title: '#',
-      dataIndex: 'key',
-      key: 'key',
+      title: 'Teacher',
+      dataIndex: 'teacher',
+      key: 'teacher',
     },
     {
-      title: 'User Name',
+      title: 'Subject',
+      dataIndex: 'subject',
+      key: 'subject',
+    },
+    {
+      title: 'Score',
+      dataIndex: 'score',
+      key: 'score',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Button
+          type="primary"
+          icon={<EyeOutlined />}
+          onClick={() => handleView(record)}
+        >
+          View
+        </Button>
+      ),
+    },
+  ];
+
+  // Columns for Teachers
+  const teacherColumns = [
+    {
+      title: 'Student Name',
       dataIndex: 'username',
       key: 'username',
     },
@@ -75,11 +110,6 @@ const MyTable = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-    },
-    {
-      title: 'Role',
-      dataIndex: 'role',
-      key: 'role',
     },
     {
       title: 'Score',
@@ -91,57 +121,63 @@ const MyTable = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status) => {
-        let color = status === 'Verified' ? 'green' : status === 'Pending' ? 'blue' : 'volcano';
+        let color = status === 'Verified' ? 'green' : 'volcano';
         return (
           <Tag color={color} key={status}>
             {status.toUpperCase()}
           </Tag>
         );
-      }
+      },
     },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <span>
-          <Button
-            type="primary"
-            icon={<EyeOutlined />}
-            onClick={() => handleView(record)}
-            style={{ marginRight: 8, backgroundColor: 'rgb(71 250 198 / 26%)' }}
-          >
-            View
-          </Button>
-          <Button
-            type="danger"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.key)}
-          >
-            Delete
-          </Button>
-        </span>
+        <Button
+          type="primary"
+          icon={<EyeOutlined />}
+          onClick={() => handleView(record)}
+        >
+          View
+        </Button>
       ),
     },
   ];
 
   return (
     <>
-      <Table columns={columns} dataSource={data} pagination={false} />
+      {/* Render Table based on Role */}
+      {role === 'Student' ? (
+        <Table columns={studentColumns} dataSource={studentData} pagination={false} />
+      ) : role === 'Teacher' ? (
+        <Table columns={teacherColumns} dataSource={teacherData} pagination={false} />
+      ) : (
+        <p>Loading...</p>
+      )}
 
       {/* Modal to show user details */}
       <Modal
-        title="User Details"
+        title="Details"
         visible={isModalVisible}
         onCancel={handleCloseModal}
         footer={null}  // You can add buttons if needed
       >
         {selectedUser && (
           <div>
-            <p><strong>Username:</strong> {selectedUser.username}</p>
-            <p><strong>Email:</strong> {selectedUser.email}</p>
-            <p><strong>Role:</strong> {selectedUser.role}</p>
-            <p><strong>Score:</strong> {selectedUser.score}</p>
-            <p><strong>Status:</strong> {selectedUser.status}</p>
+            {role === 'Student' ? (
+              <>
+                <p><strong>Teacher:</strong> {selectedUser.teacher}</p>
+                <p><strong>Subject:</strong> {selectedUser.subject}</p>
+                <p><strong>Score:</strong> {selectedUser.score}</p>
+              </>
+            ) : (
+              <>
+                <p><strong>Student Name:</strong> {selectedUser.username}</p>
+                <p><strong>Email:</strong> {selectedUser.email}</p>
+                <p><strong>Score:</strong> {selectedUser.score}</p>
+                <p><strong>Status:</strong> {selectedUser.status}</p>
+              </>
+            )}
           </div>
         )}
       </Modal>

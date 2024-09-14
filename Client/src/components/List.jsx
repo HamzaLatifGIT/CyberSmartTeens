@@ -5,6 +5,9 @@ import { Table, Tag, Button, Modal, Form, Input, Select } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
+// CSS :
+
+
 
 const data = [
   {
@@ -149,7 +152,7 @@ const List = () => {
         {/* Conditionally render the table or the form */}
         {isAddingStudent ? (
           <div>
-            <h1>Add New Student</h1>
+            <div className='flex'> <h2>Add New Student</h2></div>
             <Form
               layout="vertical"
               onFinish={handleFormSubmit}
@@ -160,32 +163,32 @@ const List = () => {
                 name="username"
                 rules={[{ required: true, message: 'Please enter the username!' }]}
               >
-                <Input placeholder="Enter student name" />
+                <Input placeholder="Enter student name" className='custom-input' />
               </Form.Item>
               <Form.Item
                 label="Email"
                 name="email"
                 rules={[{ required: true, message: 'Please enter the email!' }]}
               >
-                <Input placeholder="Enter email" />
+                <Input placeholder="Enter email" className='custom-input' />
+              </Form.Item>
+
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[{ required: true, message: 'Enter password' }]}
+              >
+                <Input type="password" placeholder="Enter password" className='custom-input' />
               </Form.Item>
               <Form.Item
                 label="Role"
                 name="role"
                 rules={[{ required: true, message: 'Please select the role!' }]}
               >
-                <Select placeholder="Select role">
+                <Select placeholder="Select role" className='custom-select ' >
                   <Option value="Student">Student</Option>
                   <Option value="Teacher">Teacher</Option>
                 </Select>
-              </Form.Item>
-
-              <Form.Item
-                label="password"
-                name="password"
-                rules={[{ required: true, message: 'Enter password' }]}
-              >
-                <Input type="number" placeholder="Enter password" />
               </Form.Item>
               <Form.Item>
                 <Button className="btn" type="primary" htmlType="submit">
@@ -199,8 +202,8 @@ const List = () => {
           </div>
         ) : (
           <div>
-            <div className="flex">
-              <h1>List</h1>
+            <div className="flex" style={{ marginBottom: '15px' }}>
+              <h2>List</h2>
               <Button className="btn" onClick={handleAddStudentClick}>
                 Add Student
               </Button>

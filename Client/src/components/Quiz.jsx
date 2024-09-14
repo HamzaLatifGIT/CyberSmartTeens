@@ -66,7 +66,7 @@ const Quiz = () => {
 
   return (
     <div>
-      <div><h1>Quizes</h1></div>
+      <div className='flex'><h2>Quizes</h2></div>
       <div className="quiz-upload-header">
         <Form
           form={form}

@@ -75,7 +75,7 @@ function Login() {
                     </div>
                 </div>
                 <div className="left-box">
-                    <div className="login-image"> <div className='login-contact-btn'> <p>Contact us</p></div></div>
+                    <div className="login-image"> <div className='login-contact-btn'> </div></div>
                     <div className='detail'> <p>Cybersecurity is crucial in today's digital age as it protects sensitive data from malicious attacks, ensuring the privacy and security of personal and organizational information. By safeguarding systems against breaches, it helps maintain trust and prevent financial losses. </p>
                         <span> Please see more information <strong>here</strong></span>
                         <hr />

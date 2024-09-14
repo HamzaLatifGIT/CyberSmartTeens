@@ -41,7 +41,7 @@
               
             
                     .ant-select-selector {
-                      padding: 12px !important;
+                      padding: 22px !important;
                     }
           
                   
@@ -72,14 +72,17 @@
                     width: 100%;
                     max-width: 400px;
                     cursor: pointer;
-
+                    span{
+                    text-decoration: none;
+                    }
+                    
                 }
-
+                
                 button:hover {
                     background-color: #080821;
                     color: white !important;
                 }
-
+                
                 button:active {
                     background-color: #47fac6;
                     color: #080821 !important;

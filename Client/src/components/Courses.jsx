@@ -66,7 +66,7 @@ const Courses = () => {
 
   return (
     <div>
-      <div><h1>Courses</h1></div>
+      <div className='flex'><h2>Courses</h2></div>
       <div className="quiz-upload-header">
         <Form
           form={form}

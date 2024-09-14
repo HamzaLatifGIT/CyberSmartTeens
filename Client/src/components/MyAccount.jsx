@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, NavLink, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, NavLink, useNavigate,Navigate} from 'react-router-dom';
 
 // Components:
 import Dashboard from './Dashboard';
@@ -21,6 +21,7 @@ import './style/MyAccount.scss';
 import List from './List';
 
 const MyAccount = () => {
+    const navigate = useNavigate();
     const [fileList, setFileList] = useState([]);
     const [previewImage, setPreviewImage] = useState(null);
 
@@ -53,7 +54,7 @@ const MyAccount = () => {
         <div className="myaccount-container">
             <div className="sidebar">
                 <img src={resposivelogo} className='mobile-logo' alt="" style={{ paddingLeft: '7px' }} />
-                <img src={logo} alt="" style={{ paddingLeft: '7px' }} className='web-logo' />
+                <img src={logo} alt="" style={{ paddingLeft: '7px' }} className='web-logo' onClick={()=>navigate('/')} />
                 <ul>
                     <li>
                         <NavLink

@@ -123,7 +123,7 @@ function Signup() {
         </div>
         <div className="left-box">
           <div className="signup-image">
-            <div className='login-contact-btn'><p>Contact us</p></div>
+            <div className='login-contact-btn'></div>
           </div>
           <div className='detail'>
             <p>With our reliance on digital platforms growing, understanding how to safeguard systems and data is vital for preventing breaches, ensuring privacy, and maintaining the integrity of critical infrastructure...</p>
