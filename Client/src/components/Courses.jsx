@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // ANT-D :
 import { UploadOutlined } from '@ant-design/icons';
@@ -6,10 +7,13 @@ import { Table, Input, Button, Form, message, Upload } from 'antd';
 
 // CSS :
 import './style/Quiz.scss'
+import AddCourse from './AddCourse';
 
 const Courses = () => {
+  const Navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [form] = Form.useForm();
+  const [isAddingStudent, setIsAddingStudent] = useState(false);
 
   const columns = [
     {
@@ -64,47 +68,25 @@ const Courses = () => {
     },
   };
 
+    // Function to handle the "Add Student" button click
+    const handleAddStudentClick = () => {
+      setIsAddingStudent(true);
+    };
+
   return (
     <div>
-      <div className='flex'><h2>Courses</h2></div>
-      <div className="quiz-upload-header">
-        <Form
-          form={form}
-          onFinish={onFinish}
-          layout="inline"
-          style={{ marginBottom: 20 }}
-        >
-          <Form.Item
-            name="title"
-            label="Title:"
-            rules={[{ required: true, message: 'Please input quiz title!' }]}
-          >
-            <Input className="custome-input" placeholder="Enter quiz title" />
-          </Form.Item>
 
-          <Form.Item name="teacher" label="Teacher Name:">
-            <Input className="custome-input" placeholder="Enter teacher name" />
-          </Form.Item>
-
-          <Form.Item name="subject" label="Subject:">
-            <Input className="custome-input" placeholder="Enter subject" />
-          </Form.Item>
-          <Form.Item name="subject" label="Upload">
-            <Upload {...props}>
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-          </Form.Item>
-
-          <Form.Item>
-            <Button className="btn-2" type="primary" htmlType="submit">
-              Upload Course
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-
-      {/* Quiz List Table */}
-      <Table dataSource={quizzes} columns={columns} rowKey="title" />
+      {isAddingStudent ? (
+        <AddCourse />
+      )
+        :
+        (
+          <div>
+            <div className='flex'><h2>Courses</h2> <div><Button className="btn" onClick={handleAddStudentClick}>Add Course</Button></div></div>
+            <Table dataSource={quizzes} columns={columns} rowKey="title" />
+          </div>
+        )
+      }
     </div>
   );
 };

@@ -19,6 +19,7 @@ import resposivelogo from '../assets/Untitled (4).svg'
 // CSS:
 import './style/MyAccount.scss';
 import List from './List';
+import AddCourse from './AddCourse';
 
 const MyAccount = () => {
     const navigate = useNavigate();
@@ -124,6 +125,7 @@ const MyAccount = () => {
                     <Route path="list" element={<List />} />
                     <Route path="quiz" element={<Quiz />} />
                     <Route path="setting" element={<Settings />} />
+                    <Route path="addCourse" element={<AddCourse />} />
                     <Route path="*" element={<Navigate to="profile" />} />
                 </Routes>
             </div>
