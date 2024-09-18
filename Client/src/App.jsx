@@ -6,7 +6,7 @@ import Login from '../src/Auth/Login'
 import Signup from '../src/Auth/Signup'
 import Home from "./components/pages/Home";
 import MyAccount from "./components/MyAccount";
-
+import FlipcardComponent from "./components/FlipCard/Index"
 // APIs :
 import { GetProfileAPI } from "./Api/auth";
 // Redux :
@@ -62,6 +62,7 @@ function App() {
         <Route path="login" element={<AuthRoute user={AuthToken}> <Login /> </AuthRoute>} />
         <Route path="signup" element={<AuthRoute user={AuthToken}> <Signup /> </AuthRoute>} />
         <Route path="dashboard/*" element={<ProtectedRoute user={AuthToken}>  <MyAccount />  </ProtectedRoute>} />
+        <Route path="card" element={<ProtectedRoute user={AuthToken}>  <FlipcardComponent />  </ProtectedRoute>} />
       </Routes>
 
     </>

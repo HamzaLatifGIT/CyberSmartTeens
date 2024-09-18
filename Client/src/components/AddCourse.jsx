@@ -6,7 +6,7 @@ import { Button, Input, Upload, Select } from 'antd';
 // Asserts | ICONS : 
 import { LoadingOutlined } from '@ant-design/icons';
 import { BsArrowLeftShort } from "react-icons/bs"
-import { Blogger, Subtitle, Category, Tag, Eye } from 'iconsax-react';
+import { FaBlogger, FaSubscript, FaCalculator, FaTag, FaEye } from 'react-icons/fa';
 
 
 // API's
@@ -378,7 +378,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                                             }}
                                         />
                                     </div>
-                                    <Eye
+                                    <FaEye
                                         onClick={handleEyeClick}
                                         style={{
                                             fontSize: '24px',
@@ -398,12 +398,12 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                         <div className="Inputfield">
                             <div className="field1 field">
                                 <div className="lableName">Course Title</div>
-                                <Input prefix={<Subtitle />} size='large' className='blogInput' type="text" placeholder='Cpurse Title' name="title" onChange={enterFormData} value={formData?.title} />
+                                <Input prefix={<FaSubscript />} size='large' className='blogInput' type="text" placeholder='Cpurse Title' name="title" onChange={enterFormData} value={formData?.title} />
                                 {formErrors.title && <div className="errorMessage">{formErrors.title}</div>}
                             </div>
                             <div className="field2 field">
                                 <div className="lableName">Course Slug</div>
-                                <Input prefix={<Subtitle />} size='large' className='blogInput' type="text" placeholder='Course slug' name="slug" onChange={enterFormData} value={formData?.slug} />
+                                <Input prefix={<FaSubscript />} size='large' className='blogInput' type="text" placeholder='Course slug' name="slug" onChange={enterFormData} value={formData?.slug} />
                                 {formErrors.slug && <div className="errorMessage">{formErrors.slug}</div>}
                             </div>
 
@@ -411,7 +411,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                         <div className="Inputfield">
                             <div className="field1 field">
                                 <div className="lableName">Course Quote</div>
-                                <Input prefix={<Blogger />} size='large' className='blogInput' type="text" placeholder='Course Quote' name="quote" onChange={enterFormData} value={formData?.quote} />
+                                <Input prefix={<FaBlogger />} size='large' className='blogInput' type="text" placeholder='Course Quote' name="quote" onChange={enterFormData} value={formData?.quote} />
                                 {formErrors.quote && <div className="errorMessage">{formErrors.quote}</div>}
                             </div>
                         </div>
@@ -419,7 +419,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                             <div className="field1 field" id='category'>
                                 <div className="lableName">Category</div>
                                 <div className="inputselect">
-                                    <div className="selecticon"><Category size={24} className='iconInfo' /></div>
+                                    <div className="selecticon"><FaCalculator size={24} className='iconInfo' /></div>
                                     <Select
                                         mode='tags'
                                         placeholder='Select Category'
@@ -439,7 +439,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                             <div className="field1 field" id='gender'>
                                 <div className="lableName">Tag</div>
                                 <div className="inputselect">
-                                    <div className="selecticon"><Tag size={24} className='iconInfo' /></div>
+                                    <div className="selecticon"><FaTag size={24} className='iconInfo' /></div>
                                     <Select
                                         mode='tags'
                                         placeholder='Select tag'

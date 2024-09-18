@@ -6,7 +6,7 @@ import { Button, Input, Upload, Select } from 'antd';
 // Asserts | ICONS : 
 import { LoadingOutlined } from '@ant-design/icons';
 import { BsArrowLeftShort } from "react-icons/bs"
-import { Book, DocumentUpload, DollarSquare, Subtitle, Category, Tag, Eye } from 'iconsax-react';
+import { FaBook, FaUpload, FaSubscript, FaCalculator, FaTag, FaEye } from 'react-icons/fa';
 
 // API's
 // import { CreatBooksAPI, UpdateBooksAPI } from 'API/books';
@@ -379,16 +379,16 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
                         <div className="Inputfield">
                             <div className="field1 field">
                                 <div className="lableName">Quiz Title</div>
-                                <Input prefix={<Subtitle />} size='large' className='bookInput' type="text" placeholder='Quiz Title' name="title" onChange={enterFormData} value={formData?.title} />
+                                <Input prefix={<FaSubscript />} size='large' className='bookInput' type="text" placeholder='Quiz Title' name="title" onChange={enterFormData} value={formData?.title} />
                                 {formErrors?.title && <div className="errorMessage">{formErrors?.title}</div>}
                             </div>
                             <div className="field2 field">
                                 <div className="lableName">Quiz Title</div>
                                 <div className='uploadBtn'>
 
-                                    <div className="icon"><Book style={{ color: "black" }} /> {formData?.file ? formData?.file?.name : "Upload Your File Here"}
+                                    <div className="icon"><FaBook style={{ color: "black" }} /> {formData?.file ? formData?.file?.name : "Upload Your File Here"}
                                     </div>
-                                    {formData?.file && <div className="iconEye" onClick={handlePreview}><Eye size={26} color="#000" /></div>}
+                                    {formData?.file && <div className="iconEye" onClick={handlePreview}><FaEye size={26} color="#000" /></div>}
                                     <Upload
                                         name="file"
                                         className="upload"
@@ -397,9 +397,9 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
                                         onChange={handleFileUploadChange}
                                     >
                                         {formData?.file ? (
-                                            <DocumentUpload />
+                                            <FaUpload />
                                         ) : (
-                                            <DocumentUpload />
+                                            <FaUpload />
                                         )}
                                     </Upload>
 
@@ -412,12 +412,12 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
                         <div className="Inputfield">
                             <div className="field1 field">
                                 <div className="lableName">Quiz Publisher</div>
-                                <Input prefix={<Book />} size='large' className='bookInput' type="text" placeholder='Quiz Publisher' name="publisher" onChange={enterFormData} value={formData?.publisher} />
+                                <Input prefix={<FaBook />} size='large' className='bookInput' type="text" placeholder='Quiz Publisher' name="publisher" onChange={enterFormData} value={formData?.publisher} />
                                 {formErrors?.publisher && <div className="errorMessage">{formErrors?.publisher}</div>}
                             </div>
                             <div className="field2 field">
                                 <div className="lableName">Quiz Topic</div>
-                                <Input prefix={<Book />} size='large' className='bookInput' type="text" placeholder='Quiz Topic' name="price" onChange={enterFormData} defaultValue={0} value={formData?.price} />
+                                <Input prefix={<FaBook />} size='large' className='bookInput' type="text" placeholder='Quiz Topic' name="price" onChange={enterFormData} defaultValue={0} value={formData?.price} />
                                 {formErrors?.price && <div className="errorMessage">{formErrors?.price}</div>}
                             </div>
                         </div>
@@ -425,7 +425,7 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
                             <div className="field1 field " id='gender'>
                                 <div className="lableName">Category</div>
                                 <div className="inputselect">
-                                    <div className="selecticon"><Category size={24} className='iconInfo' /></div>
+                                    <div className="selecticon"><FaCalculator size={24} className='iconInfo' /></div>
                                     <Select
                                         mode='multiple'
                                         placeholder='Select Category'
@@ -447,7 +447,7 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
                             <div className="field1 field" id='tag'>
                                 <div className="lableName">Tag</div>
                                 <div className="inputselect">
-                                    <div className="selecticon"><Tag size={24} className='iconInfo' /></div>
+                                    <div className="selecticon"><FaTag size={24} className='iconInfo' /></div>
                                     <Select
                                         mode='tags'
                                         placeholder='Select tag'
