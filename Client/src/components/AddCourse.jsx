@@ -6,12 +6,15 @@ import { Button, Input, Upload, Select } from 'antd';
 // Asserts | ICONS : 
 import { LoadingOutlined } from '@ant-design/icons';
 import { BsArrowLeftShort } from "react-icons/bs"
-import { FaBlogger, FaSubscript, FaCalculator, FaTag, FaEye } from 'react-icons/fa';
+import { FaEye } from 'react-icons/fa';
+import { MdOutlineSubtitles } from "react-icons/md";
+import { FaQuoteLeft } from "react-icons/fa";
+import { BiCategoryAlt } from "react-icons/bi";
 
 
 // API's
 // import { CreatBlogsAPI, UpdateBlogsAPI } from 'API/blogs';
-// import { GetAllCategoriesAPI, GetAllTagsAPI, AddCategoryAPI, AddTagAPI } from 'API/categoryTag';
+import { GetAllCategoriesAPI, AddCategoryAPI } from '../Api/category';
 // Helper :
 // import { toast } from 'react-toastify';
 // import ImgURLGEN from 'Utils/ImgUrlGen';
@@ -47,13 +50,10 @@ const beforeUpload = (file) => {
 export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
 
     const [allCategories, setAllCategories] = useState(null)
-    const [allTags, setAllTags] = useState(null)
 
     const [newCategories, setNewCategories] = useState([])
-    const [newtags, setNewtags] = useState([])
 
     const [categoryLoading, setCategoryLoading] = useState(false);
-    const [tagLoading, setTagLoading] = useState(false);
     const [formErrors, setFormErrors] = useState({});
     const [formthumbUploadError, setFormthumbUploadError] = useState({});
 
@@ -65,8 +65,6 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
         quote: "",
         slug: "",
         categories: [],
-        tags: []
-
     })
     const [formError, setFormError] = useState({
         title: null,
@@ -121,19 +119,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
     const filterOptions = (inputValue, option) => {
         return option.label.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0;
     };
-    const filterOptionsfortags = (inputValue, option) => {
-        return option.label.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0;
-    };
-    const handleTagChange = (event) => {
-        let newTagList = event.filter(cat => !allTags.some(v => cat == v?._id))
-        let selectedTagList = allTags?.map(cat => cat?._id)?.filter(cat => event.includes(cat))
-        setNewtags(newTagList)
-        setFormData({
-            ...formData,
-            tags: selectedTagList
-        })
 
-    }
 
     const handleUploadChange = (info) => {
         getBase64(info.file.originFileObj, (url) => {
@@ -167,16 +153,6 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
         }
         setCategoryLoading(false)
     }
-    const gettingAllTags = async () => {
-        setTagLoading(true);
-        let res = await GetAllTagsAPI();
-        if (res.error != null) {
-            toast.error(res?.error);
-        } else {
-            setAllTags(res?.data?.result || [])
-        }
-        setTagLoading(false)
-    }
     const validateForm = () => {
         const errors = {};
         const requiredFields = ["title", "quote", "detail", "slug"];
@@ -201,7 +177,6 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                     detail: findBlog?.detail,
                     slug: findBlog?.slug,
                     categories: findBlog?.categories.map(cat => cat?._id) || [],
-                    tags: findBlog?.tags.map(tag => tag?._id) || [],
                     image: findBlog?.image
 
                 })
@@ -214,14 +189,12 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                 detail: "",
                 slug: "",
                 categories: [],
-                tags: []
             })
             setImageUrl()
         }
     }, [selectedBlog])
     useEffect(() => {
         gettingAllCategories()
-        gettingAllTags()
     }, [])
 
     const handleUploadBlog = async () => {
@@ -239,17 +212,11 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
         setLoading(true)
 
         let allCategoriesList = formData.categories;
-        let alltagsList = formData.tags;
 
         if (newCategories && newCategories.length >= 1) {
             let categoryRes = await AddCategoryAPI(newCategories)
             if (categoryRes.error != null) return toast.error(categoryRes?.error)
             allCategoriesList = [...allCategoriesList, ...categoryRes?.data?.result.map(cat => cat?._id)]
-        }
-        if (newtags && newtags.length >= 1) {
-            let tagRes = await AddTagAPI(newtags)
-            if (tagRes.error != null) return toast.error(tagRes?.error)
-            alltagsList = [...alltagsList, ...tagRes?.data?.result.map(cat => cat?._id)]
         }
 
         let fData = new FormData()
@@ -263,13 +230,6 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
             allCategoriesList.map(val => {
                 if (val && val != "" && val != " ") {
                     fData.append("categories", val)
-                }
-            })
-        }
-        if (alltagsList.length >= 1) {
-            alltagsList.map(val => {
-                if (val && val != "" && val != " ") {
-                    fData.append("tags", val)
                 }
             })
         }
@@ -352,7 +312,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
             <div className="AddBlogFormContainer">
                 <div className="headingAddBlog">
                     <div className="headerleft heading upper flexLine flex">
-                        
+
                         <div className="heading"><h2>Add Course</h2></div>
                     </div>
 
@@ -398,12 +358,12 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                         <div className="Inputfield">
                             <div className="field1 field">
                                 <div className="lableName">Course Title</div>
-                                <Input prefix={<FaSubscript />} size='large' className='blogInput' type="text" placeholder='Cpurse Title' name="title" onChange={enterFormData} value={formData?.title} />
+                                <Input prefix={<MdOutlineSubtitles />} size='large' className='blogInput' type="text" placeholder='Course Title' name="title" onChange={enterFormData} value={formData?.title} />
                                 {formErrors.title && <div className="errorMessage">{formErrors.title}</div>}
                             </div>
                             <div className="field2 field">
                                 <div className="lableName">Course Slug</div>
-                                <Input prefix={<FaSubscript />} size='large' className='blogInput' type="text" placeholder='Course slug' name="slug" onChange={enterFormData} value={formData?.slug} />
+                                <Input prefix={<MdOutlineSubtitles />} size='large' className='blogInput' type="text" placeholder='Course slug' name="slug" onChange={enterFormData} value={formData?.slug} />
                                 {formErrors.slug && <div className="errorMessage">{formErrors.slug}</div>}
                             </div>
 
@@ -411,7 +371,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                         <div className="Inputfield">
                             <div className="field1 field">
                                 <div className="lableName">Course Quote</div>
-                                <Input prefix={<FaBlogger />} size='large' className='blogInput' type="text" placeholder='Course Quote' name="quote" onChange={enterFormData} value={formData?.quote} />
+                                <Input prefix={<FaQuoteLeft />} size='large' className='blogInput' type="text" placeholder='Course Quote' name="quote" onChange={enterFormData} value={formData?.quote} />
                                 {formErrors.quote && <div className="errorMessage">{formErrors.quote}</div>}
                             </div>
                         </div>
@@ -419,12 +379,12 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                             <div className="field1 field" id='category'>
                                 <div className="lableName">Category</div>
                                 <div className="inputselect">
-                                    <div className="selecticon"><FaCalculator size={24} className='iconInfo' /></div>
+                                    <div className="selecticon"><BiCategoryAlt size={24} className='iconInfo' /></div>
                                     <Select
                                         mode='tags'
                                         placeholder='Select Category'
                                         value={[...formData.categories, ...newCategories]}
-                                        bordered={false}
+                                        variant={"borderless"}
                                         className='selector'
                                         onChange={handleCategoryChange}
                                         getPopupContainer={() => document.getElementById('category')}
@@ -433,27 +393,6 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                                         options={allCategories && allCategories?.map(cat => ({ value: cat?._id, label: cat?.name }))}
                                         filterOption={filterOptions}
                                     />
-                                </div>
-
-                            </div>
-                            <div className="field1 field" id='gender'>
-                                <div className="lableName">Tag</div>
-                                <div className="inputselect">
-                                    <div className="selecticon"><FaTag size={24} className='iconInfo' /></div>
-                                    <Select
-                                        mode='tags'
-                                        placeholder='Select tag'
-                                        value={[...formData.tags, ...newtags]}
-                                        bordered={false}
-                                        className='selector'
-                                        getPopupContainer={() => document.getElementById('gender')}
-
-                                        onChange={handleTagChange}
-                                        loading={tagLoading}
-                                        filterOption={filterOptionsfortags}
-                                        options={allTags && allTags?.map(cat => ({ value: cat?._id, label: cat?.name }))}
-                                    />
-
                                 </div>
 
                             </div>
