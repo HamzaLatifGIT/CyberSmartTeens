@@ -22,6 +22,7 @@ app.use(morgan("dev"));
 // import routes
 const usersRoute = require('./v1/Routes/users.route')
 const categoryRoute = require('./v1/Routes/categories.route')
+const courseRoute = require('./v1/Routes/course.route')
 
 app.use("/static", express.static(path.join(__dirname, '/public')));
 
@@ -30,6 +31,7 @@ app.use("/static", express.static(path.join(__dirname, '/public')));
 // declare routes
 app.use('/api/v1/users', usersRoute)
 app.use('/api/v1/category', categoryRoute)
+app.use('/api/v1/course', courseRoute)
 
 
 

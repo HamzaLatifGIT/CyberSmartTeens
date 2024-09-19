@@ -13,10 +13,10 @@ import { BiCategoryAlt } from "react-icons/bi";
 
 
 // API's
-// import { CreatBlogsAPI, UpdateBlogsAPI } from 'API/blogs';
+import { CreatCoursesAPI, UpdateCourseAPI } from '../Api/course';
 import { GetAllCategoriesAPI, AddCategoryAPI } from '../Api/category';
 // Helper :
-// import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 // import ImgURLGEN from 'Utils/ImgUrlGen';
 import ReactQuill from 'react-quill';
 
@@ -239,9 +239,9 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
         }
         let res;
         if (selectedBlog) {
-            res = await UpdateBlogsAPI(selectedBlog?._id, fData)
+            res = await UpdateCourseAPI(selectedBlog?._id, fData)
         } else {
-            res = await CreatBlogsAPI(fData)
+            res = await CreatCoursesAPI(fData)
         }
         if (res.error != null) {
             toast.error(res.error)
@@ -383,9 +383,9 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                                     <Select
                                         mode='tags'
                                         placeholder='Select Category'
-                                        value={[...formData.categories, ...newCategories]}
                                         variant={"borderless"}
                                         className='selector'
+                                        value={[...formData.categories, ...newCategories]}
                                         onChange={handleCategoryChange}
                                         getPopupContainer={() => document.getElementById('category')}
 
