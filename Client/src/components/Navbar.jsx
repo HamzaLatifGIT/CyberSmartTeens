@@ -7,22 +7,16 @@ import { Dropdown } from "antd";
 // Assets | ICONS :
 import { IoMdPerson } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
+import { IoIosMenu, IoIosClose, IoIosArrowDown } from "react-icons/io";
 import logo from "../assets/zeropark-logo-color-cm.svg";
-import { IoIosMenu, IoIosClose } from "react-icons/io";
 
 // CSS :
 import "./style/Navbar.scss";
 import toast from "react-hot-toast";
 
-
-
-
-
 const Navbar = () => {
-
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -33,41 +27,45 @@ const Navbar = () => {
   const token = localStorage.getItem("CyberTeensToken");
 
   const handleGoToLogout = () => {
-    console.log("button is cliecked", localStorage.getItem("CyberTeensToken"));
-    localStorage.clear();
-    localStorage.clear();
-
-    toast.error("Logout Successful")
+    console.log("Logout button clicked", localStorage.getItem("CyberTeensToken"));
+    localStorage.clear(); // Clear local storage only once
+    toast.error("Logout Successful");
 
     setTimeout(() => {
-      window.location.href = "/"
+      window.location.href = "/";
     }, 1000);
     return true;
   };
 
   const itemsProfile = [
     {
-      key: "3",
+      key: "1",
       label: <Link to={"/dashboard"}>My Account</Link>,
     },
     {
-      key: "4",
+      key: "2",
       label: <div onClick={handleGoToLogout}>Logout</div>,
     },
   ];
 
   return (
     <>
-
-      <header className="navbar"
+      <header
+        className="navbar"
         data-aos="slide-down"
-        data-aos-duration='6000'>
+        data-aos-duration="6000"
+      >
         <div className="navbar__container max-width">
           <div onClick={() => navigate("/")} className="navbar__logo">
             <img src={logo} alt="Zeropark Logo" />
           </div>
 
-          <button className="navbar__hamburger" onClick={toggleMenu}>
+          <button
+            className="navbar__hamburger"
+            onClick={toggleMenu}
+            aria-expanded={isMenuOpen ? "true" : "false"}
+            aria-label="Toggle navigation menu"
+          >
             {isMenuOpen ? (
               <IoIosClose size={30} color="black" />
             ) : (
@@ -77,28 +75,64 @@ const Navbar = () => {
 
           <div
             className={`navbar__links ${isMenuOpen ? "navbar__links--open" : ""
-              }`}>
+              }`}
+          >
+            <ul>
+              <li>
+                <Link to="/">
+                  <span>
+                    Home
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link to="about">
+                  <span>
+                    About
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link to="topic">Topic</Link>
+              </li>
+              <li>
+                <Link to="quizes">Quizes</Link>
+              </li>
 
-            {!token ? <div className="navbar__auth">
-              <div>
-                <button className="signup-btn" onClick={() => { navigate('/signup') }}>Sign up</button>
+            </ul>
+
+            {!token ? (
+              <div className="navbar__auth">
+                <div>
+                  <button
+                    className="signup-btn"
+                    onClick={() => {
+                      navigate("/signup");
+                    }}
+                  >
+                    Sign up
+                  </button>
+                </div>
+                <div>
+                  <button
+                    className="login-btn"
+                    onClick={() => {
+                      navigate("/login");
+                    }}
+                  >
+                    <span className="icon">
+                      <IoMdPerson size={20} /> Login
+                    </span>
+                  </button>
+                </div>
               </div>
-              <div>
-                <button className="login-btn" onClick={() => { navigate('/login') }}>
-                  {" "}
-                  <span className="icon">
-                    <IoMdPerson size={20} /> Login
-                  </span>{" "}
-                </button>
-              </div>
-            </div>
-              :
+            ) : (
               <div className="profile">
                 <Dropdown menu={{ items: itemsProfile }} arrow>
                   <FaUserCircle size={33} />
                 </Dropdown>
               </div>
-            }
+            )}
           </div>
         </div>
       </header>

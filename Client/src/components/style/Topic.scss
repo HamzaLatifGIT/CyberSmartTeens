@@ -1,0 +1,47 @@
+.topic-container{
+padding-top: 5rem;
+h1{
+ display: flex;
+ justify-content: center;
+ padding-bottom: 1rem;
+}
+
+.items{
+    display: flex;
+    justify-content:center;
+    gap: 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    
+    .item{
+        text-align: center;
+        background: #fff;
+        border: 1px solid #eaeaea;
+        border-radius: 10px;
+        padding: 2rem;
+        margin: 10px;
+        opacity: .7;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        img{
+            width:100%;
+            height: auto;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
