@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // ANT-D :
 import { UploadOutlined } from '@ant-design/icons';
 import { Table, Input, Button, Form, message, Upload } from 'antd';
 
+import toast from 'react-hot-toast';
+
 // CSS :
 import './style/Quiz.scss'
 import AddQuiz from './AddQuiz';
+import { GetAllQuizesAPI } from '../Api/quiz';
 
 const Quizes = () => {
   const Navigate = useNavigate();
+
   const [quizzes, setQuizzes] = useState([]);
-  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false)
   const [isAddingStudent, setIsAddingStudent] = useState(false);
 
   const columns = [
@@ -38,40 +42,29 @@ const Quizes = () => {
     },
   ];
 
-  // Handle form submission
-  const onFinish = (values) => {
-    const newQuiz = {
-      title: values.title,
-      teacher: values.teacher || 'Unknown',
-      subject: values.subject || 'Not Specified',
-      date: new Date().toLocaleDateString(),
-    };
-    setQuizzes([...quizzes, newQuiz]);
-    form.resetFields(); // Reset form after submission
+
+  // Function to handle the "Add Student" button click
+  const handleAddStudentClick = () => {
+    setIsAddingStudent(true);
   };
 
-  const props = {
-    name: 'file',
-    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-    headers: {
-      authorization: 'authorization-text',
-    },
-    onChange(info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
 
-    // Function to handle the "Add Student" button click
-    const handleAddStudentClick = () => {
-      setIsAddingStudent(true);
+  // Fetch courses when component mounts
+  useEffect(() => {
+    const fetchQuizes = async () => {
+      setLoading(true);
+      const result = await GetAllQuizesAPI();
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        let quizes = result.data.result;
+        setQuizzes(quizes || []); // Ensure we set an array even if result is null/undefined
+      }
+      setLoading(false);
     };
+    fetchQuizes();
+  }, []);
+
 
   return (
     <div>

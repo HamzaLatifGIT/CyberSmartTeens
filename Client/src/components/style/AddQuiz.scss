@@ -1,6 +1,6 @@
-.AddBookFormContainer {
+.AddQuizFormContainer {
 
-    .headingAddBook {
+    .headingAddQuiz {
         display: flex;
         justify-content: space-between;
 
@@ -9,14 +9,23 @@
         }
     }
 
-    .AddBookBodyArea {
+    .AddQuizBodyArea {
         background: #FFFFFF;
         border-radius: 13px;
-        
+
+
         .InputFields {
             display: flex;
             flex-direction: column;
             gap: 1rem;
+
+            .lableName {
+                color: #42464e;
+                color: var(--dark);
+                font-size: 14px;
+                font-weight: 400;
+                padding: .5rem 3px;
+            }
 
             .Inputfield {
                 gap: 2rem;
@@ -50,6 +59,7 @@
                         }
 
                         .ant-select-selector {
+                            width: 100%;
                             border: none;
                             display: flex;
                             justify-content: center;
@@ -140,43 +150,28 @@
 
                         }
                     }
-
                 }
 
                 .uploadBtn {
-                    position: relative;
                     display: flex;
                     justify-content: space-between;
-                    align-items: center;
-                    width: 100%;
+                    width: 96%;
                     min-width: 10rem;
-                    padding: 5px 20px;
+                    height: 71px;
+                    padding: 12px 20px;
                     background: white;
                     border: 1px solid #F3F3F3;
                     background: #FFFFFF;
                     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
                     border-radius: 9px;
 
-                    .iconEye {
-                        position: absolute;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        right: 4rem;
-                        cursor: pointer;
-                        width: 40px;
-                        height: 40px;
-
-                        &:hover {
-                            transform: scale(1.1);
-                        }
-                    }
-
                     .upload {
+
                         transition: transform all .1s;
                         cursor: pointer;
                         display: flex;
                         align-items: center;
+
                     }
 
                     .ant-upload {
@@ -196,8 +191,6 @@
                     }
                 }
 
-
-
                 .registerSelector {
                     .ant-select-selector {
                         height: 71px;
@@ -208,9 +201,8 @@
                         border-radius: 9px;
                     }
                 }
-                
 
-                .bookInput {
+                .blogInput {
                     width: 100%;
                     min-width: 10rem;
                     padding: 12px !important;
@@ -228,6 +220,7 @@
 
                     input {
                         background-color: inherit;
+
                     }
 
                     &:hover {
@@ -237,10 +230,27 @@
             }
 
             .descriptionHeader {
+
                 color: #42464eb7;
                 font-size: 14px;
                 font-weight: 400;
                 padding: .5rem 3px;
+
+
+            }
+
+            .descriptionPara {
+                background: #FFFFFF;
+                box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
+                border-radius: 5px;
+                padding: 1rem;
+                text-align: center;
+                font-size: 15px;
+                height: fit-content;
+
+                // @media screen and (max-width:800px) {
+                //     display: none;
+                // }
             }
 
             .descriptionPara {
@@ -283,7 +293,6 @@
             //         height: 21rem;
             //     }
             // }
-
             .ql-snow {
                 border: none;
             }
@@ -292,18 +301,19 @@
                 border-bottom: 1px solid gray;
             }
 
-            .TextAreaAddBook {
+            .TextAreaAddBlog {
                 font-size: 16px;
                 border: none;
             }
 
-            .uploadAddBookBtn {
+            .uploadAddBlogBtn {
                 margin-top: 1.5rem;
                 padding: 2rem;
                 align-self: center;
                 width: 12rem;
                 font-weight: 700;
                 font-size: 15px;
+
             }
         }
     }

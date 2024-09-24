@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from 'react';
 
 // MUI | ANT-D :
-import { Button, Input, Upload, Select } from 'antd';
+import { Button, Input, Upload, Select, Table, Modal } from 'antd';
 
 // Asserts | ICONS : 
 import { LoadingOutlined } from '@ant-design/icons';
 import { BsArrowLeftShort } from "react-icons/bs"
-import { FaBook, FaUpload, FaSubscript, FaCalculator, FaTag, FaEye } from 'react-icons/fa';
+import { FaEye } from 'react-icons/fa';
+import { MdOutlineSubtitles, MdEdit, MdDelete } from "react-icons/md";
+import { FaQuoteLeft } from "react-icons/fa";
+import { BiCategoryAlt } from "react-icons/bi";
+import { LuFileQuestion } from "react-icons/lu";
+import { AiOutlineSolution } from "react-icons/ai";
+import { CgOptions } from "react-icons/cg";
+
 
 // API's
-// import { CreatBooksAPI, UpdateBooksAPI } from 'API/books';
-// import { GetAllCategoriesAPI, GetAllTagsAPI, AddCategoryAPI, AddTagAPI } from 'API/categoryTag';
-// Helpers :
-// import { toast } from 'react-toastify';
+import { CreatQuizAPI, UpdateQuizAPI } from '../Api/quiz';
+import { GetAllCategoriesAPI, AddCategoryAPI } from '../Api/category';
+// Helper :
+import { toast } from 'react-hot-toast';
 // import ImgURLGEN from 'Utils/ImgUrlGen';
 import ReactQuill from 'react-quill';
 
 // CSS :
-import './style/AddQuiz.scss'
-import { MdTopic } from 'react-icons/md';
+import './style/AddQuiz.scss';
+
+import 'react-quill/dist/quill.snow.css';
+
+
 
 
 
@@ -40,42 +50,43 @@ const beforeUpload = (file) => {
     return isJpgOrPng && isLt2M;
 };
 
-export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage }) {
+export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
 
     const [allCategories, setAllCategories] = useState(null)
-    const [allTags, setAllTags] = useState(null)
 
     const [newCategories, setNewCategories] = useState([])
-    const [newtags, setNewtags] = useState([])
 
     const [categoryLoading, setCategoryLoading] = useState(false);
-    const [tagLoading, setTagLoading] = useState(false);
-    const [formUploadError, setFormUploadError] = useState({});
-
+    const [formErrors, setFormErrors] = useState({});
     const [formthumbUploadError, setFormthumbUploadError] = useState({});
-
-
 
 
     const [formData, setFormData] = useState({
         title: "",
         detail: "",
-        publisher: "",
-        price: "0",
-        file: null,
+        image: null,
+        quote: "",
+        slug: "",
+        type: "quiz",
         categories: [],
-        tags: [],
     })
+    const [questions, setQuestions] = useState([])
     const [formError, setFormError] = useState({
         title: null,
         detail: null,
-        publisher: null,
-        price: null,
+        quote: null,
+        slug: null,
     })
 
     const [imageUrl, setImageUrl] = useState(null)
     const [file, setFile] = useState(null)
-    const [formErrors, setFormErrors] = useState({});
+
+    const [questionData, setQuestionData] = useState({
+        question: "",
+        answer: "",
+        options: []
+    })
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
 
     const [loading, setLoading] = useState(false)
@@ -83,7 +94,6 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
 
     const enterFormData = (event) => {
         let { name, value } = event.target;
-
 
         setFormData({
             ...formData,
@@ -95,15 +105,6 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
         });
     };
 
-    const handleEyeClick = () => {
-        if (!formData?.image) {
-            window.open(URL.createObjectURL(file))
-        }
-        else {
-            window.open(formData?.image?.Location)
-        }
-    };
-
     const handleCategoryChange = (event) => {
         let newCategoryList = event.filter(cat => !allCategories.some(v => cat == v?._id))
         let selectedCategoryList = allCategories?.map(cat => cat?._id)?.filter(cat => event.includes(cat))
@@ -112,50 +113,45 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
             ...formData,
             categories: selectedCategoryList
         })
-
-        setFormErrors({
-            ...formErrors,
-            categories: selectedCategoryList.length > 0 ? "" : "This field is required",
-        });
-
     }
-    const handleTagChange = (event) => {
-        let newTagList = event.filter(cat => !allTags.some(v => cat == v?._id))
-        let selectedTagList = allTags?.map(cat => cat?._id)?.filter(cat => event.includes(cat))
-        setNewtags(newTagList)
-        setFormData({
-            ...formData,
-            tags: selectedTagList
-        })
-        setFormErrors({
-            ...formErrors,
-            tags: selectedTagList.length > 0 ? "" : "This field is required",
-        });
+    const handleEyeClick = (e) => {
+        e.preventDefault();
+        // window.open(URL.createObjectURL(file))
+        // console.log(formData?.image);
+        if (!formData?.image) {
+            window.open(URL.createObjectURL(file))
+        }
+        else {
+            window.open(formData?.image?.Location)
+        }
 
-    }
+    };
+    const filterOptions = (inputValue, option) => {
+        return option.label.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0;
+    };
+
 
     const handleUploadChange = (info) => {
         getBase64(info.file.originFileObj, (url) => {
             setImageUrl(url);
         });
-        setFormthumbUploadError({});
         setFile(info?.file?.originFileObj || null)
-    };
-    const handleFileUploadChange = (info) => {
-        setFormData({
-            ...formData,
-            file: info?.file?.originFileObj || null
-        })
-        setFormError({});
+        setFormthumbUploadError({});
     };
 
+    const uploadButton = (
+        <div>
+            {loading && <LoadingOutlined />}
+            <div
+                style={{
+                    marginTop: 8,
+                }}
+            >
+                Upload
+            </div>
+        </div>
+    );
 
-    const filterOptions = (inputValue, option) => {
-        return option.label.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0;
-    };
-    const filterOptionsfortags = (inputValue, option) => {
-        return option.label.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0;
-    };
 
     const gettingAllCategories = async () => {
         setCategoryLoading(true);
@@ -167,121 +163,70 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
         }
         setCategoryLoading(false)
     }
-    const gettingAllTags = async () => {
-        setTagLoading(true);
-        let res = await GetAllTagsAPI();
-        if (res.error != null) {
-            toast.error(res?.error);
-        } else {
-            setAllTags(res?.data?.result || [])
-        }
-        setTagLoading(false)
-    }
-
     const validateForm = () => {
         const errors = {};
-        const requiredFields = ["title", "detail", "price", "publisher"];
+        const requiredFields = ["title", "quote", "type", "slug"];
         requiredFields.forEach(field => {
             if (!formData[field]) {
                 errors[field] = "This field is required";
             }
         });
-        if (formData.categories.length === 0) {
-            errors.categories = "This field is required";
-        }
-        if (formData.tags.length === 0) {
-            errors.tags = "This field is required";
-        }
+
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
     }
 
 
     useEffect(() => {
-        if (selectedBook) {
-            const findBook = allBooks?.find(val => val?._id == selectedBook?._id)
-            if (findBook) {
+        if (selectedQuiz) {
+            const findBlog = allQuizes?.find(val => val?._id == selectedQuiz?._id)
+            if (findBlog) {
                 setFormData({
-                    title: findBook?.title,
-                    detail: findBook?.detail,
-                    price: findBook?.price,
-                    publisher: findBook?.publisher,
-                    categories: findBook?.categories.map(cat => cat?._id) || [],
-                    tags: findBook?.tags.map(tag => tag?._id) || [],
-                    image: findBook?.image
+                    title: findBlog?.title,
+                    quote: findBlog?.quote,
+                    detail: findBlog?.detail,
+                    slug: findBlog?.slug,
+                    categories: findBlog?.categories.map(cat => cat?._id) || [],
+                    image: findBlog?.image
+
                 })
-                setImageUrl(ImgURLGEN(findBook?.image))
+                setImageUrl(ImgURLGEN(findBlog?.image))
             }
         } else {
             setFormData({
                 title: "",
-                price: "",
+                quote: "",
                 detail: "",
-                publisher: "",
-                tags: [],
+                slug: "",
                 categories: [],
-                file: null
             })
             setImageUrl()
         }
-    }, [selectedBook])
+    }, [selectedQuiz])
     useEffect(() => {
         gettingAllCategories()
-        gettingAllTags()
     }, [])
 
-    const uploadButton = (
-        <div>
-            {loading && <LoadingOutlined />}
-            <div
-                style={{
-                    marginTop: 0,
-                }}
-            >
-                Upload
-            </div>
-        </div>
-    );
+    const handleUploadBlog = async () => {
 
+        if (!imageUrl) {
+            setFormthumbUploadError({ file: 'Please upload an image.' });
+            return;
+        }
 
-    const handleUploadBook = async () => {
-        const errors = {};
+        if (!validateForm()) {
+            toast.error("Some fields are Missing");
 
-        // if (!imageUrl) {
-        //     setFormthumbUploadError({ file: 'Please upload an image.' });
-        //     return;
-        // }
-
-        // // Validate file
-        // if (!formData?.file) {
-        //     errors.file = "Please upload a file.";
-        // }
-
-        // if (!validateForm()) {
-        //     toast.error("Some fields are Missing");
-
-        //     return;
-        // }
-
-        // // Check if there are any errors
-        // if (Object.keys(errors).length > 0) {
-        //     setFormUploadError(errors);
-        //     return; // Stop form submission
-        // }
-        // setLoading(true)
+            return;
+        }
+        setLoading(true)
 
         let allCategoriesList = formData.categories;
-        let alltagsList = formData.tags;
 
         if (newCategories && newCategories.length >= 1) {
             let categoryRes = await AddCategoryAPI(newCategories)
             if (categoryRes.error != null) return toast.error(categoryRes?.error)
             allCategoriesList = [...allCategoriesList, ...categoryRes?.data?.result.map(cat => cat?._id)]
-        }
-        if (newtags && newtags.length >= 1) {
-            let tagRes = await AddTagAPI(newtags)
-            if (tagRes.error != null) return toast.error(tagRes?.error)
-            alltagsList = [...alltagsList, ...tagRes?.data?.result.map(cat => cat?._id)]
         }
 
         let fData = new FormData()
@@ -298,23 +243,19 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
                 }
             })
         }
-        if (alltagsList.length >= 1) {
-            alltagsList.map(val => {
-                if (val && val != "" && val != " ") {
-                    fData.append("tags", val)
-                }
-            })
+
+        if (questions && questions?.length >= 1) {
+            fData.append("questions", JSON.stringify(questions))
         }
 
         if (file) {
-            fData.append("cover", file)
+            fData.append("file", file)
         }
         let res;
-        if (selectedBook) {
-            fData.append("_method", "PATCH")
-            res = await UpdateBooksAPI(selectedBook?._id, fData)
+        if (selectedQuiz) {
+            res = await UpdateQuizAPI(selectedQuiz?._id, fData)
         } else {
-            res = await CreatBooksAPI(fData)
+            res = await CreatQuizAPI(fData)
         }
         if (res.error != null) {
             toast.error(res.error)
@@ -325,186 +266,290 @@ export default function AddQuiz({ openPage, selectedBook, allBooks, closeSubPage
         setLoading(false)
     }
 
-    const handlePreview = (e) => {
-        e.preventDefault();
-        window.open(URL.createObjectURL(formData?.file))
+    const columns = [
+        {
+            title: 'Question Title',
+            dataIndex: 'question',
+            key: 'question',
+        },
+        {
+            title: 'Answer',
+            dataIndex: 'answer',
+            key: 'answer',
+        },
+        ...(
+            formData?.type == "quiz" ?
+                [{
+                    title: 'Options',
+                    dataIndex: 'options',
+                    key: 'options',
+                }]
+                : []
+        ),
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record, index) => (
+                <span>
+                    <Button
+                        type="primary"
+                        icon={<MdEdit />}
+                        onClick={() => handleAddQuestionClick(record, index)} // Show modal with course details
+                    //   style={{ marginRight: 8, backgroundColor: 'rgb(71 250 198 / 26%)' }}
+                    >
+                    </Button>
+                    <Button
+                        type="danger"
+                        icon={<MdDelete />}
+                        onClick={() => handleDeleteQuestion(index)} // Assuming record._id holds unique ID
+                    >
+                        Delete
+                    </Button>
+                </span>
+            ),
+        },
+    ];
+
+    const handleAddQuestionClick = (record, index) => {
+        if (record && record?.question) {
+            setQuestionData({
+                ...record,
+                edited: true,
+                id: index
+            })
+        } else {
+            setQuestionData({
+                question: "",
+                answer: "",
+                options: []
+            })
+        }
+        setIsModalVisible(true);
+    }
+    const handleDeleteQuestion = (id) => {
+        let UpdatedQuestions = questions.filter((data, index) => index != id)
+        setQuestions(UpdatedQuestions)
     }
 
-    var toolbarOptions = [
-        ['bold', 'italic'],        // toggled buttons
-        ['blockquote', 'code-block'],
-
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
-        [{ 'direction': 'rtl' }],
-        ['image', 'video'],                      // text direction
-
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        [{ 'font': [] }],
-        [{ 'align': [] }],
-
-    ];
-    var toolbarOptionsMobile = [
-        ['bold', 'italic'],
-        [{ 'font': [] }],
-        ['image'],
-    ];
-
-    const modules = {
-        toolbar: toolbarOptions
-    };
-    const modulesMobile = {
-        toolbar: toolbarOptionsMobile
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
     };
 
-    const { TextArea } = Input
+    const enterQuestionData = (event) => {
+        let { name, value } = event.target;
 
-
+        setQuestionData({
+            ...questionData,
+            [name]: value
+        })
+    };
+    const handleAddQuestion = () => {
+        if (questionData?.edited) {
+            let EditedQuestions = questions.map((data, index) => {
+                if (questionData?.id == index) {
+                    return {
+                        question: questionData?.question,
+                        answer: questionData?.answer,
+                        options: questionData?.options
+                    }
+                } else {
+                    return data
+                }
+            })
+            setQuestions(EditedQuestions)
+        } else {
+            let NewQuestionData = {
+                question: questionData?.question,
+                answer: questionData?.answer,
+                options: questionData?.options
+            }
+            setQuestions([...questions, NewQuestionData])
+        }
+        setQuestionData({
+            question: "",
+            answer: "",
+            options: []
+        })
+        setIsModalVisible(false)
+    }
 
     return (
         <>
-            <div className="AddBookFormContainer">
-                <div className="headingAddBook">
+            <div className="AddQuizFormContainer">
+                <div className="headingAddQuiz">
                     <div className="headerleft heading upper flexLine flex">
+
                         <div className="heading"><h2>Add Quiz</h2></div>
                     </div>
 
                 </div>
-                <div className="AddBookBodyArea">
+                <div className="AddQuizBodyArea">
+                    <>
+                        <Upload
+                            name="image"
+                            listType="picture-card"
+                            className="avatar-uploader"
+                            showUploadList={false}
+                            beforeUpload={beforeUpload}
+                            onChange={handleUploadChange}
+                        >
+                            {imageUrl ? (
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div className="imgBox" style={{ flex: '1 1 auto' }}>
+                                        <img
+                                            src={imageUrl}
+                                            alt="avatar"
+                                            style={{
+                                                width: '100%',
+                                            }}
+                                        />
+                                    </div>
+                                    <FaEye
+                                        onClick={handleEyeClick}
+                                        style={{
+                                            fontSize: '24px',
+                                            cursor: 'pointer',
+                                            color: '#000',
+                                        }}
+                                    />
+                                </div>
+                            ) : (
+                                uploadButton
+                            )}
+                        </Upload>
+                        {formthumbUploadError?.file && <div className="errorMessage">{formthumbUploadError?.file}</div>}
 
-
+                    </>
                     <div className="InputFields">
                         <div className="Inputfield">
                             <div className="field1 field">
                                 <div className="lableName">Quiz Title</div>
-                                <Input prefix={<FaSubscript />} size='large' className='bookInput' type="text" placeholder='Quiz Title' name="title" onChange={enterFormData} value={formData?.title} />
-                                {formErrors?.title && <div className="errorMessage">{formErrors?.title}</div>}
+                                <Input prefix={<MdOutlineSubtitles />} size='large' className='blogInput' type="text" placeholder='Quiz Title' name="title" onChange={enterFormData} value={formData?.title} />
+                                {formErrors.title && <div className="errorMessage">{formErrors.title}</div>}
                             </div>
                             <div className="field2 field">
-                                <div className="lableName">Quiz Title</div>
-                                <div className='uploadBtn'>
-
-                                    <div className="icon"><FaBook style={{ color: "black" }} /> {formData?.file ? formData?.file?.name : "Upload Your File Here"}
-                                    </div>
-                                    {formData?.file && <div className="iconEye" onClick={handlePreview}><FaEye size={26} color="#000" /></div>}
-                                    <Upload
-                                        name="file"
-                                        className="upload"
-                                        showUploadList={false}
-                                        beforeUpload={beforeUpload}
-                                        onChange={handleFileUploadChange}
-                                    >
-                                        {formData?.file ? (
-                                            <FaUpload />
-                                        ) : (
-                                            <FaUpload />
-                                        )}
-                                    </Upload>
-
-                                </div>
-                                {formUploadError?.file && <div className="errorMessage">{formUploadError?.file}</div>}
-
+                                <div className="lableName">Quiz Slug</div>
+                                <Input prefix={<MdOutlineSubtitles />} size='large' className='blogInput' type="text" placeholder='Quiz slug' name="slug" onChange={enterFormData} value={formData?.slug} />
+                                {formErrors.slug && <div className="errorMessage">{formErrors.slug}</div>}
                             </div>
 
                         </div>
                         <div className="Inputfield">
                             <div className="field1 field">
-                                <div className="lableName">Quiz Publisher</div>
-                                <Input prefix={<FaBook />} size='large' className='bookInput' type="text" placeholder='Quiz Publisher' name="publisher" onChange={enterFormData} value={formData?.publisher} />
-                                {formErrors?.publisher && <div className="errorMessage">{formErrors?.publisher}</div>}
-                            </div>
-                            <div className="field2 field">
-                                <div className="lableName">Quiz Topic</div>
-                                <Input prefix={<FaBook />} size='large' className='bookInput' type="text" placeholder='Quiz Topic' name="price" onChange={enterFormData} defaultValue={0} value={formData?.price} />
-                                {formErrors?.price && <div className="errorMessage">{formErrors?.price}</div>}
+                                <div className="lableName">Quiz Quote</div>
+                                <Input prefix={<FaQuoteLeft />} size='large' className='blogInput' type="text" placeholder='Quiz Quote' name="quote" onChange={enterFormData} value={formData?.quote} />
+                                {formErrors.quote && <div className="errorMessage">{formErrors.quote}</div>}
                             </div>
                         </div>
                         <div className="Inputfield">
-                            <div className="field1 field " id='gender'>
+                            <div className="field1 field" id='quiztype'>
+                                <div className="lableName">Type</div>
+                                <div className="inputselect">
+                                    <div className="selecticon"><BiCategoryAlt size={24} className='iconInfo' /></div>
+                                    <Select
+                                        placeholder='Select Type'
+                                        variant={"borderless"}
+                                        className='selector'
+                                        value={formData?.type}
+                                        onChange={(e) => enterFormData({ target: { name: "type", value: e } })}
+                                        getPopupContainer={() => document.getElementById('quiztype')}
+                                        options={[{ value: "quiz", label: "Quizes" }, { value: "flash", label: "Flash Cards" }]}
+                                    />
+                                </div>
+                            </div>
+                            <div className="field2 field" id='category'>
                                 <div className="lableName">Category</div>
                                 <div className="inputselect">
-                                    <div className="selecticon"><FaCalculator size={24} className='iconInfo' /></div>
+                                    <div className="selecticon"><BiCategoryAlt size={24} className='iconInfo' /></div>
                                     <Select
-                                        mode='multiple'
+                                        mode='tags'
                                         placeholder='Select Category'
-                                        value={[...formData.categories, ...newCategories]}
-                                        bordered={false}
+                                        variant={"borderless"}
                                         className='selector'
+                                        value={[...formData.categories, ...newCategories]}
                                         onChange={handleCategoryChange}
-                                        getPopupContainer={() => document.getElementById('gender')}
+                                        getPopupContainer={() => document.getElementById('category')}
 
                                         loading={categoryLoading}
                                         options={allCategories && allCategories?.map(cat => ({ value: cat?._id, label: cat?.name }))}
                                         filterOption={filterOptions}
                                     />
-
                                 </div>
-                                {formErrors?.categories && <div className="errorMessage">{formErrors?.categories}</div>}
 
                             </div>
-                            <div className="field1 field" id='tag'>
-                                <div className="lableName">Tag</div>
-                                <div className="inputselect">
-                                    <div className="selecticon"><FaTag size={24} className='iconInfo' /></div>
-                                    <Select
-                                        mode='tags'
-                                        placeholder='Select tag'
-                                        value={[...formData.tags, ...newtags]}
-                                        bordered={false}
-                                        className='selector'
-                                        getPopupContainer={() => document.getElementById('tag')}
-
-                                        onChange={handleTagChange}
-                                        loading={tagLoading}
-                                        options={allTags && allTags?.map(cat => ({ value: cat?._id, label: cat?.name }))}
-                                        filterOption={filterOptionsfortags}
-                                    />
-
-                                </div>
-                                {formErrors?.tags && <div className="errorMessage">{formErrors?.tags}</div>}
-
-                            </div>
-                            {/* <div className="field1 field">
-                                <div className="lableName">Tag</div>
-                                <div className="inputselect">
-                                    <div className="selecticon"><Tag size={24} className='iconInfo' /></div>
-                                    <Select
-                                        mode='tags'
-                                        placeholder='Select tag'
-                                        value={[...formData.tags, ...newtags]}
-                                        bordered={false}
-                                        className='selector'
-                                        onChange={handleTagChange}
-                                        loading={tagLoading}
-                                        options={allTags && allTags?.map(cat => ({ value: cat?._id, label: cat?.name }))}
-                                    />
-                                </div>
-                            </div> */}
                         </div>
                         <div className="field2 field descriptionMain">
-                            <div className="descriptionHeader heading">
-                                Quiz Description
+                            <div className="flex descriptionHeader heading">
+                                <h3> Questions List </h3>
+                                <Button className="btn" onClick={handleAddQuestionClick}>Add Question</Button>
                             </div>
                             <div className="descriptionPara">
-                                <ReactQuill parseWhitespace={true} theme='snow' style={{ height: "250px" }} modules={modules} className='contentPara' value={formData?.detail} name="detail" onChange={(val) => enterFormData({ target: { name: "detail", value: val } })} />
-                            </div>
-                            <div className="descriptionParaMobile">
-                                {/* <ReactQuill parseWhitespace={true} theme='snow' style={{ height: "250px" }} modules={modulesMobile} className='contentPara' value={formData?.detail} name="detail" onChange={(val) => enterFormData({ target: { name: "detail", value: val } })} /> */}
+                                <Table dataSource={questions} columns={columns} rowKey="title" />
+
                             </div>
                         </div>
                         {
                             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
-                                <Button className="yellowGraBtn btn" style={{ width: "40px" }} onClick={handleUploadBook} loading={loading}>
-                                    {selectedBook ? "Update" : "Save"}
+                                <Button className="btn" style={{ width: "40px" }} onClick={handleUploadBlog} loading={loading}>
+                                    {selectedQuiz ? "Update" : "Save"}
                                 </Button>
                             </div>
-
                         }
+
                     </div>
                 </div>
             </div>
+            <Modal
+                title="Question Details"
+                visible={isModalVisible}
+                onCancel={handleCloseModal}
+                footer={null}  // You can add buttons if needed
+            >
+                <div className='QuizModal'>
+                    <div className="InputFields">
+                        <div className="Inputfield">
+                            <div className="field1 field">
+                                <div className="lableName">Question</div>
+                                <Input prefix={<LuFileQuestion />} size='large' className='blogInput' type="text" placeholder='Question Title' name="question" onChange={enterQuestionData} value={questionData?.question} />
+                            </div>
+                        </div>
+                        <div className="Inputfield">
+                            <div className="field1 field">
+                                <div className="lableName">Answer</div>
+                                <Input prefix={<AiOutlineSolution />} size='large' className='blogInput' type="text" placeholder='Answer' name="answer" onChange={enterQuestionData} value={questionData?.answer} />
+                            </div>
+                        </div>
+                        {
+                            formData?.type == "quiz" &&
+                            <div className="Inputfield">
+                                <div className="field2 field" id='optionselect'>
+                                    <div className="lableName">Options</div>
+                                    <div className="inputselect">
+                                        <div className="selecticon"><CgOptions size={24} className='iconInfo' /></div>
+                                        <Select
+                                            mode='tags'
+                                            placeholder='Add Options'
+                                            variant={"borderless"}
+                                            className='selector'
+                                            value={questionData?.options}
+                                            onChange={(e) => enterQuestionData({ target: { name: "options", value: e } })}
+                                            getPopupContainer={() => document.getElementById('optionselect')}
+
+                                            options={questionData && questionData?.options?.map(op => ({ value: op, label: op }))}
+                                            filterOption={filterOptions}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+                            <Button className="btn" style={{ width: "40px" }} onClick={handleAddQuestion} loading={loading}>
+                                {questionData?.edited ? "Update" : "Save"}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
         </>
     )
 }
