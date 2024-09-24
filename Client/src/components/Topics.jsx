@@ -4,6 +4,7 @@ import topic from '../assets/037d20239665dd7593c167e528db8f33.webp';
 import { GetAllCoursesAPI } from '../Api/course';
 import { Skeleton, Button, Card } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
+import ImgURLGen from "../Utils/ImgUrlGen"
 
 function Topics() {
   const [courses, setCourses] = useState([]);
@@ -79,7 +80,7 @@ function Topics() {
             <div className='card'>
               {courses.slice(0, showAll ? courses.length : 3).map((course, index) => (
                 <div className="item" key={index}>
-                  <img src={course?.image?.Location || topic} alt={course?.title || 'Course'} />
+                  <img src={course?.image && ImgURLGen(course?.image) || topic} alt={course?.title || 'Course'} />
                   <h4>{course?.title || 'Course Title'}</h4>
                   <span>{course?.categories?.name || 'Category'}</span>
                   <p>{course?.quote || 'Course description goes here.'}</p>
