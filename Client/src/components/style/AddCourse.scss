@@ -1,12 +1,19 @@
 .AddBlogFormContainer {
 
-    .headingAddBlog {
+    .headingAddQuiz {
         display: flex;
         justify-content: space-between;
+        margin-bottom: 1rem;
+
+        .heading{
+            display: flex;
+            align-items: center;
 
         .icon {
             font-size: 2.5rem;
+            cursor: pointer;
         }
+    }
     }
 
     .AddBlogBodyArea {

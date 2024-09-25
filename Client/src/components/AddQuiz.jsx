@@ -377,10 +377,10 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
         <>
             <div className="AddQuizFormContainer">
                 <div className="headingAddQuiz">
-                    <div className="headerleft heading upper flexLine flex">
+                  
 
-                        <div className="heading"><h2>Add Quiz</h2></div>
-                    </div>
+                        <div className="heading"><BsArrowLeftShort className='icon'/> <h2>Add Quiz</h2></div>
+                    
 
                 </div>
                 <div className="AddQuizBodyArea">

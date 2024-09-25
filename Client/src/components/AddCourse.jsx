@@ -310,11 +310,11 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
     return (
         <>
             <div className="AddBlogFormContainer">
-                <div className="headingAddBlog">
-                    <div className="headerleft heading upper flexLine flex">
+                <div className="headingAddQuiz">
 
-                        <div className="heading"><h2>Add Course</h2></div>
-                    </div>
+
+                    <div className="heading"><BsArrowLeftShort className='icon' /> <h2>Add Course</h2></div>
+
 
                 </div>
                 <div className="AddBlogBodyArea">

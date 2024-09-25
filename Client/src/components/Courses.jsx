@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // ANT-D :
-import { UploadOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { UploadOutlined, EyeOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Table, Button, Form, message, Upload, Spin, Modal } from 'antd';
 
 // API :
@@ -57,11 +57,11 @@ const Courses = () => {
         <span>
           <Button
             type="primary"
-            icon={<EyeOutlined />}
-            onClick={() => handleView(record)} // Show modal with course details
+            icon={<EditOutlined />}
+           
             style={{ marginRight: 8, backgroundColor: 'rgb(71 250 198 / 26%)' }}
           >
-            View
+            Edit
           </Button>
           <Button
             type="danger"

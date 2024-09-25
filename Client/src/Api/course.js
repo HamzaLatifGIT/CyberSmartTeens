@@ -30,6 +30,29 @@ const GetAllCoursesAPI = async () => {
     return resolved;
 }
 
+const GetAllPublicCoursesAPI = async () => {
+    let resolved = {
+        error: null,
+        data: null
+    }
+
+    try {
+        let res = await axios({
+            url: "/course/public",
+            method: "GET",
+           
+        })
+        resolved.data = res.data
+    } catch (err) {
+        if (err && err.response && err?.response?.data?.message) {
+            resolved.error = err.response.data.message
+        } else {
+            resolved.error = "Something went Wrong"
+        }
+    }
+    return resolved;
+}
+
 const CreatCoursesAPI = async (formData) => {
     let resolved = {
         error: null,
@@ -125,4 +148,4 @@ const DeleteCourseAPI = async (id) => {
 }
 
 
-export { GetAllCoursesAPI, CreatCoursesAPI, ApproveCoursesAPI, DeleteCourseAPI, UpdateCourseAPI };
+export { GetAllCoursesAPI, CreatCoursesAPI, ApproveCoursesAPI, DeleteCourseAPI, UpdateCourseAPI,GetAllPublicCoursesAPI };

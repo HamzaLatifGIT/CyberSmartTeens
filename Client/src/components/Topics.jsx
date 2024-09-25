@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './style/Topic.scss';
 import topic from '../assets/037d20239665dd7593c167e528db8f33.webp';
-import { GetAllCoursesAPI } from '../Api/course';
+import { GetAllPublicCoursesAPI } from '../Api/course';
 import { Skeleton, Button, Card } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import ImgURLGen from "../Utils/ImgUrlGen"
@@ -40,7 +40,8 @@ function Topics() {
       const fetchCourses = async () => {
         try {
           setLoading(true);
-          const response = await GetAllCoursesAPI();
+          const response = await GetAllPublicCoursesAPI();
+          console.log(response)
           setTimeout(() => {
             if (!response.error) {
               setCourses(response?.data?.result || []);
