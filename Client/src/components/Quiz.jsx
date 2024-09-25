@@ -133,7 +133,7 @@ const Quizes = () => {
             </div>
           </div>
 
-          <Table dataSource={quizzes} columns={columns} rowKey="_id" />
+          <Table loading={loading} dataSource={quizzes} columns={columns} rowKey="_id" />
 
           {/* Modal for showing quiz details */}
           <Modal

@@ -67,7 +67,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
         image: null,
         quote: "",
         slug: "",
-        type: "quiz",
+        type: "mcq",
         categories: [],
     })
     const [questions, setQuestions] = useState([])
@@ -278,7 +278,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
             key: 'answer',
         },
         ...(
-            formData?.type == "quiz" ?
+            formData?.type == "mcq" ?
                 [{
                     title: 'Options',
                     dataIndex: 'options',
@@ -453,7 +453,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                                         value={formData?.type}
                                         onChange={(e) => enterFormData({ target: { name: "type", value: e } })}
                                         getPopupContainer={() => document.getElementById('quiztype')}
-                                        options={[{ value: "quiz", label: "Quizes" }, { value: "flash", label: "Flash Cards" }]}
+                                        options={[{ value: "mcq", label: "MCQ" }, { value: "flash", label: "Flash Cards" }]}
                                     />
                                 </div>
                             </div>
@@ -520,7 +520,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                             </div>
                         </div>
                         {
-                            formData?.type == "quiz" &&
+                            formData?.type == "mcq" &&
                             <div className="Inputfield">
                                 <div className="field2 field" id='optionselect'>
                                     <div className="lableName">Options</div>

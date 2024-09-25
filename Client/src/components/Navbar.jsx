@@ -93,10 +93,10 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link to="topic">Topic</Link>
+                <Link to="topic">Courses</Link>
               </li>
               <li>
-                <Link to="quizes">Quizes</Link>
+                <Link to="quizes">Quizzes</Link>
               </li>
 
             </ul>

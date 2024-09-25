@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from 'react';
 
 // ANT-D :
-import { Button, Upload,Input } from 'antd';
+import { Button, Upload, Input } from 'antd';
 
 // Assets | ICONS :
 import { PlusOutlined } from '@ant-design/icons';
@@ -81,7 +81,9 @@ function Profile() {
             Payload.append(key, formData[key])
         })
 
-        Payload.append("file", fileList[0].originFileObj)
+        if (fileList && fileList.length >= 1) {
+            Payload.append("file", fileList[0].originFileObj)
+        }
 
         let res = await UpdateProfileAPI(Payload)
         if (res.error != null) {
@@ -111,7 +113,7 @@ function Profile() {
             })
             setPreviewImage(ImgURL(UserData?.profileImage))
         }
-    }, [])
+    }, [UserData])
 
     return (
         <div className="profile-content">
@@ -168,15 +170,15 @@ function Profile() {
                 </div>
                     <div className="form-group">
                         <label>State</label>
-                        <Input type="text" name='state'  placeholder='State'  value={formData.state} onChange={EnteringFormData} />
+                        <Input type="text" name='state' placeholder='State' value={formData.state} onChange={EnteringFormData} />
                     </div>
                     <div className="form-group">
                         <label>Zip code</label>
-                        <Input type="text" name='zip'  placeholder='Zip Code'  value={formData.zip} onChange={EnteringFormData} />
+                        <Input type="text" name='zip' placeholder='Zip Code' value={formData.zip} onChange={EnteringFormData} />
                     </div>
                     <div className="form-group">
                         <label>Country</label>
-                        <Input type="text" name='country'  placeholder='Country'  value={formData.country} onChange={EnteringFormData} />
+                        <Input type="text" name='country' placeholder='Country' value={formData.country} onChange={EnteringFormData} />
                     </div>
                 </div>
                 {/* <div className="form-group">

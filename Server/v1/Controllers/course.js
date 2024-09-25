@@ -171,7 +171,7 @@ const updateBlogById = async (req, res) => {
                 data.image = await uploadFile(req.file, data?.image?.url || null);
             }
         }
-        data.status = "pending";
+        // data.status = "pending";
         const result = await CourseModel.findByIdAndUpdate(BlogId, data, { new: true });
         return res.status(200).json({ message: "Operation Successful", result: result })
         console.log(result)

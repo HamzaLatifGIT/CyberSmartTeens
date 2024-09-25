@@ -1,11 +1,23 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
 
 import BottomNav from "./BottomNav"
 import FlashCard from "./FlashCard"
 
 import { Grid2 } from "@mui/material"
 
+
+
+
+
 const App = () => {
+
+    const Location = useLocation()
+
+    const CardsState = Location?.state
+
+    console.log(CardsState);
+
 
     const [CardsData, setCardsData] = useState({
         current: 0, // index of current visible card
@@ -50,22 +62,31 @@ const App = () => {
     const Previous = () => {
         setCardsData({
             ...CardsData,
-            flipped:false,
+            flipped: false,
             current: CardsData.current - 1
         })
     }
     const Next = () => {
         setCardsData({
             ...CardsData,
-            flipped:false,
+            flipped: false,
             current: CardsData.current + 1
         })
     }
 
+    useEffect(() => {
+        if (CardsState) {
+            setCardsData({
+                ...CardsData,
+                cards: CardsState?.questions.map((data, index) => ({ id: index, front: { title: `Card No. ${index + 1}`, content: data?.question }, back: { title: `Answer`, content: data?.answer } }))
+            })
+        }
+    }, [CardsState])
+
     return (
         <>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100vw", height: "100vh" }}>
-                <Grid2 item xs={10} sm={8} md={6} xl={4}>
+                <Grid2 item xs={10} sm={8} md={6} xl={4} width={"400px"}>
                     <FlashCard
                         id={CardsData.current}
                         front={CardsData.cards[CardsData.current].front}
