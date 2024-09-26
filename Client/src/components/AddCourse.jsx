@@ -17,7 +17,7 @@ import { CreatCoursesAPI, UpdateCourseAPI } from '../Api/course';
 import { GetAllCategoriesAPI, AddCategoryAPI } from '../Api/category';
 // Helper :
 import { toast } from 'react-hot-toast';
-// import ImgURLGEN from 'Utils/ImgUrlGen';
+import ImgURLGEN from '../Utils/ImgUrlGen';
 import ReactQuill from 'react-quill';
 
 // CSS :
@@ -47,7 +47,7 @@ const beforeUpload = (file) => {
     return isJpgOrPng && isLt2M;
 };
 
-export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
+export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
 
     const [allCategories, setAllCategories] = useState(null)
 
@@ -168,20 +168,16 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
 
 
     useEffect(() => {
-        if (selectedBlog) {
-            const findBlog = allBlogs?.find(val => val?._id == selectedBlog?._id)
-            if (findBlog) {
-                setFormData({
-                    title: findBlog?.title,
-                    quote: findBlog?.quote,
-                    detail: findBlog?.detail,
-                    slug: findBlog?.slug,
-                    categories: findBlog?.categories.map(cat => cat?._id) || [],
-                    image: findBlog?.image
-
-                })
-                setImageUrl(ImgURLGEN(findBlog?.image))
-            }
+        if (selectedCourse) {
+            setFormData({
+                title: selectedCourse?.title,
+                quote: selectedCourse?.quote,
+                detail: selectedCourse?.detail,
+                slug: selectedCourse?.slug,
+                categories: selectedCourse?.categories.map(cat => cat?._id) || [],
+                // image: selectedCourse?.image
+            })
+            setImageUrl(ImgURLGEN(selectedCourse?.image))
         } else {
             setFormData({
                 title: "",
@@ -192,7 +188,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
             })
             setImageUrl()
         }
-    }, [selectedBlog])
+    }, [selectedCourse])
     useEffect(() => {
         gettingAllCategories()
     }, [])
@@ -238,8 +234,8 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
             fData.append("file", file)
         }
         let res;
-        if (selectedBlog) {
-            res = await UpdateCourseAPI(selectedBlog?._id, fData)
+        if (selectedCourse) {
+            res = await UpdateCourseAPI(selectedCourse?._id, fData)
         } else {
             res = await CreatCoursesAPI(fData)
         }
@@ -311,11 +307,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
         <>
             <div className="AddBlogFormContainer">
                 <div className="headingAddQuiz">
-
-
-                    <div className="heading"><BsArrowLeftShort className='icon' /> <h2>Add Course</h2></div>
-
-
+                    <div className="heading"><BsArrowLeftShort className='icon' onClick={closeSubPage} /> <h2>Add Course</h2></div>
                 </div>
                 <div className="AddBlogBodyArea">
                     <>
@@ -413,7 +405,7 @@ export default function AddCourse({ allBlogs, selectedBlog, closeSubPage }) {
                         {
                             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
                                 <Button className="btn" style={{ width: "40px" }} onClick={handleUploadBlog} loading={loading}>
-                                    {selectedBlog ? "Update" : "Save"}
+                                    {selectedCourse ? "Update" : "Save"}
                                 </Button>
                             </div>
                         }

@@ -20,7 +20,7 @@ const addQuiz = async (req, res) => {
             data.questions = JSON.parse(req.body.questions)
         }
         console.log(typeof data.questions);
-        
+
         const newData = new QuizModel(data)
         await newData.save()
         res.status(200).json({ message: "Operation Successful", result: newData })
@@ -175,6 +175,9 @@ const updateQuizById = async (req, res) => {
             if (req.file) {
                 data.image = await uploadFile(req.file, data?.image?.url || null);
             }
+        }
+        if (req.body?.questions) {
+            data.questions = JSON.parse(req.body.questions)
         }
         // data.status = "pending";
         const result = await QuizModel.findByIdAndUpdate(QuizId, data, { new: true });
