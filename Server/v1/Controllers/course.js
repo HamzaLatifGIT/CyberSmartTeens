@@ -2,7 +2,7 @@ const express = require("express");
 const CourseModel = require("../Models/course");
 const { uploadFile } = require("../../Utilities/uploader");
 
-
+    
 
 // This is the Blog Post API
 const addBlog = async (req, res) => {

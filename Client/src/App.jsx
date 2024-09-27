@@ -15,6 +15,9 @@ import { userDataActions } from "./Redux/Slice/userData"
 
 // Helpers :
 import { Toaster } from 'react-hot-toast';
+import MCQQuestion from "./components/MCQs/MCQs";
+import IndexMcqs from "./components/MCQs";
+import CourseDetail from "./components/CourseReview/CourseDetail";
 
 
 
@@ -63,6 +66,8 @@ function App() {
         <Route path="signup" element={<AuthRoute user={AuthToken}> <Signup /> </AuthRoute>} />
         <Route path="dashboard/*" element={<ProtectedRoute user={AuthToken}>  <MyAccount />  </ProtectedRoute>} />
         <Route path="card" element={<ProtectedRoute user={AuthToken}>  <FlipcardComponent />  </ProtectedRoute>} />
+        <Route path="mcqs" element={<IndexMcqs/>} />
+        <Route path="test" element={<CourseDetail/>} />
       </Routes>
 
     </>

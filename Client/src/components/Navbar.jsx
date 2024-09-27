@@ -98,6 +98,9 @@ const Navbar = () => {
               <li>
                 <Link to="quizes">Quizes</Link>
               </li>
+              <li>
+                <Link to="mcqs">MCQs</Link>
+              </li>
 
             </ul>
 
