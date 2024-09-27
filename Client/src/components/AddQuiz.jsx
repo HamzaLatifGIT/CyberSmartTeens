@@ -14,18 +14,15 @@ import { LuFileQuestion } from "react-icons/lu";
 import { AiOutlineSolution } from "react-icons/ai";
 import { CgOptions } from "react-icons/cg";
 
-
 // API's
 import { CreatQuizAPI, UpdateQuizAPI } from '../Api/quiz';
 import { GetAllCategoriesAPI, AddCategoryAPI } from '../Api/category';
 // Helper :
 import { toast } from 'react-hot-toast';
-// import ImgURLGEN from 'Utils/ImgUrlGen';
-import ReactQuill from 'react-quill';
+import ImgURLGEN from '../Utils/ImgUrlGen';
 
 // CSS :
 import './style/AddQuiz.scss';
-
 import 'react-quill/dist/quill.snow.css';
 
 
@@ -63,17 +60,15 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
 
     const [formData, setFormData] = useState({
         title: "",
-        detail: "",
         image: null,
         quote: "",
         slug: "",
-        type: "quiz",
+        type: "mcq",
         categories: [],
     })
     const [questions, setQuestions] = useState([])
     const [formError, setFormError] = useState({
         title: null,
-        detail: null,
         quote: null,
         slug: null,
     })
@@ -179,25 +174,22 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
 
     useEffect(() => {
         if (selectedQuiz) {
-            const findBlog = allQuizes?.find(val => val?._id == selectedQuiz?._id)
-            if (findBlog) {
-                setFormData({
-                    title: findBlog?.title,
-                    quote: findBlog?.quote,
-                    detail: findBlog?.detail,
-                    slug: findBlog?.slug,
-                    categories: findBlog?.categories.map(cat => cat?._id) || [],
-                    image: findBlog?.image
-
-                })
-                setImageUrl(ImgURLGEN(findBlog?.image))
-            }
+            setFormData({
+                title: selectedQuiz?.title,
+                quote: selectedQuiz?.quote,
+                slug: selectedQuiz?.slug,
+                type: selectedQuiz?.type,
+                categories: selectedQuiz?.categories.map(cat => cat?._id) || [],
+                // image: selectedQuiz?.image
+            })
+            setQuestions(selectedQuiz?.questions)
+            setImageUrl(ImgURLGEN(selectedQuiz?.image))
         } else {
             setFormData({
                 title: "",
                 quote: "",
-                detail: "",
                 slug: "",
+                type: "mcq",
                 categories: [],
             })
             setImageUrl()
@@ -278,7 +270,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
             key: 'answer',
         },
         ...(
-            formData?.type == "quiz" ?
+            formData?.type == "mcq" ?
                 [{
                     title: 'Options',
                     dataIndex: 'options',
@@ -377,10 +369,10 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
         <>
             <div className="AddQuizFormContainer">
                 <div className="headingAddQuiz">
-                  
 
-                        <div className="heading"><BsArrowLeftShort className='icon'/> <h2>Add Quiz</h2></div>
-                    
+
+                    <div className="heading"><BsArrowLeftShort className='icon' onClick={closeSubPage} /> <h2>Add Quiz</h2></div>
+
 
                 </div>
                 <div className="AddQuizBodyArea">
@@ -453,7 +445,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                                         value={formData?.type}
                                         onChange={(e) => enterFormData({ target: { name: "type", value: e } })}
                                         getPopupContainer={() => document.getElementById('quiztype')}
-                                        options={[{ value: "quiz", label: "Quizes" }, { value: "flash", label: "Flash Cards" }]}
+                                        options={[{ value: "mcq", label: "MCQ" }, { value: "flash", label: "Flash Cards" }]}
                                     />
                                 </div>
                             </div>
@@ -520,7 +512,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                             </div>
                         </div>
                         {
-                            formData?.type == "quiz" &&
+                            formData?.type == "mcq" &&
                             <div className="Inputfield">
                                 <div className="field2 field" id='optionselect'>
                                     <div className="lableName">Options</div>

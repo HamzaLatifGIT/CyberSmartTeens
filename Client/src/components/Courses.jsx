@@ -5,35 +5,44 @@ import { useNavigate } from 'react-router-dom';
 import { UploadOutlined, EyeOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Table, Button, Form, message, Upload, Spin, Modal } from 'antd';
 
+// Components :
+import AddCourse from './AddCourse';
+
 // API :
-import { GetAllCoursesAPI } from '../Api/course';
+import { GetAllCoursesAPI, DeleteCourseAPI } from '../Api/course';
+// Helpers :
+import toast from 'react-hot-toast';
 
 // CSS :
 import './style/Quiz.scss';
-import AddCourse from './AddCourse';
+
+
+
+
 
 const Courses = () => {
   const navigate = useNavigate();
+
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [form] = Form.useForm();
+  const [selectedCourse, setSelectedCourse] = useState(null);
   const [isAddingCourse, setIsAddingCourse] = useState(false);
 
-  // Modal state for course details
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState(null); // To store the selected course details
+  const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+
 
   const columns = [
     {
       title: 'Course',
       dataIndex: 'title',
       key: 'title',
+      ellipsis: true
     },
     {
       title: 'Subject',
       dataIndex: 'categories',
       key: 'categories',
+      width: 280,
       render: (categories) =>
         categories && categories.length > 0
           ? categories.map((cat) => cat.name).join(', ') // Join category names with commas
@@ -43,6 +52,7 @@ const Courses = () => {
       title: 'Quote',
       dataIndex: 'quote',
       key: 'quote',
+      render: (_, data) => data?.quote?.length > 100 ? `${data?.quote?.slice(0, 100)} ...` : null
     },
     {
       title: 'Date Uploaded',
@@ -58,7 +68,7 @@ const Courses = () => {
           <Button
             type="primary"
             icon={<EditOutlined />}
-           
+            onClick={() => EditCourse(record)}
             style={{ marginRight: 8, backgroundColor: 'rgb(71 250 198 / 26%)' }}
           >
             Edit
@@ -79,49 +89,50 @@ const Courses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       setLoading(true);
-      setError(null);
       const result = await GetAllCoursesAPI();
-      console.log(result); // Log the entire response for debugging
-      if (result.error) {
-        setError(result.error);
+      if (result.error != null) {
+        toast.error(result.error);
       } else {
         let coursedata = result.data.result;
         setCourses(coursedata || []); // Ensure we set an array even if result is null/undefined
-        console.log(coursedata); // Log the fetched courses for debugging
       }
       setLoading(false);
     };
     fetchCourses();
-  }, []);
+  }, [refresh]);
 
   // Function to handle the "Add Course" button click
   const handleAddCourseClick = () => {
     setIsAddingCourse(true);
   };
 
-  // Function to handle viewing course details (open modal)
-  const handleView = (record) => {
-    setSelectedCourse(record); // Set the selected course data
-    setIsModalVisible(true); // Show the modal
+  const EditCourse = (record) => {
+    setSelectedCourse(record);
+    setIsAddingCourse(true);
   };
-
-  // Function to handle closing the modal
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-    setSelectedCourse(null); // Clear selected course data
-  };
+  const ClosePage = () => {
+    setIsAddingCourse(false)
+    setSelectedCourse(null);
+    setRefresh(!refresh)
+  }
 
   // Function to handle deleting a course
-  const handleDelete = (id) => {
-    // Add logic to delete the course from the backend
-    console.log('Deleting course with id:', id);
-    setCourses(courses.filter((course) => course._id !== id)); // Remove course from the list
+  const handleDelete = async (id) => {
+    setLoading(true);
+    const result = await DeleteCourseAPI(id);
+    if (result.error != null) {
+      toast.error(result.error);
+    } else {
+      toast.success(result?.data?.message)
+      setRefresh(!refresh)
+    }
+    setLoading(false);
   };
 
   return (
     <div>
       {isAddingCourse ? (
-        <AddCourse />
+        <AddCourse selectedCourse={selectedCourse} closeSubPage={ClosePage} />
       ) : (
         <div>
           <div className="flex">
@@ -132,34 +143,7 @@ const Courses = () => {
               </Button>
             </div>
           </div>
-
-          {loading ? (
-            <Spin tip="Loading..." />
-          ) : error ? (
-            <div>{error}</div>
-          ) : (
-            <Table dataSource={courses || []} columns={columns} rowKey="_id" /> // Ensure `rowKey` is a unique key like `_id`
-          )}
-
-          {/* Modal for showing course details */}
-          <Modal
-            title="Course Details"
-            visible={isModalVisible}
-            onCancel={handleCloseModal}
-            footer={null}  // You can add buttons if needed
-          >
-            {selectedCourse && (
-              <div>
-                <p><strong>Title:</strong> {selectedCourse.title}</p>
-                <p><strong>Categories:</strong> {selectedCourse.categories && selectedCourse.categories.length > 0
-                  ? selectedCourse.categories.map(cat => cat.name).join(', ')
-                  : 'Not Specified'}</p>
-                <p><strong>Quote:</strong> {selectedCourse.quote || 'Not Specified'}</p>
-                <p><strong>Date Uploaded:</strong> {new Date(selectedCourse.createdAt).toLocaleDateString()}</p>
-                <p><strong>Status:</strong> {selectedCourse.status || 'Pending'}</p>
-              </div>
-            )}
-          </Modal>
+          <Table loading={loading} dataSource={courses || []} columns={columns} rowKey="_id" />
         </div>
       )}
     </div>

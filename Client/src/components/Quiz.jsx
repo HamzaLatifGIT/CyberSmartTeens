@@ -5,21 +5,31 @@ import { useNavigate } from 'react-router-dom';
 import { DeleteOutlined, EditOutlined, EyeFilled } from '@ant-design/icons';
 import { Table, Button, Modal } from 'antd';
 
+// Components :
+import AddQuiz from './AddQuiz';
+
+// APIs :
+import { DeleteQuizAPI, GetAllQuizesAPI } from '../Api/quiz';
+// Helpers :
 import toast from 'react-hot-toast';
 
 // CSS :
 import './style/Quiz.scss';
-import AddQuiz from './AddQuiz';
-import { GetAllQuizesAPI } from '../Api/quiz';
+
+
+
+
 
 const Quizes = () => {
   const navigate = useNavigate();
 
   const [quizzes, setQuizzes] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [isAddingStudent, setIsAddingStudent] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); // Modal visibility state
   const [selectedQuiz, setSelectedQuiz] = useState(null); // To store selected quiz details
+  const [isAddingQuiz, setIsAddingQuiz] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+
 
   const columns = [
     {
@@ -60,16 +70,9 @@ const Quizes = () => {
         <span>
           <Button
             type="primary"
-            icon={<EyeFilled />}
-            onClick={() => handleView(record)} // Function to open modal
-            style={{ marginRight: 8, backgroundColor: 'rgb(71 250 198 / 26%)' }}
-          >
-            View
-          </Button>
-          <Button
-            type="primary"
             icon={<EditOutlined />}
             style={{ marginRight: 8, backgroundColor: 'rgb(71 250 198 / 26%)' }}
+            onClick={() => EditQuiz(record)}
           >
             Edit
           </Button>
@@ -85,10 +88,6 @@ const Quizes = () => {
     },
   ];
 
-  // Function to handle the "Add Quiz" button click
-  const handleAddStudentClick = () => {
-    setIsAddingStudent(true);
-  };
 
   // Fetch quizzes when component mounts
   useEffect(() => {
@@ -104,70 +103,51 @@ const Quizes = () => {
       setLoading(false);
     };
     fetchQuizzes();
-  }, []);
+  }, [refresh]);
 
-  // Function to handle viewing quiz details
-  const handleView = (record) => {
-    setSelectedQuiz(record); // Set the selected quiz details
-    setIsModalVisible(true); // Show the modal
+  const handleAddQuizClick = () => {
+    setIsAddingQuiz(true);
+  };
+  const EditQuiz = (record) => {
+    setSelectedQuiz(record);
+    setIsAddingQuiz(true);
+  };
+  const ClosePage = () => {
+    setIsAddingQuiz(false)
+    setSelectedQuiz(null);
+    setRefresh(!refresh)
+  }
+
+
+  // Function to handle deleting a course
+  const handleDelete = async (id) => {
+    setLoading(true);
+    const result = await DeleteQuizAPI(id);
+    if (result.error != null) {
+      toast.error(result.error);
+    } else {
+      toast.success(result?.data?.message)
+      setRefresh(!refresh)
+    }
+    setLoading(false);
   };
 
-  // Function to handle closing the modal
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-    setSelectedQuiz(null); // Clear selected quiz data
-  };
 
   return (
     <div>
-      {isAddingStudent ? (
-        <AddQuiz />
+      {isAddingQuiz ? (
+        <AddQuiz selectedQuiz={selectedQuiz} closeSubPage={ClosePage} />
       ) : (
         <div>
           <div className="flex">
             <h2>Quizzes</h2>
             <div>
-              <Button className="btn" onClick={handleAddStudentClick}>
+              <Button className="btn" onClick={handleAddQuizClick}>
                 Add Quiz
               </Button>
             </div>
           </div>
-
-          <Table dataSource={quizzes} columns={columns} rowKey="_id" />
-
-          {/* Modal for showing quiz details */}
-          <Modal
-            title="Quiz Details"
-            visible={isModalVisible}
-            onCancel={handleCloseModal}
-            footer={null} // No footer buttons for now
-          >
-            {selectedQuiz && (
-              <div>
-                <p><strong>Title:</strong> {selectedQuiz.title}</p>
-                <p><strong>Slug:</strong> {selectedQuiz.slug}</p>
-                <p><strong>Categories:</strong> {selectedQuiz.categories && selectedQuiz.categories.length > 0
-                  ? selectedQuiz.categories.map(cat => cat.name).join(', ')
-                  : 'Not Specified'}</p>
-                <p><strong>Date Uploaded:</strong> {new Date(selectedQuiz.createdAt).toLocaleDateString()}</p>
-                <p><strong>Status:</strong> {selectedQuiz.status || 'Pending'}</p>
-
-                {/* Show the list of questions */}
-                <h4>Questions:</h4>
-                <ul>
-                  {selectedQuiz.questions && selectedQuiz.questions.length > 0 ? (
-                    selectedQuiz.questions.map((question, index) => (
-                      <li key={index}>
-                        <strong>Q{index + 1}: </strong>{question.question} <br/><strong> Ans:</strong>{question.answer}
-                      </li>
-                    ))
-                  ) : (
-                    <p>No questions added yet.</p>
-                  )}
-                </ul>
-              </div>
-            )}
-          </Modal>
+          <Table loading={loading} dataSource={quizzes} columns={columns} rowKey="_id" />
         </div>
       )}
     </div>

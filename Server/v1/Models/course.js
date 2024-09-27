@@ -57,7 +57,8 @@ const CourseSchema = new mongoose.Schema({
             values: ["approved", "rejected", "pending"],
             message: "Status must Be approve, rejected or pending",
         },
-        default: "pending",
+        default: "approved",
+        // default: "pending",
     },
 
 },
