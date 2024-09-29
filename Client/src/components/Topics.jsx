@@ -1,18 +1,40 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './style/Topic.scss';
-import topic from '../assets/037d20239665dd7593c167e528db8f33.webp';
-import { GetAllPublicCoursesAPI } from '../Api/course';
+import { useNavigate } from 'react-router-dom';
+
+// ANT-D :
 import { Skeleton, Button, Card } from 'antd';
-import { CaretDownOutlined } from '@ant-design/icons';
-import ImgURLGen from "../Utils/ImgUrlGen"
+
+// ICONS :
 import NoImg from "../assets/noImg.png"
+import { CaretDownOutlined } from '@ant-design/icons';
+import topic from '../assets/037d20239665dd7593c167e528db8f33.webp';
+
+// APIs :
+import { GetAllPublicCoursesAPI } from '../Api/course';
+// Helpers :
+import ImgURLGen from "../Utils/ImgUrlGen"
+
+// CSS :
+import './style/Topic.scss';
+
+
+
+
 
 function Topics() {
+  const Navigate = useNavigate()
+
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const [inView, setInView] = useState(false);
   const topicRef = useRef(null);
+
+
+
+  const ViewCourse = (course) => {
+    Navigate("/course", { state: { data: course, allCourses: courses } })
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -64,7 +86,7 @@ function Topics() {
   };
 
   return (
-    <div className='topic-container' ref={topicRef}>
+    <div id='courses' className='topic-container' ref={topicRef}>
       <h1>COURSES</h1>
 
       <div className="items">
@@ -93,7 +115,7 @@ function Topics() {
                     <div className="title">
                       <h4>Details:</h4> <p> {course?.quote.length > 78 ? `${course?.quote.slice(0, 78)} ...` : course?.quote || 'Course description goes here.'} </p>
                     </div>
-                    <Button className="btn">
+                    <Button className="btn" onClick={() => ViewCourse(course)}>
                       Details
                     </Button>
                   </div>

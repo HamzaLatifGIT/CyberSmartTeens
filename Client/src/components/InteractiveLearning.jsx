@@ -7,7 +7,7 @@ import './style/InteractiveLearning.scss'
 
 function InteractiveLearning() {
   return (
-    <div className='inter-container'>
+    <div id='about' className='inter-container'>
         <h1>We Offers</h1>
         <div className="items">
             <div className="item"><span>Flash Card</span> <TbCards size={100} style={{color:'#0052e8'}}/></div>

@@ -107,6 +107,10 @@ $hover-text: #00000080;
 
             li {
                 margin: 0 1rem;
+                div{
+                    font-weight: 500;
+                    cursor: pointer;
+                }
 
                 @media (max-width: 1312px) {
                     margin: 0.5rem 0;

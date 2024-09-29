@@ -34,6 +34,8 @@ function Topics() {
   const ShowDetails = (data) => {
     if (data?.type == "flash") {
       Navigate("/card", { state: data })
+    } else if (data?.type == "mcq") {
+      Navigate("/mcqs", { state: data })
     }
   }
 
@@ -87,7 +89,7 @@ function Topics() {
   };
 
   return (
-    <div className='QuizListContainer' ref={topicRef}>
+    <div id='quizzes' className='QuizListContainer' ref={topicRef}>
       <h1>QUIZZES</h1>
 
       <div className="items">
@@ -119,7 +121,7 @@ function Topics() {
                     <div className="title">
                       <h4>Details:</h4> <p> {course?.quote.length > 78 ? `${course?.quote.slice(0, 78)} ...` : course?.quote || 'Course description goes here.'} </p>
                     </div>
-                    <Button className="btn" onClick={()=> ShowDetails(course)}>
+                    <Button className="btn" onClick={() => ShowDetails(course)}>
                       Details
                     </Button>
                   </div>

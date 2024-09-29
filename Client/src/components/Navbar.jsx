@@ -26,6 +26,16 @@ const Navbar = () => {
   const user = JSON.parse(userData);
   const token = localStorage.getItem("CyberTeensToken");
 
+  const GoToElement = (section) => {
+    navigate("/")
+    setTimeout(() => {
+      const element = document.getElementById(section);
+      element?.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }, 1000);
+  }
+
   const handleGoToLogout = () => {
     console.log("Logout button clicked", localStorage.getItem("CyberTeensToken"));
     localStorage.clear(); // Clear local storage only once
@@ -78,30 +88,26 @@ const Navbar = () => {
               }`}
           >
             <ul>
-              <li>
+              {/* <li>
                 <Link to="/">
                   <span>
                     Home
                   </span>
                 </Link>
-              </li>
+              </li> */}
               <li>
-                <Link to="about">
+                <div to="#about" onClick={() => GoToElement("about")}>
                   <span>
                     About
                   </span>
-                </Link>
+                </div>
               </li>
               <li>
-                <Link to="topic">Courses</Link>
+                <div to="#courses" onClick={() => GoToElement("courses")}>Courses</div>
               </li>
               <li>
-                <Link to="quizes">Quizzes</Link>
+                <div to="#quizzes" onClick={() => GoToElement("quizzes")}>Quizzes</div>
               </li>
-              <li>
-                <Link to="mcqs">MCQs</Link>
-              </li>
-
             </ul>
 
             {!token ? (

@@ -66,8 +66,8 @@ function App() {
         <Route path="signup" element={<AuthRoute user={AuthToken}> <Signup /> </AuthRoute>} />
         <Route path="dashboard/*" element={<ProtectedRoute user={AuthToken}>  <MyAccount />  </ProtectedRoute>} />
         <Route path="card" element={<ProtectedRoute user={AuthToken}>  <FlipcardComponent />  </ProtectedRoute>} />
-        <Route path="mcqs" element={<IndexMcqs/>} />
-        <Route path="test" element={<CourseDetail/>} />
+        <Route path="mcqs" element={<IndexMcqs />} />
+        <Route path="course" element={<CourseDetail />} />
       </Routes>
 
     </>
