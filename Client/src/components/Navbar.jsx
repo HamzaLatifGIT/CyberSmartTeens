@@ -103,10 +103,12 @@ const Navbar = () => {
                 </div>
               </li>
               <li>
-                <div to="#courses" onClick={() => GoToElement("courses")}>Courses</div>
+                <Link to="/courses">Courses</Link>
+                {/* <div to="#courses" onClick={() => GoToElement("courses")}>Courses</div> */}
               </li>
               <li>
-                <div to="#quizzes" onClick={() => GoToElement("quizzes")}>Quizzes</div>
+                <Link to="/quizzes">Quizzes</Link>
+                {/* <div to="#quizzes" onClick={() => GoToElement("quizzes")}>Quizzes</div> */}
               </li>
             </ul>
 
