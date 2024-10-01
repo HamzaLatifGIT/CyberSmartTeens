@@ -9,7 +9,7 @@ $hover-text: #00000080;
     width: 100%;
     background-color: $background-color;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 2;
+    z-index: 999;
 
     .header__Container {
         position: relative;

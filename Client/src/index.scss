@@ -17,6 +17,12 @@ body {
   overflow-x: hidden;
   font-family: "DM Sans", sans-serif;
 
+  .progressBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 }
 
 .ant-btn {

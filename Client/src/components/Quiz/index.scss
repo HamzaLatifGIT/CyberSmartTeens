@@ -3,7 +3,7 @@ $font-color: #333;
 $background-color: #fff;
 $secondary-color: #000;
 
-.aboutContainer {
+.quizzesContainer {
   .aboutHero {
     display: flex;
     flex-direction: column;
@@ -12,6 +12,7 @@ $secondary-color: #000;
     height: calc(100vh - 120px);
     background-image: url("../../assets/360_F_230307061_W3AAOhexkQjFgjwx0AhffaVi5VQcvpHI.jpg");
     background-size: cover;
+    background-color: black;
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -19,27 +20,47 @@ $secondary-color: #000;
     overflow: hidden;
     justify-content: center;
     align-items: center;
-    text-align: center;
+    position: relative;
 
-    .quizheroHeading {
+    .backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .heroHeading {
       font-size: 52px;
       line-height: 1.15;
       font-weight: 700;
       max-width: 680px;
+      text-align: center;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
       text-transform: uppercase;
+      color: $primary-color;
+      z-index: 2;
     }
 
-    .quizheroAbout {
+    .heroAbout {
+      z-index: 2;
       font-size: 1.25rem;
       font-weight: 500;
       line-height: 1.75rem;
       max-width: 960px;
-
+      margin: 0 auto;
+      // color: white;
+      text-align: center;
     }
 
-    .quizheroButton {
+    .heroButton {
       display: flex;
+      align-items: center;
+      justify-content: center;
 
       button {
         background-color: $primary-color;
@@ -59,6 +80,7 @@ $secondary-color: #000;
 
     }
   }
+
 
   .WhereWeCome {
     position: relative;
