@@ -31,16 +31,34 @@ function IndexMcqs() {
     return (
         <>
             <Navbar />
-            <div className='McqContainer'>
-                <h1 style={{ display: 'flex', justifyContent: 'center' }}>Cyber Security MCQS</h1>
-                {questions.map((q, index) => (
-                    <MCQQuestion
-                        key={index}
-                        question={q.question}
-                        options={q.options}
-                        correctAnswer={q.correctAnswer}
-                    />
-                ))}
+            <div className='McqDetail'>
+                <div className='McqContainer'>
+                    <h1 style={{ display: 'flex', justifyContent: 'center' }}>Cyber Security MCQS</h1>
+                    {questions.map((q, index) => (
+                        <MCQQuestion
+                            key={index}
+                            question={q.question}
+                            options={q.options}
+                            correctAnswer={q.correctAnswer}
+                        />
+                    ))}
+                </div>
+                <div className="side-dashboard">
+
+                    <div className="tag">
+                        Categories
+                    </div>
+                    <div className="tagsList"> cyber</div>
+                    <div className="tag">
+                        Score
+                    </div>
+                    <div className="detail">
+                        <div><strong>Total Mcqs :</strong> <span>5</span></div>
+                        <div><strong>Total attempts :</strong> <span>3</span></div>
+                        <div><strong>Correct :</strong> <span>1</span></div>
+                        <div><strong>Wrong :</strong> <span>2</span></div>
+                    </div>
+                </div>
             </div>
             <Footer />
         </>

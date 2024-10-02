@@ -1,69 +1,142 @@
-.McqContainer {
+.McqDetail {
+  display: flex;
+  justify-content: space-between;
   padding: 7rem 2rem;
-  max-width: 1200px;
-  margin: auto;
 
-  .mcq-question {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    margin: 2rem;
+  .McqContainer {
+    width: 100%;
 
-    h2 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
+    .mcq-question {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      margin: 2rem;
 
-    .options-list {
-      list-style-type: none;
-      padding: 0;
-
-      li {
-        margin-bottom: 8px;
-        font-size: 1rem;
-        padding: 8px;
-        border-radius: 4px;
-        background-color: #f7f7f7;
-        transition: background-color 0.3s ease;
-
-        &.correct {
-          background-color: #c8e6c9; // Green background for the correct answer
-        }
-      }
-    }
-
-    .answer-section {
-      margin-top: 10px;
-
-      button {
-        padding: 10px 15px;
-        background-color: rgb(71 250 198);
-        color: rgba(0, 0, 0, 0.738);
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-          background-color: #333;
-          color: #f7f7f7;
-        }
+      h2 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
       }
 
-      .answer {
-        margin-top: 10px;
-        padding: 10px;
-        background-color: #f5f5f5;
-        border-radius: 4px;
-        font-weight: bold;
-        color: #d32f2f;
+      .options-list {
+        list-style-type: none;
+        padding: 0;
 
-        .answer-text {
+        li {
+          display: flex;
+          align-items: center;
+          margin-bottom: 8px;
           font-size: 1rem;
+          padding: 8px;
+          border-radius: 4px;
+          background-color: #f7f7f7;
+          transition: background-color 0.3s ease;
+
+          &.correct {
+            background-color: #c8e6c9;
+          }
+
+          input[type="radio"] {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgb(71, 250, 198);
+            border-radius: 50%;
+            margin-right: 10px;
+            position: relative;
+            cursor: pointer;
+
+            &:checked::before {
+              content: "";
+              width: 10px;
+              height: 10px;
+              background-color: rgb(61, 61, 61);
+              border-radius: 50%;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            }
+
+            &:hover {
+              border-color: #00bfa5;
+            }
+          }
         }
       }
+
+      .answer-section {
+        margin-top: 10px;
+
+        button {
+          padding: 10px 15px;
+          background-color: rgb(71 250 198);
+          color: rgba(0, 0, 0, 0.738);
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: #333;
+            color: #f7f7f7;
+          }
+        }
+
+        .answer {
+          margin-top: 10px;
+          padding: 10px;
+          background-color: #f5f5f5;
+          border-radius: 4px;
+          font-weight: bold;
+          color: #d32f2f;
+
+          .answer-text {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
+
+  .side-dashboard {
+    border: 1px solid rgb(242 242 242);
+    border-radius: 0.375rem;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 1.5rem;
+    top: 4rem;
+    position: sticky;
+    display: block;
+    top: 7rem;
+    height: 50vh;
+    width: 300px;
+
+    .tag {
+      align-items: center;
+      background: rgb(71, 250, 198);
+      display: flex;
+      font-size: 15px;
+      font-weight: 400;
+      justify-content: center;
+      line-height: 18.9px;
+      max-width: 100%;
+      min-height: 50px;
+    }
+
+    .detail {
+      padding-top: 1rem;
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+    }
+
+    .tagsList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
     }
   }
 }
