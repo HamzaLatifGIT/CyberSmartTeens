@@ -12,7 +12,6 @@ import MCQQuestion from './MCQs';
 
 function IndexMcqs() {
     let Location = useLocation()
-
     let QuizData = Location?.state
 
     const [questions, setQuestions] = useState([])
