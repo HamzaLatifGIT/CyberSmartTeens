@@ -1,31 +1,60 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Modal, Button } from 'antd'; 
 
 // Components :
 import Navbar from '../Navbar';
 import Footer from '../Footer';
 import MCQQuestion from './MCQs';
 
-
-
-
-
 function IndexMcqs() {
-    let Location = useLocation()
-    let QuizData = Location?.state
+    let location = useLocation();
+    let quizData = location?.state;
 
-    const [questions, setQuestions] = useState([])
-
-
+    const [questions, setQuestions] = useState([]);
+    const [userAnswers, setUserAnswers] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false); 
+    const [score, setScore] = useState(0);
 
     useEffect(() => {
-        if (QuizData) {
-            setQuestions(QuizData?.questions?.map(data => ({ question: data?.question, options: data?.options, correctAnswer: data?.answer })))
+        if (quizData) {
+            setQuestions(
+                quizData?.questions?.map((data) => ({
+                    question: data?.question,
+                    options: data?.options,
+                    correctAnswer: data?.answer,
+                }))
+            );
         }
-    }, [QuizData])
+    }, [quizData]);
+
     useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
+        window.scrollTo(0, 0);
+    }, []);
+
+ 
+    const handleAnswerChange = (index, answer) => {
+        const newUserAnswers = [...userAnswers];
+        newUserAnswers[index] = answer;
+        setUserAnswers(newUserAnswers);
+    };
+
+   
+    const handleSubmit = () => {
+        let newScore = 0;
+        questions.forEach((q, index) => {
+            if (userAnswers[index] === q.correctAnswer) {
+                newScore += 1;
+            }
+        });
+        setScore(newScore);
+        setIsModalVisible(true); 
+    };
+
+   
+    const handleModalClose = () => {
+        setIsModalVisible(false); 
+    };
 
     return (
         <>
@@ -39,26 +68,43 @@ function IndexMcqs() {
                             question={q.question}
                             options={q.options}
                             correctAnswer={q.correctAnswer}
+                            onAnswerChange={(answer) => handleAnswerChange(index, answer)}
                         />
                     ))}
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <button className='btn'  onClick={handleSubmit}>Submit</button>
+                    </div>
                 </div>
-                <div className="side-dashboard">
-
-                    <div className="tag">
-                        Categories
-                    </div>
-                    <div className="tagsList"> cyber</div>
-                    <div className="tag">
-                        Score
-                    </div>
-                    <div className="detail">
-                        <div><strong>Total Mcqs :</strong> <span>5</span></div>
-                        <div><strong>Total attempts :</strong> <span>3</span></div>
-                        <div><strong>Correct :</strong> <span>1</span></div>
-                        <div><strong>Wrong :</strong> <span>2</span></div>
+                <div className='side-dashboard'>
+                    <div className='tag'>Categories</div>
+                    <div className='tagsList'>Cyber</div>
+                    <div className='tag'>Score</div>
+                    <div className='detail'>
+                        <div>
+                            <strong>Total Mcqs:</strong> <span>{questions.length}</span>
+                        </div>
+                        <div>
+                            <strong>Attempts:</strong> <span>{userAnswers.length}</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+          
+            <Modal
+                title="Quiz Result"
+                visible={isModalVisible}
+                onOk={handleModalClose}
+                onCancel={handleModalClose}
+                footer={[
+                    <button className='btn' style={{minWidth:'85px',height:'35px'}} key="ok" type="primary" onClick={handleModalClose}>
+                        OK
+                    </button>,
+                ]}
+            >
+                <p>Your Score: {score} / {questions.length}</p>
+            </Modal>
+
             <Footer />
         </>
     );

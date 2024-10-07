@@ -5,6 +5,8 @@ import BottomNav from "./BottomNav"
 import FlashCard from "./FlashCard"
 
 import { Grid2 } from "@mui/material"
+import Navbar from "../Navbar"
+import Footer from "../Footer"
 
 
 
@@ -85,6 +87,7 @@ const App = () => {
 
     return (
         <>
+            <Navbar />
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100vw", height: "100vh" }}>
                 <Grid2 item xs={10} sm={8} md={6} xl={4} width={"400px"}>
                     <FlashCard
@@ -100,6 +103,7 @@ const App = () => {
                 nextCard={Next}
                 prevCard={Previous}
             />
+            <Footer />
         </>
     )
 }
