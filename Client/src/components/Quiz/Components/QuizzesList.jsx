@@ -40,7 +40,7 @@ const QuizzesList = () => {
 
     const ShowDetails = (data) => {
         if (data?.type == "flash") {
-            Navigate("/card", { state: data })
+            Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
         } else if (data?.type == "mcq") {
             Navigate("/mcqs", { state: data })
         }

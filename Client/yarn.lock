@@ -1913,6 +1913,11 @@ iconsax-react@^0.0.8:
   dependencies:
     prop-types "^15.7.2"
 
+iconsax@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/iconsax/-/iconsax-0.0.1.tgz"
+  integrity sha512-l9bDaIsNxyVlRnXwoM58oaLxQ8QnH7W5bXZNaQHoKoDsO1yFZ5J2ndQRArKq8vRy2p4EjOVhAeBWWySjQ26whQ==
+
 ignore@^5.2.0:
   version "5.3.2"
   resolved "https://registry.npmjs.org/ignore/-/ignore-5.3.2.tgz"

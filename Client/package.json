@@ -22,6 +22,7 @@
     "axios": "^1.7.5",
     "chart.js": "^4.4.4",
     "icons": "^1.0.0",
+    "iconsax": "^0.0.1",
     "iconsax-react": "^0.0.8",
     "react": "^18.3.1",
     "react-card-flip": "^1.2.3",
