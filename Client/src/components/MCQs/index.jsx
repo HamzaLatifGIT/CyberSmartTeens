@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Modal, Button } from 'antd'; 
+import { Modal, Button } from 'antd';
 
 // Components :
 import Navbar from '../Navbar';
@@ -13,7 +13,7 @@ function IndexMcqs() {
 
     const [questions, setQuestions] = useState([]);
     const [userAnswers, setUserAnswers] = useState([]);
-    const [isModalVisible, setIsModalVisible] = useState(false); 
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [score, setScore] = useState(0);
 
     useEffect(() => {
@@ -32,14 +32,14 @@ function IndexMcqs() {
         window.scrollTo(0, 0);
     }, []);
 
- 
+
     const handleAnswerChange = (index, answer) => {
         const newUserAnswers = [...userAnswers];
         newUserAnswers[index] = answer;
         setUserAnswers(newUserAnswers);
     };
 
-   
+
     const handleSubmit = () => {
         let newScore = 0;
         questions.forEach((q, index) => {
@@ -48,12 +48,12 @@ function IndexMcqs() {
             }
         });
         setScore(newScore);
-        setIsModalVisible(true); 
+        setIsModalVisible(true);
     };
 
-   
+
     const handleModalClose = () => {
-        setIsModalVisible(false); 
+        setIsModalVisible(false);
     };
 
     return (
@@ -72,7 +72,7 @@ function IndexMcqs() {
                         />
                     ))}
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <button className='btn'  onClick={handleSubmit}>Submit</button>
+                        <button className='btn' onClick={handleSubmit}>Submit</button>
                     </div>
                 </div>
                 <div className='side-dashboard'>
@@ -90,14 +90,14 @@ function IndexMcqs() {
                 </div>
             </div>
 
-          
+
             <Modal
                 title="Quiz Result"
                 visible={isModalVisible}
                 onOk={handleModalClose}
                 onCancel={handleModalClose}
                 footer={[
-                    <button className='btn' style={{minWidth:'85px',height:'35px'}} key="ok" type="primary" onClick={handleModalClose}>
+                    <button className='btn' style={{ minWidth: '85px', height: '35px' }} key="ok" type="primary" onClick={handleModalClose}>
                         OK
                     </button>,
                 ]}
