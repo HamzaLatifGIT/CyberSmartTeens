@@ -24,6 +24,7 @@ const usersRoute = require('./v1/Routes/users.route')
 const categoryRoute = require('./v1/Routes/categories.route')
 const courseRoute = require('./v1/Routes/course.route')
 const quizRoute = require('./v1/Routes/quiz.route')
+const dashboardRoute = require('./v1/Routes/dashboard')
 
 app.use("/static", express.static(path.join(__dirname, '/public')));
 
@@ -34,6 +35,7 @@ app.use('/api/v1/users', usersRoute)
 app.use('/api/v1/category', categoryRoute)
 app.use('/api/v1/course', courseRoute)
 app.use('/api/v1/quiz', quizRoute)
+app.use('/api/v1/dashboard', dashboardRoute)
 
 
 

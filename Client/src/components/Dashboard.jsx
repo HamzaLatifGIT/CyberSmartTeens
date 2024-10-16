@@ -1,114 +1,205 @@
 import React, { useEffect, useState } from 'react';
+
+// ANT-D :
+import { Button, Spin, Table } from 'antd';
+
+// ICONS :
 import { UserOutlined } from '@ant-design/icons';
+
+// Components :
 import UserActivityLineChart from './chart';
-import { Pie } from 'react-chartjs-2';
-import MyTable from './Table';
+
+// APIs :
+import { GetDashboardStatisticsAPI } from '../Api/auth';
+import { GetAllPublicQuizesAPI } from '../Api/quiz';
+// Redux :
+import { useSelector } from "react-redux";
+// Helpers :
+import toast from 'react-hot-toast';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 // CSS :
 import './style/dashboard.scss';
+import { useNavigate } from 'react-router-dom';
+
+
+
+
 
 function Dashboard() {
-  const [role, setRole] = useState(null);
-  console.log(role)
+  let Navigate = useNavigate()
+  let UserData = useSelector(state => state?.userData)
 
-  // Fetch user data from localStorage
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('CyberTeensUserData'));
-    if (userData && userData.role) {
-      setRole(userData.role);
-      console.log(userData)
+  const [statistics, setStatistics] = useState(null);
+  const [quizzes, setQuizzes] = useState([])
+  const [students, setStudents] = useState([])
+  const [loading, setLoading] = useState(false)
+
+
+  const handleStartQuiz = (data) => {
+    if (data?.type == "flash") {
+      Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
+    } else if (data?.type == "mcq") {
+      Navigate("/mcqs", { state: data })
     }
-  }, []);
-
-  // Example data for charts and other components
-  const chartData = {
-    labels: ["Teachers", "Students"],
-    datasets: [
-      {
-        data: [12, 29],
-        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const studentsData = [
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-    { id: 3, name: 'Mike Johnson', email: 'mike@example.com' },
-    { id: 4, name: 'Emma Williams', email: 'emma@example.com' },
-    { id: 5, name: 'Chris Evans', email: 'chris@example.com' }
+  }
+  const quizColumns = [
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: 'Category',
+      dataIndex: 'category',
+      key: 'category',
+      render: (_, record) => (record?.categories?.map(cat => cat?.name)).join(",")
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      render: (_, record) => (record?.type?.toLocaleUpperCase())
+    },
+    {
+      title: 'Number of Questions',
+      dataIndex: 'questions',
+      key: 'questions',
+      render: (_, record) => record?.questions?.length || 0
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Button
+          type="primary"
+          // icon={<EyeOutlined />}
+          onClick={() => handleStartQuiz(record)}
+        >
+          Start Quiz
+        </Button>
+      ),
+    },
+  ];
+  const studentColumns = [
+    {
+      title: 'User Name',
+      dataIndex: 'username',
+      key: 'username',
+      render: (_, record) => `${record?.firstName} ${record?.lastName}`
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+    },
+    {
+      title: 'Score',
+      dataIndex: 'Score',
+      key: 'Score',
+    },
   ];
 
-  const teachersData = [
-    { id: 1, name: 'David Clark', email: 'david@example.com' },
-    { id: 2, name: 'Sophia Turner', email: 'sophia@example.com' },
-  ];
 
-  // Separate user item component
-  const UserItem = ({ user }) => (
-    <li className="user-item" key={user.id}>
-      <div className="user-info">
-        <div className="user-avatar">
-          <UserOutlined style={{ fontSize: '40px', color: '#888' }} />
-        </div>
-        <div className="user-details">
-          <h4>{user.name}</h4>
-          <p>{user.email}</p>
-        </div>
-      </div>
-      <span className="arrow-icon">›</span>
-    </li>
-  );
+  const gettingStatistics = async () => {
+    setLoading(true);
+    const result = await GetDashboardStatisticsAPI();
+    if (result.error != null) {
+      toast.error(result.error);
+    } else {
+      setStatistics(result?.data?.result || null);
+    }
+    setLoading(false);
+  }
+  const gettingQuizzes = async () => {
+    setLoading(true);
+    const result = await GetAllPublicQuizesAPI();
+    if (result.error != null) {
+      toast.error(result.error);
+    } else {
+      setQuizzes(result?.data?.result || []);
+    }
+    setLoading(false);
+  }
+  const gettingStudentsData = async () => {
+    setLoading(true);
+    const result = await GetAllStudentsAPI();
+    if (result.error != null) {
+      toast.error(result.error);
+    } else {
+      let StudentData = []
+      let processData = result?.data?.result?.map(async user => {
+        let score = 0
+        let process = user?.quizAttempts?.map(data => {
+          score = score + data?.correct
+        })
+        await Promise.all(process)
+        StudentData.push({
+          ...user,
+          Score: score
+        })
+      })
+      await Promise.all(processData)
+      setStudents(StudentData);
+    }
+    setLoading(false);
+  }
+  useEffect(() => {
+    gettingStatistics()
+    gettingQuizzes()
+    gettingStudentsData()
+  }, [])
 
   return (
     <div className='dashboard-container'>
-      <div className="heading"><h1>{role === 'Teacher' ? 'Teacher Dashboard' : 'Student Dashboard'}</h1></div>
+      <div className="heading"><h1>{UserData?.role === 'Teacher' ? 'Teacher Dashboard' : 'Student Dashboard'}</h1></div>
       <div className="dashboard-content">
-        <div className="left-side">
-          <div className="boxs">
-            <div className="box">
-              <h3>{role === 'Teacher' ? 'Total Student' : 'Total Teachers'}</h3> 
-              <span>{role === 'teacher' ? 12 : 33}</span>
-            </div>
-            <div className="box">
-              <h3>{role === 'Student' ? 'Active Teachers' : 'Active Students'}</h3>
-              <span>{role === 'teacher' ? 4 : 5}</span>
-            </div>
-            <div className="box">
-              <h3>{role === 'Student' ? 'Total Score' : 'Total Lessons/Quizzes'}</h3>
-              <span>{role === 'teacher' ? 15 : 10}</span>
-            </div>
-          </div>
-
-          <div className="charts">
-            <UserActivityLineChart />
-          </div>
-
-          <div className="Table">
-            <MyTable />
-          </div>
+        <div className="boxs">
+          {
+            loading == true && !statistics?.Cards ?
+              <>
+                <div className="box">
+                  <h3>{UserData?.role === 'Teacher' ? 'Total Student' : 'Total Quizzes'}</h3>
+                  <span><Spin /></span>
+                </div>
+                <div className="box">
+                  <h3>{UserData?.role === 'Teacher' ? 'Total Lessons' : 'Total Attempts'}</h3>
+                  <span><Spin /></span>
+                </div>
+                <div className="box">
+                  <h3>{UserData?.role === 'Teacher' ? 'Total Quizzes' : 'Total Score'}</h3>
+                  <span><Spin /></span>
+                </div>
+              </>
+              :
+              statistics?.Cards?.map((data, index) => {
+                return (
+                  <div className="box" key={index}>
+                    <h3>{data?.title} </h3>
+                    <span>{data?.value}</span>
+                  </div>
+                )
+              })
+          }
+        </div>
+        <div className="charts">
+          <UserActivityLineChart />
         </div>
 
-        <div className="user-list">
-          <div className="user-table-container">
-            <div className="user-table-header">
-              <span className="user-table-title">
-                {role === 'Student' ? 'Recent Join Teachers' : 'Recent Join Students'}
-              </span>
-            </div>
-            <ul className="user-list">
-              {(role === 'Student' ? teachersData : studentsData).map(user => (
-                <UserItem user={user} key={user.id} />
-              ))}
-            </ul>
-          </div>
-
-          <div className="charts">
-            <Pie data={chartData} height={300} width={400} />
-          </div>
+        <div className="Table">
+          {/* <MyTable /> */}
+          {
+            UserData?.role == "Teacher" ?
+              <Table columns={studentColumns} dataSource={students} pagination={false} loading={loading} />
+              :
+              <Table columns={quizColumns} dataSource={quizzes} pagination={false} loading={loading} />
+          }
         </div>
       </div>
     </div>

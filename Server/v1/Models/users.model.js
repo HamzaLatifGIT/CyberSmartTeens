@@ -42,6 +42,22 @@ const userSchema = mongoose.Schema(
     zip: String,
     country: String,
 
+    quizAttempts: [
+      {
+        correct: Number,
+        wrong: Number,
+        quizData: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "quiz"
+        },
+        attempts: [{
+          question: String,
+          options: Array,
+          answer: String,
+          attempt: String
+        }]
+      }
+    ],
     displayName: {
       type: String,
       trim: true,

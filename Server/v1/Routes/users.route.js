@@ -15,4 +15,7 @@ router.get('/profile', verifyToken, userController.getUserProfile)
 // Update user profile
 router.patch("/profile", [verifyToken, Multer.single("file")], userController.updateUserProfile)
 
+// Students
+router.get("/students", userController.allStudents)
+
 module.exports = router

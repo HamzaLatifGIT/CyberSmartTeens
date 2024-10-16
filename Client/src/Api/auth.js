@@ -99,5 +99,48 @@ const UpdateProfileAPI = async (data) => {
     return resolve
 }
 
+const GetAllStudentsAPI = async () => {
+    let resolve = {
+        data: null,
+        error: null
+    }
+    try {
+        let res = await Axios({
+            url: "/users/students",
+            method: "GET",
+            headers: GetAuthToken(),
+        })
+        resolve.data = res.data
+    } catch (err) {
+        if (err && err?.response) {
+            resolve.error = err?.response?.message || err?.response?.data?.message
+        } else {
+            resolve.error = "SomthingWent wrong"
+        }
+    }
+    return resolve
+}
 
-export { RegisterAPI, LoginAPI, GetProfileAPI, UpdateProfileAPI }
+const GetDashboardStatisticsAPI = async () => {
+    let resolve = {
+        data: null,
+        error: null
+    }
+    try {
+        let res = await Axios({
+            url: "/dashboard/",
+            method: "GET",
+            headers: GetAuthToken(),
+        })
+        resolve.data = res.data
+    } catch (err) {
+        if (err && err?.response) {
+            resolve.error = err?.response?.message || err?.response?.data?.message
+        } else {
+            resolve.error = "SomthingWent wrong"
+        }
+    }
+    return resolve
+}
+
+export { RegisterAPI, LoginAPI, GetProfileAPI, UpdateProfileAPI, GetDashboardStatisticsAPI , GetAllStudentsAPI }

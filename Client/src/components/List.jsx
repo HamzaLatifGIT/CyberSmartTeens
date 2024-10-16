@@ -1,54 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // ANT-D :
 import { Table, Tag, Button, Modal, Form, Input, Select } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { GetAllStudentsAPI } from "../Api/auth";
 const { Option } = Select;
 
 // CSS :
 
 
 
-const data = [
-  {
-    key: '1',
-    username: 'Ada Evans',
-    email: 'jablawpuh@gmail.com',
-    role: 'Student',
-    score: 75,
-    status: 'Rejected',
-  },
-  {
-    key: '2',
-    username: 'Adele McDaniel',
-    email: 'li@gmail.com',
-    role: 'Teacher',
-    score: 90,
-    status: 'Verified',
-  },
-  {
-    key: '3',
-    username: 'Adele Mills',
-    email: 'hogmultep@gmail.com',
-    role: 'Student',
-    score: 85,
-    status: 'Verified',
-  },
-  {
-    key: '4',
-    username: 'Aiden Fletcher',
-    email: 'arhepo@gmail.com',
-    role: 'Teacher',
-    score: 60,
-    status: 'Rejected',
-  },
-  // Add more data as needed
-];
-
 const List = () => {
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isAddingStudent, setIsAddingStudent] = useState(false);  // New state to track form view
+
+  const [students, setStudents] = useState([])
+  const [loading, setLoading] = useState(false)
 
   // Function to handle deleting a user
   const handleDelete = (key) => {
@@ -84,14 +53,10 @@ const List = () => {
 
   const columns = [
     {
-      title: '#',
-      dataIndex: 'key',
-      key: 'key',
-    },
-    {
       title: 'User Name',
       dataIndex: 'username',
       key: 'username',
+      render: (_, record) => `${record?.firstName} ${record?.lastName}`
     },
     {
       title: 'Email',
@@ -105,21 +70,8 @@ const List = () => {
     },
     {
       title: 'Score',
-      dataIndex: 'score',
-      key: 'score',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => {
-        let color = status === 'Verified' ? 'green' : status === 'Pending' ? 'blue' : 'volcano';
-        return (
-          <Tag color={color} key={status}>
-            {status.toUpperCase()}
-          </Tag>
-        );
-      }
+      dataIndex: 'Score',
+      key: 'Score',
     },
     {
       title: 'Actions',
@@ -146,6 +98,32 @@ const List = () => {
     },
   ];
 
+  const gettingStudentsData = async () => {
+    setLoading(true);
+    const result = await GetAllStudentsAPI();
+    if (result.error != null) {
+      toast.error(result.error);
+    } else {
+      let StudentData = []
+      let processData = result?.data?.result?.map(async user => {
+        let score = 0
+        let process = user?.quizAttempts?.map(data => {
+          score = score + data?.correct
+        })
+        await Promise.all(process)
+        StudentData.push({
+          ...user,
+          Score: score
+        })
+      })
+      await Promise.all(processData)
+      setStudents(StudentData);
+    }
+    setLoading(false);
+  }
+  useEffect(() => {
+    gettingStudentsData()
+  }, [])
   return (
     <>
       <div>
@@ -208,7 +186,7 @@ const List = () => {
                 Add Student
               </Button>
             </div>
-            <Table columns={columns} dataSource={data} pagination={false} />
+            <Table columns={columns} dataSource={students} pagination={false} loading={loading} />
 
             {/* Modal to show user details */}
             <Modal
@@ -219,10 +197,10 @@ const List = () => {
             >
               {selectedUser && (
                 <div>
-                  <p><strong>Username:</strong> {selectedUser.username}</p>
+                  <p><strong>Username:</strong> {selectedUser.firstName} {selectedUser.lastName}</p>
                   <p><strong>Email:</strong> {selectedUser.email}</p>
                   <p><strong>Role:</strong> {selectedUser.role}</p>
-                  <p><strong>Score:</strong> {selectedUser.score}</p>
+                  <p><strong>Score:</strong> {selectedUser.Score}</p>
                   <p><strong>Status:</strong> {selectedUser.status}</p>
                 </div>
               )}

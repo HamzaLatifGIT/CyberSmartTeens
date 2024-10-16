@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, NavLink, useNavigate,Navigate} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, NavLink, useNavigate, Navigate } from 'react-router-dom';
 
 // Components:
 import Dashboard from './Dashboard';
@@ -12,17 +12,27 @@ import Quiz from './Quiz';
 import { IoIosArrowForward } from "react-icons/io";
 import logo from "../assets/zeropark-logo-color-cm.svg";
 import { RiProfileFill, RiDashboardFill } from "react-icons/ri";
-import { MdLibraryBooks, MdQuiz, MdSettingsApplications  } from "react-icons/md";
+import { MdLibraryBooks, MdQuiz, MdSettingsApplications } from "react-icons/md";
 import { FaListAlt } from "react-icons/fa";
 import resposivelogo from '../assets/Untitled (4).svg'
+
+// Redux :
+import { useSelector } from 'react-redux';
 
 // CSS:
 import './style/MyAccount.scss';
 import List from './List';
 import AddCourse from './AddCourse';
 
+
+
+
+
 const MyAccount = () => {
     const navigate = useNavigate();
+
+    let UserData = useSelector(state => state?.userData)
+
     const [fileList, setFileList] = useState([]);
     const [previewImage, setPreviewImage] = useState(null);
 
@@ -55,7 +65,7 @@ const MyAccount = () => {
         <div className="myaccount-container">
             <div className="sidebar">
                 <img src={resposivelogo} className='mobile-logo' alt="" style={{ paddingLeft: '7px' }} />
-                <img src={logo} alt="" style={{ paddingLeft: '7px' }} className='web-logo' onClick={()=>navigate('/')} />
+                <img src={logo} alt="" style={{ paddingLeft: '7px' }} className='web-logo' onClick={() => navigate('/')} />
                 <ul>
                     <li>
                         <NavLink
@@ -76,36 +86,41 @@ const MyAccount = () => {
                         </NavLink>
                     </li>
                 </ul>
-                <ul>
-                    <li>
-                        <NavLink
-                            to="list"
-                            className={({ isActive }) => (isActive ? "active" : "")}
-                        >
-                            <div className="flex"> <FaListAlt size={19} /> <span> Students List</span></div>    <IoIosArrowForward />
-                        </NavLink>
-                    </li>
-                </ul>
-                <ul>
-                    <li>
-                        <NavLink
-                            to="courses"
-                            className={({ isActive }) => (isActive ? "active" : "")}
-                        >
-                            <div className="flex"><MdLibraryBooks size={20} /><span>Courses</span></div>   <IoIosArrowForward />
-                        </NavLink>
-                    </li>
-                </ul>
-                <ul>
-                    <li>
-                        <NavLink
-                            to="quiz"
-                            className={({ isActive }) => (isActive ? "active" : "")}
-                        >
-                            <div className="flex"> <MdQuiz size={20} /> <span> Quizes</span></div>    <IoIosArrowForward />
-                        </NavLink>
-                    </li>
-                </ul>
+                {
+                    UserData?.role == "Teacher" &&
+                    <>
+                        <ul>
+                            <li>
+                                <NavLink
+                                    to="list"
+                                    className={({ isActive }) => (isActive ? "active" : "")}
+                                >
+                                    <div className="flex"> <FaListAlt size={19} /> <span> Students List</span></div>    <IoIosArrowForward />
+                                </NavLink>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>
+                                <NavLink
+                                    to="courses"
+                                    className={({ isActive }) => (isActive ? "active" : "")}
+                                >
+                                    <div className="flex"><MdLibraryBooks size={20} /><span>Courses</span></div>   <IoIosArrowForward />
+                                </NavLink>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>
+                                <NavLink
+                                    to="quiz"
+                                    className={({ isActive }) => (isActive ? "active" : "")}
+                                >
+                                    <div className="flex"> <MdQuiz size={20} /> <span> Quizes</span></div>    <IoIosArrowForward />
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </>
+                }
                 <ul>
                     <li>
                         <NavLink

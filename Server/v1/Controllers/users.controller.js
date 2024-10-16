@@ -38,19 +38,19 @@ exports.RegisterUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName, role } = req.body;
 
-   
+
     const existingUser = await Users.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ status: "failed", message: "Email already exists" });
     }
 
-   
+
     const newUser = new Users({
       email,
       password,
       firstName,
       lastName,
-      role 
+      role
     });
 
     await newUser.save();
@@ -89,7 +89,7 @@ exports.updateUserProfile = async (req, res) => {
   try {
     let UserData = req.UserData;
     let Payload = req.body;
-    console.log("========" , Payload);
+    console.log("========", Payload);
     console.log(req.file);
 
     if (req?.file) {
@@ -108,4 +108,21 @@ exports.updateUserProfile = async (req, res) => {
   }
 };
 
+// Update user Profile
+exports.allStudents = async (req, res) => {
+  try {
+    let UserData = req.UserData;
+    let Payload = req.body;
 
+    let AllStudents = await Users.find({ role: "Student" })
+
+    res.status(200).json({
+      status: "success",
+      message: "Operation Successful",
+      result: AllStudents
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json(err);
+  }
+};
