@@ -53,7 +53,7 @@ const userSchema = mongoose.Schema(
         attempts: [{
           question: String,
           options: Array,
-          answer: String,
+          correctAnswer: String,
           attempt: String
         }]
       }

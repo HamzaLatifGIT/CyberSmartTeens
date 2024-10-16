@@ -10,7 +10,7 @@ import { UserOutlined } from '@ant-design/icons';
 import UserActivityLineChart from './chart';
 
 // APIs :
-import { GetDashboardStatisticsAPI } from '../Api/auth';
+import { GetAllStudentsAPI, GetDashboardStatisticsAPI } from '../Api/auth';
 import { GetAllPublicQuizesAPI } from '../Api/quiz';
 // Redux :
 import { useSelector } from "react-redux";

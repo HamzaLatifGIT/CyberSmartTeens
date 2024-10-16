@@ -146,5 +146,28 @@ const DeleteQuizAPI = async (id) => {
     return resolved;
 }
 
+const attemptQuiz = async (formData) => {
+    let resolved = {
+        error: null,
+        data: null
+    }
 
-export { GetAllPublicQuizesAPI, GetAllQuizesAPI, CreatQuizAPI, ApproveQuizAPI, DeleteQuizAPI, UpdateQuizAPI };
+    try {
+        let res = await axios({
+            url: `/quiz/attempt`,
+            method: "POST",
+            data: formData,
+            headers: GetAuthToken()
+        })
+        resolved.data = res.data
+    } catch (err) {
+        if (err && err.response && err?.response?.data?.message) {
+            resolved.error = err.response.data.message
+        } else {
+            resolved.error = "Something went Wrong"
+        }
+    }
+    return resolved;
+}
+
+export { GetAllPublicQuizesAPI, GetAllQuizesAPI, CreatQuizAPI, ApproveQuizAPI, DeleteQuizAPI, UpdateQuizAPI, attemptQuiz };

@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import "./MCQs.scss";
 
-const MCQQuestion = ({ question, options, correctAnswer }) => {
+const MCQQuestion = ({ question, options, correctAnswer, onAnswerChange, selectedData }) => {
+  const questionData = { question, options, correctAnswer };
   const [showAnswer, setShowAnswer] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
 
   const handleAnswerToggle = () => {
     setShowAnswer(!showAnswer);
   };
 
-  const handleOptionChange = (option) => {
-    setSelectedOption(option);
+  const handleOptionChange = (questionData, option) => {
+    setSelectedData({ ...questionData, attempt: option });
   };
 
   return (
@@ -25,8 +25,8 @@ const MCQQuestion = ({ question, options, correctAnswer }) => {
             <input
               type="radio"
               name={`question-${question}`}
-              checked={selectedOption === option}
-              onChange={() => handleOptionChange(option)}
+              checked={selectedData?.attempt === option}
+              onChange={() => onAnswerChange(option)}
             />
             {String.fromCharCode(97 + index)}) {option}
           </li>

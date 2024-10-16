@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Modal, Button } from 'antd';
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Modal, Button } from "antd";
 
 // Components :
-import Navbar from '../Navbar';
-import Footer from '../Footer';
-import MCQQuestion from './MCQs';
+import Navbar from "../Navbar";
+import Footer from "../Footer";
+import MCQQuestion from "./MCQs";
+import { attemptQuiz } from "../../Api/quiz";
+import toast from "react-hot-toast";
 
 function IndexMcqs() {
     let location = useLocation();
@@ -14,7 +16,16 @@ function IndexMcqs() {
     const [questions, setQuestions] = useState([]);
     const [userAnswers, setUserAnswers] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [score, setScore] = useState(0);
+    const [correct, setCorrect] = useState(0);
+    const [wrong, setWrong] = useState(0);
+    const [selectedData, setSelectedData] = useState(
+        questions.map((q) => ({
+            attempt: null,
+            question: q.question,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+        }))
+    );
 
     useEffect(() => {
         if (quizData) {
@@ -32,25 +43,47 @@ function IndexMcqs() {
         window.scrollTo(0, 0);
     }, []);
 
-
-    const handleAnswerChange = (index, answer) => {
-        const newUserAnswers = [...userAnswers];
-        newUserAnswers[index] = answer;
-        setUserAnswers(newUserAnswers);
+    const handleAnswerChange = (
+        index,
+        option,
+        question,
+        options,
+        correctAnswer
+    ) => {
+        const updatedData = [...selectedData];
+        updatedData[index] = { attempt: option, question, options, correctAnswer };
+        setSelectedData(updatedData);
     };
 
-
-    const handleSubmit = () => {
-        let newScore = 0;
-        questions.forEach((q, index) => {
-            if (userAnswers[index] === q.correctAnswer) {
-                newScore += 1;
+    const handleSubmit = async () => {
+        let newCorrect = 0;
+        let newWrong = 0;
+        selectedData.forEach((q, index) => {
+            if (q.attempt === q.correctAnswer) {
+                newCorrect += 1;
+            } else {
+                newWrong += 1;
             }
         });
-        setScore(newScore);
-        setIsModalVisible(true);
-    };
 
+        setCorrect(newCorrect);
+        setWrong(newWrong);
+        setIsModalVisible(true);
+
+        const params = {
+            correct: newCorrect,
+            wrong: newWrong,
+            quizData: quizData?._id,
+            attempts: selectedData,
+        };
+
+        const res = await attemptQuiz(params);
+        if (res.error != null) {
+            toast.error(res.error);
+        } else {
+            toast.success(res.message);
+        }
+    };
 
     const handleModalClose = () => {
         setIsModalVisible(false);
@@ -59,37 +92,49 @@ function IndexMcqs() {
     return (
         <>
             <Navbar />
-            <div className='McqDetail'>
-                <div className='McqContainer'>
-                    <h1 style={{ display: 'flex', justifyContent: 'center' }}>Cyber Security MCQS</h1>
+            <div className="McqDetail">
+                <div className="McqContainer">
+                    <h1 style={{ display: "flex", justifyContent: "center" }}>
+                        Cyber Security MCQS
+                    </h1>
                     {questions.map((q, index) => (
                         <MCQQuestion
                             key={index}
                             question={q.question}
                             options={q.options}
                             correctAnswer={q.correctAnswer}
-                            onAnswerChange={(answer) => handleAnswerChange(index, answer)}
+                            selectedData={selectedData[index]}
+                            onAnswerChange={(option) =>
+                                handleAnswerChange(
+                                    index,
+                                    option,
+                                    q.question,
+                                    q.options,
+                                    q.correctAnswer
+                                )
+                            }
                         />
                     ))}
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <button className='btn' onClick={handleSubmit}>Submit</button>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <button className="btn" onClick={handleSubmit}>
+                            Submit
+                        </button>
                     </div>
                 </div>
-                <div className='side-dashboard'>
-                    <div className='tag'>Categories</div>
-                    <div className='tagsList'>Cyber</div>
-                    <div className='tag'>Score</div>
-                    <div className='detail'>
+                <div className="side-dashboard">
+                    <div className="tag">Categories</div>
+                    <div className="tagsList">Cyber</div>
+                    <div className="tag">Score</div>
+                    <div className="detail">
                         <div>
                             <strong>Total Mcqs:</strong> <span>{questions.length}</span>
                         </div>
                         <div>
-                            <strong>Attempts:</strong> <span>{userAnswers.length}</span>
+                            <strong>Attempts:</strong> <span>{correct}</span>
                         </div>
                     </div>
                 </div>
             </div>
-
 
             <Modal
                 title="Quiz Result"
@@ -97,12 +142,23 @@ function IndexMcqs() {
                 onOk={handleModalClose}
                 onCancel={handleModalClose}
                 footer={[
-                    <button className='btn' style={{ minWidth: '85px', height: '35px' }} key="ok" type="primary" onClick={handleModalClose}>
+                    <button
+                        className="btn"
+                        style={{ minWidth: "85px", height: "35px" }}
+                        key="ok"
+                        type="primary"
+                        onClick={handleModalClose}
+                    >
                         OK
                     </button>,
                 ]}
             >
-                <p>Your Score: {score} / {questions.length}</p>
+                <p>
+                    Your Score: {correct} / {questions.length}
+                </p>
+                <p>
+                    Wrong Answers: {wrong} / {questions.length}
+                </p>
             </Modal>
 
             <Footer />

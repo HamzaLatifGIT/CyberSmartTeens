@@ -10,6 +10,7 @@ router.use(verifyToken)
 
 router.post("/", Multer.single("file"), QuizController.addQuiz);
 router.get("/", QuizController.getAllQuiz);
+router.post("/attempt", QuizController.AttemptQuiz);
 router.get("/:id", QuizController.getQuizById);
 router.post("/review", QuizController.userReview);
 router.post("/comment", QuizController.userComment);
