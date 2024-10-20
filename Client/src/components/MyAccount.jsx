@@ -121,16 +121,7 @@ const MyAccount = () => {
                         </ul>
                     </>
                 }
-                <ul>
-                    <li>
-                        <NavLink
-                            to="setting"
-                            className={({ isActive }) => (isActive ? "active" : "")}
-                        >
-                            <div className="flex"> <MdSettingsApplications size={20} /> <span> Settings</span></div>    <IoIosArrowForward />
-                        </NavLink>
-                    </li>
-                </ul>
+             
             </div>
             <div className="content">
                 <Routes>
@@ -139,7 +130,6 @@ const MyAccount = () => {
                     <Route path="courses" element={<Courses />} />
                     <Route path="list" element={<List />} />
                     <Route path="quiz" element={<Quiz />} />
-                    <Route path="setting" element={<Settings />} />
                     <Route path="addCourse" element={<AddCourse />} />
                     <Route path="*" element={<Navigate to="profile" />} />
                 </Routes>

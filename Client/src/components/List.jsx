@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 // ANT-D :
 import { Table, Tag, Button, Modal, Form, Input, Select } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { GetAllStudentsAPI } from "../Api/auth";
+import { DeleteStudentAPI, GetAllStudentsAPI } from "../Api/auth";
+import { CreateStudentAPI } from "../Api/auth";
+import { toast } from "react-hot-toast"
 const { Option } = Select;
 
 // CSS :
@@ -18,9 +20,17 @@ const List = () => {
 
   const [students, setStudents] = useState([])
   const [loading, setLoading] = useState(false)
+  const [refresh, setRefresh] = useState(false)
 
   // Function to handle deleting a user
-  const handleDelete = (key) => {
+  const handleDelete = async (key) => {
+    let res = await DeleteStudentAPI(key)
+    if (res.error != null) {
+      toast.error(res.error);
+    } else {
+      toast.success(res.data?.message)
+      setRefresh(!refresh)
+    }
     console.log("Deleted user with key:", key);
   };
 
@@ -41,9 +51,15 @@ const List = () => {
   };
 
   // Function to handle form submission
-  const handleFormSubmit = (values) => {
-    console.log("Form values:", values);
-    setIsAddingStudent(false);  // Go back to the list view after submitting
+  const handleFormSubmit = async (values) => {
+    let res = await CreateStudentAPI(values)
+    if (res.error != null) {
+      toast.error(res.error);
+    } else {
+      toast.success(res.data?.message)
+      setIsAddingStudent(false);  // Go back to the list view after submitting
+      setRefresh(!refresh)
+    }
   };
 
   // Function to handle canceling form submission
@@ -89,7 +105,7 @@ const List = () => {
           <Button
             type="danger"
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.key)}
+            onClick={() => handleDelete(record._id)}
           >
             Delete
           </Button>
@@ -123,7 +139,7 @@ const List = () => {
   }
   useEffect(() => {
     gettingStudentsData()
-  }, [])
+  }, [refresh])
   return (
     <>
       <div>
@@ -136,13 +152,24 @@ const List = () => {
               onFinish={handleFormSubmit}
               initialValues={{ role: "Student" }}  // Default role to 'Student'
             >
-              <Form.Item
-                label="Username"
-                name="username"
-                rules={[{ required: true, message: 'Please enter the username!' }]}
-              >
-                <Input placeholder="Enter student name" className='custom-input' />
-              </Form.Item>
+              <div className="flex" style={{ gap: "1.5rem" }}>
+                <Form.Item
+                  style={{ width: "100%" }}
+                  label="First Name"
+                  name="firstName"
+                  rules={[{ required: true, message: 'Please enter the first name!' }]}
+                >
+                  <Input placeholder="Enter First Name" className='custom-input' />
+                </Form.Item>
+                <Form.Item
+                  style={{ width: "100%" }}
+                  label="Last Name"
+                  name="lastName"
+                  rules={[{ required: true, message: 'Please enter the last name!' }]}
+                >
+                  <Input placeholder="Enter last name" className='custom-input' />
+                </Form.Item>
+              </div>
               <Form.Item
                 label="Email"
                 name="email"

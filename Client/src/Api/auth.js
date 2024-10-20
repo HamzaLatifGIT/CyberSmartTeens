@@ -143,4 +143,49 @@ const GetDashboardStatisticsAPI = async () => {
     return resolve
 }
 
-export { RegisterAPI, LoginAPI, GetProfileAPI, UpdateProfileAPI, GetDashboardStatisticsAPI , GetAllStudentsAPI }
+const DeleteStudentAPI = async (id) => {
+    let resolve = {
+        data: null,
+        error: null
+    }
+    try {
+        let res = await Axios({
+            url: `/users/students/${id}`,
+            method: "DELETE",
+            headers: GetAuthToken(),
+        })
+        resolve.data = res.data
+    } catch (err) {
+        if (err && err?.response) {
+            resolve.error = err?.response?.message || err?.response?.data?.message
+        } else {
+            resolve.error = "SomthingWent wrong"
+        }
+    }
+    return resolve
+}
+
+const CreateStudentAPI = async (data) => {
+    let resolve = {
+        data: null,
+        error: null
+    }
+    try {
+        let res = await Axios({
+            url: `/users/students`,
+            method: "POST",
+            data: data,
+            headers: GetAuthToken(),
+        })
+        resolve.data = res.data
+    } catch (err) {
+        if (err && err?.response) {
+            resolve.error = err?.response?.message || err?.response?.data?.message
+        } else {
+            resolve.error = "SomthingWent wrong"
+        }
+    }
+    return resolve
+}
+
+export { RegisterAPI, LoginAPI, GetProfileAPI, UpdateProfileAPI, GetDashboardStatisticsAPI, GetAllStudentsAPI, CreateStudentAPI, DeleteStudentAPI }

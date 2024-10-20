@@ -144,11 +144,35 @@
       flex-direction: column;
     }
 
+    .tags {
+      align-items: center;
+      background: rgb(71 250 198);
+      display: flex;
+      font-size: 15px;
+      font-weight: 400;
+      justify-content: center;
+      line-height: 18.9px;
+      max-width: 100%;
+      min-height: 50px;
+    }
+
     .tagsList {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      padding: 0.5rem 0;
+      gap: .5rem;
+      padding: .5rem 0;
     }
+
+    .tag {
+      background-color: #000000;
+      border: none;
+      max-width: fit-content;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
   }
 }

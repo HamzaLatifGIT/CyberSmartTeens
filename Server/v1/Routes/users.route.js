@@ -17,5 +17,9 @@ router.patch("/profile", [verifyToken, Multer.single("file")], userController.up
 
 // Students
 router.get("/students", userController.allStudents)
+// Students
+router.post("/students", userController.createStudent)
+// Students
+router.delete("/students/:id", userController.deleteStudent)
 
 module.exports = router

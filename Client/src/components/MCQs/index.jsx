@@ -122,17 +122,23 @@ function IndexMcqs() {
                     </div>
                 </div>
                 <div className="side-dashboard">
-                    <div className="tag">Categories</div>
-                    <div className="tagsList">Cyber</div>
-                    <div className="tag">Score</div>
-                    <div className="detail">
+                    <div className="tags">Categories</div>
+                    <div className="tagsList">
+                        <div className="tagsList">
+                            {
+                                quizData?.categories?.map((cat, index) => <div key={index} className="tag">{cat?.name}</div>)
+                            }
+                        </div>
+                    </div>
+                    {/* <div className="tags">Score</div> */}
+                    {/* <div className="detail">
                         <div>
                             <strong>Total Mcqs:</strong> <span>{questions.length}</span>
                         </div>
                         <div>
                             <strong>Attempts:</strong> <span>{correct}</span>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

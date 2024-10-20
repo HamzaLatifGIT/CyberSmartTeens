@@ -42,7 +42,7 @@ $hover-text: #00000080;
         gap: 3rem;
 
         .footer__column {
-           
+
             padding: 0 10px;
             font-size: .875rem;
             line-height: 2.25rem;
@@ -61,11 +61,11 @@ $hover-text: #00000080;
                 li {
                     margin: 10px 0;
 
-                    a {
+                    a,
+                    div {
+                        cursor: pointer;
                         color: #FFFFFF;
                         text-decoration: none;
-
-
                         &:hover {
                             color: $primary-color;
                         }
@@ -85,7 +85,7 @@ $hover-text: #00000080;
             display: flex;
             gap: 1rem;
 
-            a {
+            a,div {
                 list-style: none;
 
                 img {

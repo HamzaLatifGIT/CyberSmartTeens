@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom"
 
 // Assets | Icons | Logo :
 import logo from "../assets/zeropark-logo-color-cm.svg";
@@ -10,46 +11,57 @@ import instagram from '../assets/Social-logo/instagram-white.svg'
 import './style/Footer.scss';
 
 const Footer = () => {
+
+    let Navigate = useNavigate();
+    const token = localStorage.getItem("CyberTeensToken");
+
+
+    const GoToElement = (section) => {
+        Navigate("/")
+        setTimeout(() => {
+            const element = document.getElementById(section);
+            element?.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }, 1000);
+    }
+
     return (
         <footer className="footer">
             <div className="footer__container max-width">
                 <div className="footer__flex">
                     <div className="footer__logo">
                         <div> <img src={logo} alt="Zeropark Logo" /></div>
-                       
+
 
                     </div>
                     <div className="footer__columns">
                         <div className="footer__column">
                             <p>Pages</p>
                             <ul>
-                                <li><a href="#">Home</a></li>
-                                <li><a href="#">About</a></li>
-                                <li><a href="#">Contact us</a></li>
+                                <li><div onClick={() => Navigate("/")}>Home</div></li>
+                                <li><div href="" onClick={() => GoToElement("about")}>About</div></li>
+                                {/* <li><p href="#">Contact us</p></li> */}
                             </ul>
                         </div>
                         <div className="footer__column">
                             <p>Resources</p>
                             <ul>
-                                <li><a href="#">Quiz</a></li>
-                                <li><a href="#">Courses</a></li>
-                                <li><a href="#">Flash Card</a></li>
-                                <li><a href="#">Solutions</a></li>
-                             
-                                
+                                <li><div onClick={() => Navigate("/quizzes")} >Quiz</div></li>
+                                <li><div onClick={() => Navigate("/courses")} >Courses</div></li>
                             </ul>
                         </div>
-                        <div className="footer__column">
-                            <p>Get Full Acess</p>
-                            <ul>
-                                <li><a href="#">Login</a></li>
-                                <li><a href="#">Signup</a></li>
-                               
-                             
-                                
-                            </ul>
-                        </div>
-                       
+                        {
+                            !token &&
+                            <div className="footer__column">
+                                <p>Get Full Acess</p>
+                                <ul>
+                                    <li><a href="/login">Login</a></li>
+                                    <li><a href="/signup">Signup</a></li>
+                                </ul>
+                            </div>
+                        }
+
                     </div>
                 </div>
                 <div className="footer__social">

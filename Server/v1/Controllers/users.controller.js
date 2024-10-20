@@ -126,3 +126,50 @@ exports.allStudents = async (req, res) => {
     res.status(404).json(err);
   }
 };
+
+// Update user Profile
+exports.createStudent = async (req, res) => {
+  try {
+    let UserData = req.body;
+
+    let isExists = await Users.findOne({ email: UserData?.email })
+    if (isExists) return res.status(400).json({ message: "User already Exists" })
+
+    let StudentData = await Users.create(
+      {
+        firstName: UserData?.firstName,
+        lastName: UserData?.lastName,
+        email: UserData?.email,
+        role: "Student",
+        password: UserData.password
+      }
+    )
+
+    res.status(200).json({
+      status: "success",
+      message: "Operation Successful",
+      result: StudentData
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json(err);
+  }
+};
+
+// Update user Profile
+exports.deleteStudent = async (req, res) => {
+  try {
+    let { id } = req.params;
+
+    let deleteUser = await Users.findByIdAndDelete(id)
+
+    res.status(200).json({
+      status: "success",
+      message: "Operation Successful",
+      result: deleteUser
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json(err);
+  }
+};

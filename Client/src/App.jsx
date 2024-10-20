@@ -7,19 +7,23 @@ import Signup from '../src/Auth/Signup'
 import Home from "./components/pages/Home";
 import MyAccount from "./components/MyAccount";
 import FlipcardComponent from "./components/FlipCard/Index"
+import MCQQuestion from "./components/MCQs/MCQs";
+import IndexMcqs from "./components/MCQs";
+import CourseDetail from "./components/CourseReview/CourseDetail";
+import Course from "./components/Course/index";
+import Quiz from "./components/Quiz/index";
+import About from "./components/About";
+
 // APIs :
 import { GetProfileAPI } from "./Api/auth";
+
 // Redux :
 import { useDispatch, useSelector } from 'react-redux';
 import { userDataActions } from "./Redux/Slice/userData"
 
 // Helpers :
 import { Toaster } from 'react-hot-toast';
-import MCQQuestion from "./components/MCQs/MCQs";
-import IndexMcqs from "./components/MCQs";
-import CourseDetail from "./components/CourseReview/CourseDetail";
-import Course from "./components/Course/index";
-import Quiz from "./components/Quiz/index";
+
 
 
 
@@ -72,6 +76,7 @@ function App() {
         <Route path="course" element={<CourseDetail />} />
         <Route path="courses" element={<Course />} />
         <Route path="quizzes" element={<Quiz />} />
+
       </Routes>
 
     </>
