@@ -7,6 +7,7 @@ import Signup from '../src/Auth/Signup'
 import Home from "./components/pages/Home";
 import MyAccount from "./components/MyAccount";
 import FlipcardComponent from "./components/FlipCard/Index"
+import CrossWordComponent from "./components/CrossWord/Index"
 import MCQQuestion from "./components/MCQs/MCQs";
 import IndexMcqs from "./components/MCQs";
 import CourseDetail from "./components/CourseReview/CourseDetail";
@@ -72,6 +73,7 @@ function App() {
         <Route path="signup" element={<AuthRoute user={AuthToken}> <Signup /> </AuthRoute>} />
         <Route path="dashboard/*" element={<ProtectedRoute user={AuthToken}>  <MyAccount />  </ProtectedRoute>} />
         <Route path="card" element={<ProtectedRoute user={AuthToken}>  <FlipcardComponent />  </ProtectedRoute>} />
+        <Route path="cross" element={<ProtectedRoute user={AuthToken}>  <CrossWordComponent />  </ProtectedRoute>} />
         <Route path="mcqs" element={<IndexMcqs />} />
         <Route path="course" element={<CourseDetail />} />
         <Route path="courses" element={<Course />} />
