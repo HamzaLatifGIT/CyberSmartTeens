@@ -21,6 +21,15 @@ import { GetAllCategoriesAPI, AddCategoryAPI } from '../Api/category';
 import { toast } from 'react-hot-toast';
 import ImgURLGEN from '../Utils/ImgUrlGen';
 
+// Editor :
+import Editor from "react-simple-code-editor"
+import { highlight, languages } from "prismjs/components/prism-core"
+import "prismjs/components/prism-clike"
+import "prismjs/components/prism-javascript"
+import "prismjs/components/prism-json"
+import "prismjs/themes/prism-dark.css"
+import "prismjs/themes/prism-dark.min.css"
+
 // CSS :
 import './style/AddQuiz.scss';
 import 'react-quill/dist/quill.snow.css';
@@ -67,6 +76,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
         categories: [],
     })
     const [questions, setQuestions] = useState([])
+    const [puzzleCode, setPuzzleCode] = useState("{\n    across: {\n      1: { clue: \"Unauthorized access attempt\", answer: \"HACK\", row: 0, col: 0 },\n      5: { clue: \"Malicious software\", answer: \"MALWARE\", row: 0, col: 5 },\n      7: { clue: \"Technique to steal personal data\", answer: \"PHISHING\", row: 2, col: 0 },\n      9: { clue: \"Encrypts data for ransom\", answer: \"RANSOMWARE\", row: 4, col: 1 },\n    },\n    down: {\n      1: { clue: \"Online attack involving overwhelming traffic\", answer: \"DDOS\", row: 1, col: 0 },\n      2: { clue: \"Malicious program disguised as legitimate software\", answer: \"TROJAN\", row: 0, col: 5 },\n      3: { clue: \"Unauthorized control over a system\", answer: \"EXPLOIT\", row: 0, col: 7 },\n      4: { clue: \"Cryptographic key management technique\", answer: \"KEY\", row: 2, col: 3 },\n      6: { clue: \"Phishing method via mobile SMS\", answer: \"SMISHING\", row: 2, col: 8 },\n    },\n  }")
     const [formError, setFormError] = useState({
         title: null,
         quote: null,
@@ -445,7 +455,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                                         value={formData?.type}
                                         onChange={(e) => enterFormData({ target: { name: "type", value: e } })}
                                         getPopupContainer={() => document.getElementById('quiztype')}
-                                        options={[{ value: "mcq", label: "MCQ" }, { value: "flash", label: "Flash Cards" }]}
+                                        options={[{ value: "mcq", label: "MCQ" }, { value: "flash", label: "Flash Cards" }, { value: "puzzle", label: "Puzzle" }]}
                                     />
                                 </div>
                             </div>
@@ -470,16 +480,43 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
 
                             </div>
                         </div>
-                        <div className="field2 field descriptionMain">
-                            <div className="flex descriptionHeader heading">
-                                <h3> Questions List </h3>
-                                <Button className="btn" onClick={handleAddQuestionClick}>Add Question</Button>
-                            </div>
-                            <div className="descriptionPara">
-                                <Table dataSource={questions} columns={columns} rowKey="title" />
+                        {
+                            formData?.type == "puzzle" ?
+                                <>
+                                    <div className="field2 field descriptionMain">
+                                        <div className="flex descriptionHeader heading">
+                                            <h3> Fill with Sample </h3>
+                                            <Button className="btn" onClick={handleAddQuestionClick}>Add Question</Button>
+                                        </div>
+                                        <div style={{ padding: "1rem" }} className="descriptionPara editorBox">
+                                            <Editor
+                                                value={puzzleCode}
+                                                onValueChange={code => setPuzzleCode(code)}
+                                                highlight={code => highlight(code, languages.json)}
+                                                padding={10}
+                                                placeholder='Write Puzzle logic here'
+                                                style={{
+                                                    fontFamily: '"Fira code", "Fira Mono", monospace',
+                                                    fontSize: 12,
+                                                    height: "250px"
+                                                }}
+                                            />
 
-                            </div>
-                        </div>
+                                        </div>
+                                    </div>
+                                </>
+                                :
+                                <div className="field2 field descriptionMain">
+                                    <div className="flex descriptionHeader heading">
+                                        <h3> Questions List </h3>
+                                        <Button className="btn" onClick={handleAddQuestionClick}>Add Question</Button>
+                                    </div>
+                                    <div className="descriptionPara">
+                                        <Table dataSource={questions} columns={columns} rowKey="title" />
+
+                                    </div>
+                                </div>
+                        }
                         {
                             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
                                 <Button className="btn" style={{ width: "40px" }} onClick={handleUploadBlog} loading={loading}>
