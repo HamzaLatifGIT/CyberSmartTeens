@@ -41,6 +41,7 @@ const QuizSchema = new mongoose.Schema({
         required: [true, "Slug is Required"]
     },
     questions: [QuestionsSchema],
+    puzzleData: String,
     categories: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "CategoryModel"
@@ -68,7 +69,7 @@ const QuizSchema = new mongoose.Schema({
         type: String,
         require: true,
         enum: {
-            values: ["flash", "mcq"],
+            values: ["flash", "mcq", "puzzle"],
             message: "Type must Be flash, mcq",
         },
     },

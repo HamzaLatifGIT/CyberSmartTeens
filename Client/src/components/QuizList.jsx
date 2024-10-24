@@ -32,7 +32,7 @@ function Topics() {
 
 
   const ShowDetails = (data) => {
-    if (data?.type == "flash") {
+    if (data?.type == "flash" || data?.type == "puzzle") {
       Navigate("/card", { state: data })
     } else if (data?.type == "mcq") {
       Navigate("/mcqs", { state: data })

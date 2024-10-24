@@ -39,7 +39,7 @@ const QuizzesList = () => {
 
 
     const ShowDetails = (data) => {
-        if (data?.type == "flash") {
+        if (data?.type == "flash" || data?.type == "puzzle") {
             Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
         } else if (data?.type == "mcq") {
             Navigate("/mcqs", { state: data })
@@ -112,6 +112,7 @@ const QuizzesList = () => {
         { value: "all", label: "All" },
         { value: "mcq", label: "MCQs" },
         { value: "flash", label: "Flash Cards" },
+        { value: "puzzle", label: "Puzzles" },
     ]
 
     return (

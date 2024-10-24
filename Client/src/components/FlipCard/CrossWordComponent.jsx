@@ -1,10 +1,11 @@
 import React, { useRef } from "react"
 
 import Crossword, { ThemeProvider } from '@jaredreisinger/react-crossword';
+import { Button } from "antd";
 
 
 
-const CrossWordComponent = () => {
+const CrossWordComponent = ({ code }) => {
 
   const crosswordRef = useRef();
 
@@ -34,10 +35,10 @@ const CrossWordComponent = () => {
     <>
       <div style={{ width: "400px", margin: "auto" }}>
         <ThemeProvider theme={{}}>
-          <Crossword data={data} useStorage={false} ref={crosswordRef} />
+          <Crossword data={code ? JSON.parse(code) : data} useStorage={false} ref={crosswordRef} />
         </ThemeProvider>
         <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <button onClick={fillAnswers}>Fill Answers</button>
+          <Button className="btn" onClick={fillAnswers}>Fill Answers</Button>
         </div>
       </div>
     </>

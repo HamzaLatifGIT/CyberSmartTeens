@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 // MUI | ANT-D :
 import { Button, Input, Upload, Select, Table, Modal } from 'antd';
@@ -21,14 +21,11 @@ import { GetAllCategoriesAPI, AddCategoryAPI } from '../Api/category';
 import { toast } from 'react-hot-toast';
 import ImgURLGEN from '../Utils/ImgUrlGen';
 
+// Puzzle :
+import Crossword, { ThemeProvider } from '@jaredreisinger/react-crossword';
 // Editor :
-import Editor from "react-simple-code-editor"
-import { highlight, languages } from "prismjs/components/prism-core"
-import "prismjs/components/prism-clike"
-import "prismjs/components/prism-javascript"
-import "prismjs/components/prism-json"
-import "prismjs/themes/prism-dark.css"
-import "prismjs/themes/prism-dark.min.css"
+import MonacoEditor from "@monaco-editor/react";
+
 
 // CSS :
 import './style/AddQuiz.scss';
@@ -55,8 +52,23 @@ const beforeUpload = (file) => {
     }
     return isJpgOrPng && isLt2M;
 };
-
+const PuzzleSampleCode = `{
+    "across": {
+      "1": { "clue": "Secure communication protocol for the web", "answer": "HTTPS", "row": 0, "col": 0 },
+      "2": { "clue": "Unauthorized access to data", "answer": "HACKING", "row": 0, "col": 5 },
+      "3": { "clue": "Malicious software", "answer": "SECURITY", "row": 2, "col": 0 },
+      "7": { "clue": "Malicious software", "answer": "RANSOMWARE", "row": 3, "col": 5 }
+    },
+    "down": {
+      "1": { "clue": "Technique for disguising digital data", "answer": "HASH", "row": 0, "col": 0 },
+      "4": { "clue": "Virus", "answer": "ATTACK", "row": 0, "col": 6 },
+      "5": { "clue": "Virus", "answer": "TROGEN", "row": 1, "col": 4 },
+      "6": { "clue": "Virus", "answer": "VIRUS", "row": 1, "col": 5 }
+    }
+}`
 export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
+
+    const crosswordRef = useRef();
 
     const [allCategories, setAllCategories] = useState(null)
 
@@ -76,7 +88,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
         categories: [],
     })
     const [questions, setQuestions] = useState([])
-    const [puzzleCode, setPuzzleCode] = useState("{\n    across: {\n      1: { clue: \"Unauthorized access attempt\", answer: \"HACK\", row: 0, col: 0 },\n      5: { clue: \"Malicious software\", answer: \"MALWARE\", row: 0, col: 5 },\n      7: { clue: \"Technique to steal personal data\", answer: \"PHISHING\", row: 2, col: 0 },\n      9: { clue: \"Encrypts data for ransom\", answer: \"RANSOMWARE\", row: 4, col: 1 },\n    },\n    down: {\n      1: { clue: \"Online attack involving overwhelming traffic\", answer: \"DDOS\", row: 1, col: 0 },\n      2: { clue: \"Malicious program disguised as legitimate software\", answer: \"TROJAN\", row: 0, col: 5 },\n      3: { clue: \"Unauthorized control over a system\", answer: \"EXPLOIT\", row: 0, col: 7 },\n      4: { clue: \"Cryptographic key management technique\", answer: \"KEY\", row: 2, col: 3 },\n      6: { clue: \"Phishing method via mobile SMS\", answer: \"SMISHING\", row: 2, col: 8 },\n    },\n  }")
+    const [puzzleCode, setPuzzleCode] = useState(PuzzleSampleCode)
     const [formError, setFormError] = useState({
         title: null,
         quote: null,
@@ -92,7 +104,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
         options: []
     })
     const [isModalVisible, setIsModalVisible] = useState(false);
-
+    const [isPuzzleSampleModalVisible, setIsPuzzleSampleModalVisible] = useState(false);
 
     const [loading, setLoading] = useState(false)
 
@@ -215,11 +227,18 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
             setFormthumbUploadError({ file: 'Please upload an image.' });
             return;
         }
-
         if (!validateForm()) {
             toast.error("Some fields are Missing");
 
             return;
+        }
+        if (formData?.type == "puzzle") {
+            try {
+                let x = JSON.parse(puzzleCode)
+            } catch (err) {
+                toast.error("Puzzle Code JSON format is Invalid, please correct Format")
+                return
+            }
         }
         setLoading(true)
 
@@ -252,6 +271,9 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
 
         if (file) {
             fData.append("file", file)
+        }
+        if (formData?.type == "puzzle") {
+            fData.append("puzzleData", puzzleCode)
         }
         let res;
         if (selectedQuiz) {
@@ -375,6 +397,25 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
         setIsModalVisible(false)
     }
 
+
+    const handleOpenPuzzleSampleModal = () => {
+        if (crosswordRef.current) {
+            crosswordRef.current.fillAllAnswers()
+        }
+        setIsPuzzleSampleModalVisible(true)
+    }
+    const showPuzzleResult = () => {
+        if (crosswordRef.current) {
+            crosswordRef.current.fillAllAnswers()
+        }
+    }
+    const handleEditorChange = (value) => {
+        setPuzzleCode(value);
+    };
+    const handleClosePuzzleSampleModal = () => {
+        setIsPuzzleSampleModalVisible(false);
+    };
+
     return (
         <>
             <div className="AddQuizFormContainer">
@@ -485,23 +526,22 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                                 <>
                                     <div className="field2 field descriptionMain">
                                         <div className="flex descriptionHeader heading">
-                                            <h3> Fill with Sample </h3>
-                                            <Button className="btn" onClick={handleAddQuestionClick}>Add Question</Button>
+                                            <h3> Fill Puzzle Data </h3>
+                                            <Button className="btn" onClick={handleOpenPuzzleSampleModal}>Show Sample</Button>
                                         </div>
                                         <div style={{ padding: "1rem" }} className="descriptionPara editorBox">
-                                            <Editor
+                                            <MonacoEditor
+                                                height="300px"
+                                                language="json"
                                                 value={puzzleCode}
-                                                onValueChange={code => setPuzzleCode(code)}
-                                                highlight={code => highlight(code, languages.json)}
-                                                padding={10}
-                                                placeholder='Write Puzzle logic here'
-                                                style={{
-                                                    fontFamily: '"Fira code", "Fira Mono", monospace',
-                                                    fontSize: 12,
-                                                    height: "250px"
+                                                onChange={handleEditorChange}
+                                                options={{
+                                                    formatOnType: true,
+                                                    formatOnPaste: true,
+                                                    automaticLayout: true,
+                                                    minimap: { enabled: false },
                                                 }}
                                             />
-
                                         </div>
                                     </div>
                                 </>
@@ -576,6 +616,35 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                                 {questionData?.edited ? "Update" : "Save"}
                             </Button>
                         </div>
+                    </div>
+                </div>
+            </Modal>
+            <Modal
+                width={"750px"}
+                title="Puzzle Data Sample"
+                visible={isPuzzleSampleModalVisible}
+                onCancel={handleClosePuzzleSampleModal}
+                footer={null}  // You can add buttons if needed
+            >
+                <div className="puzzleSampleModalBox">
+                    <div className="editorBox">
+                        <MonacoEditor
+                            height="300px"
+                            language="json"
+                            value={PuzzleSampleCode}
+                            options={{
+                                formatOnType: true,  // Auto-format while typing
+                                formatOnPaste: true, // Auto-format when pasting JSON
+                                automaticLayout: true,
+                                minimap: { enabled: false },
+                            }}
+                        />
+                    </div>
+                    <div className="puzzle">
+                        <ThemeProvider theme={{}}>
+                            <Crossword data={JSON.parse(PuzzleSampleCode)} useStorage={false} ref={crosswordRef} />
+                        </ThemeProvider>
+                        <Button className='btn' style={{ margin: "auto" }} onClick={showPuzzleResult}>Show result</Button>
                     </div>
                 </div>
             </Modal>

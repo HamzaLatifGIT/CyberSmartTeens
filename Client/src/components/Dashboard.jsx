@@ -38,7 +38,7 @@ function Dashboard() {
 
 
   const handleStartQuiz = (data) => {
-    if (data?.type == "flash") {
+    if (data?.type == "flash" || data?.type == "puzzle") {
       Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
     } else if (data?.type == "mcq") {
       Navigate("/mcqs", { state: data })

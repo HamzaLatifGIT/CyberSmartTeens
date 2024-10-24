@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 
 import BottomNav from "./BottomNav"
 import FlashCard from "./FlashCard"
+import CrossWordComponent from "./CrossWordComponent"
 
 import { Grid2 } from "@mui/material"
 import Navbar from "../Navbar"
@@ -82,10 +83,10 @@ const App = () => {
     }
 
     const ViewDetails = (quiz) => {
-        if (quiz?.type == "mcq") {
-            Navigate("/mcqs", { state: quiz })
-        } else {
+        if (quiz?.type == "flash" || data?.type == "puzzle") {
             Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
+        } else {
+            Navigate("/mcqs", { state: quiz })
         }
     }
 
@@ -97,6 +98,9 @@ const App = () => {
             })
         }
     }, [CardsState])
+    useEffect(() => {
+        window.scroll(0, 0);
+    }, []);
 
     return (
         <>
@@ -107,21 +111,28 @@ const App = () => {
                         <div className="date">PUBLISHED ON: Sep 27, 2024</div>
                     </div>
                     <h1 className="post-title">{CardsState?.title}</h1>
-                    <Grid2 item xs={10} sm={8} md={6} xl={4}>
-                        <FlashCard
-                            id={CardsData.current}
-                            front={CardsData.cards[CardsData.current].front}
-                            back={CardsData.cards[CardsData.current].back}
-                            flipped={CardsData.flipped}
-                            handleFlip={Flip}
-                        />
-                    </Grid2>
-                    <BottomNav
-                        nextCard={Next}
-                        prevCard={Previous}
-                        current={CardsData?.current}
-                        length={CardsData?.cards?.length}
-                    />
+                    {
+                        CardsState?.type == "puzzle" ?
+                            <CrossWordComponent code={CardsState?.puzzleData} />
+                            :
+                            <>
+                                <Grid2 item xs={10} sm={8} md={6} xl={4}>
+                                    <FlashCard
+                                        id={CardsData.current}
+                                        front={CardsData.cards[CardsData.current].front}
+                                        back={CardsData.cards[CardsData.current].back}
+                                        flipped={CardsData.flipped}
+                                        handleFlip={Flip}
+                                    />
+                                </Grid2>
+                                <BottomNav
+                                    nextCard={Next}
+                                    prevCard={Previous}
+                                    current={CardsData?.current}
+                                    length={CardsData?.cards?.length}
+                                />
+                            </>
+                    }
                     <div className="post-content">
                         <blockquote className="quote">
                             <span>“</span> {CardsState?.quote} <span>”</span>

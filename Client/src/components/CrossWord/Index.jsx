@@ -79,10 +79,10 @@ const App = () => {
     }
 
     const ViewDetails = (quiz) => {
-        if (quiz?.type == "mcq") {
-            Navigate("/mcqs", { state: quiz })
-        } else {
+        if (quiz?.type == "flash" || data?.type == "puzzle") {
             Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
+        } else {
+            Navigate("/mcqs", { state: quiz })
         }
     }
 
