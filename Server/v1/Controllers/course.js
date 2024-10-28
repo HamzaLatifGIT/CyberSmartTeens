@@ -2,7 +2,7 @@ const express = require("express");
 const CourseModel = require("../Models/course");
 const { uploadFile } = require("../../Utilities/uploader");
 
-    
+
 
 // This is the Blog Post API
 const addBlog = async (req, res) => {
@@ -12,10 +12,13 @@ const addBlog = async (req, res) => {
     data.auther = currentUser?._id
 
     try {
-        if (!data.title || data.title == "" || !data.detail || data.detail == "" || !req.file || req.file == "") {
+        if (!data.title || data.title == "" || !req.file || req.file == "") {
             return res.status(400).json({ message: "Required Fields Missing" })
         }
         data.image = await uploadFile(req.file, data?.image?.url || null);
+        if (data.lessons && data?.lessons?.length >= 1) {
+            data.lessons = JSON.parse(data?.lessons)
+        }
         const newData = new CourseModel(data)
         await newData.save()
         res.status(200).json({ message: "Operation Successful", result: newData })
@@ -171,10 +174,12 @@ const updateBlogById = async (req, res) => {
                 data.image = await uploadFile(req.file, data?.image?.url || null);
             }
         }
+        if (data.lessons && data?.lessons?.length >= 1) {
+            data.lessons = JSON.parse(data?.lessons)
+        }
         // data.status = "pending";
         const result = await CourseModel.findByIdAndUpdate(BlogId, data, { new: true });
         return res.status(200).json({ message: "Operation Successful", result: result })
-        console.log(result)
     } catch (err) {
         res.status(400).json({ message: "Server Error", err })
     }

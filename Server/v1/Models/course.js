@@ -7,8 +7,9 @@ const CourseSchema = new mongoose.Schema({
     },
     detail: {
         type: String,
-        required: [true, " Course Detail is Required"]
+        // required: [true, " Course Detail is Required"]
     },
+    lessons: [String],
     image: {
         type: Object,
     },

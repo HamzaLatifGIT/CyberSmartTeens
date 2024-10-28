@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 // MUI | ANT-D :
-import { Button, Input, Upload, Select } from 'antd';
+import { Button, Input, Upload, Select, Table, Modal } from 'antd';
 
 // Asserts | ICONS : 
 import { LoadingOutlined } from '@ant-design/icons';
 import { BsArrowLeftShort } from "react-icons/bs"
 import { FaEye } from 'react-icons/fa';
-import { MdOutlineSubtitles } from "react-icons/md";
+import { MdDelete, MdEdit, MdOutlineSubtitles } from "react-icons/md";
 import { FaQuoteLeft } from "react-icons/fa";
 import { BiCategoryAlt } from "react-icons/bi";
 
@@ -66,6 +66,14 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
         slug: "",
         categories: [],
     })
+    const [lesson, setLesson] = useState("")
+    const [lessons, setLessons] = useState([])
+
+    const [LessonModalStatus, setLessonModalStatus] = useState({
+        open: false,
+        edited: false,
+        index: null
+    })
     const [formError, setFormError] = useState({
         title: null,
         detail: null,
@@ -101,8 +109,6 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
             ...formData,
             categories: selectedCategoryList
         })
-
-
     }
     const handleEyeClick = (e) => {
         e.preventDefault();
@@ -143,6 +149,58 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
     );
 
 
+    const handleAddLessonClick = (index = null) => {
+        if (index != null) {
+            setLessonModalStatus({
+                open: true,
+                edited: true,
+                index
+            })
+            setLesson(lessons[index])
+        } else {
+            setLessonModalStatus({
+                open: true,
+                edited: false,
+                index: null
+            })
+            setLesson("")
+        }
+    }
+    const handleDeleteLesson = (index) => {
+        setLessons(lessons.filter((data, i) => i != index))
+    }
+    const handleCloseModal = () => {
+        setLessonModalStatus({
+            open: false,
+            edited: false,
+            index: null
+        })
+        setLesson("")
+    }
+    const handleAddLesson = () => {
+        if (LessonModalStatus.edited) {
+            let UpdatedLessons = lessons.map((l, i) => {
+                if (i == LessonModalStatus.index) {
+                    return lesson
+                } else {
+                    return l
+                }
+            })
+            setLessons(UpdatedLessons)
+        } else {
+            setLessons([
+                ...lessons,
+                lesson
+            ])
+        }
+        setLessonModalStatus({
+            open: false,
+            edited: false,
+            index: null
+        })
+        setLesson("")
+    }
+
     const gettingAllCategories = async () => {
         setCategoryLoading(true);
         let res = await GetAllCategoriesAPI();
@@ -155,7 +213,7 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
     }
     const validateForm = () => {
         const errors = {};
-        const requiredFields = ["title", "quote", "detail", "slug"];
+        const requiredFields = ["title", "quote", "slug"];
         requiredFields.forEach(field => {
             if (!formData[field]) {
                 errors[field] = "This field is required";
@@ -177,6 +235,7 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                 categories: selectedCourse?.categories.map(cat => cat?._id) || [],
                 // image: selectedCourse?.image
             })
+            setLessons(selectedCourse?.lessons || [])
             setImageUrl(ImgURLGEN(selectedCourse?.image))
         } else {
             setFormData({
@@ -186,6 +245,7 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                 slug: "",
                 categories: [],
             })
+            setLessons([])
             setImageUrl()
         }
     }, [selectedCourse])
@@ -230,6 +290,10 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
             })
         }
 
+        if (lessons && lessons.length >= 1) {
+            fData.append("lessons", JSON.stringify(lessons))
+        }
+
         if (file) {
             fData.append("file", file)
         }
@@ -248,6 +312,41 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
         setLoading(false)
     }
 
+
+
+    const columns = [
+        {
+            title: 'No.',
+            key: 'index',
+            render: (_, __, index) => index + 1
+        },
+        {
+            title: 'Lesson Detail',
+            key: 'answer',
+            render: (_, l) => <p dangerouslySetInnerHTML={{ __html: l.slice(0, 70) }} />
+        },
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record, index) => (
+                <span>
+                    <Button
+                        type="primary"
+                        icon={<MdEdit />}
+                        onClick={() => handleAddLessonClick(index)}
+                    >
+                    </Button>
+                    <Button
+                        type="danger"
+                        icon={<MdDelete />}
+                        onClick={() => handleDeleteLesson(index)}
+                    >
+                        {/* Delete */}
+                    </Button>
+                </span>
+            ),
+        },
+    ];
 
     var toolbarOptions = [
         ['bold', 'italic'],        // toggled buttons
@@ -390,17 +489,13 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                             </div>
                         </div>
                         <div className="field2 field descriptionMain">
-                            <div className="descriptionHeader heading">
-                                Course Description
+                            <div className="flex descriptionHeader heading">
+                                <h3> Lessons List </h3>
+                                <Button className="btn" onClick={() => handleAddLessonClick(null)}>Add Lesson</Button>
                             </div>
                             <div className="descriptionPara">
-                                <ReactQuill theme='snow' formats={formats} modules={modules} style={{ height: "250px" }} className='contentPara' value={formData?.detail} name="detail" onChange={(val) => enterFormData({ target: { name: "detail", value: val } })} />
-
+                                <Table dataSource={lessons} columns={columns} rowKey={(record, index) => index} />
                             </div>
-
-                            {/* <div className="descriptionParaMobile">
-                                <ReactQuill theme='snow' formats={formats} modules={modulesMobile} style={{ height: "250px" }} className='contentPara' value={formData?.detail} name="detail" onChange={(val) => enterFormData({ target: { name: "detail", value: val } })} />
-                            </div> */}
                         </div>
                         {
                             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
@@ -413,6 +508,26 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                     </div>
                 </div>
             </div>
+            <Modal
+                width={"85%"}
+                title="Lesson Details"
+                visible={LessonModalStatus.open}
+                onCancel={handleCloseModal}
+                footer={null}  // You can add buttons if needed
+            >
+                <div className='QuizModal'>
+                    <div className="InputFields">
+                        <div className="descriptionPara">
+                            <ReactQuill theme='snow' formats={formats} modules={modules} style={{ height: "250px" }} className='contentPara' value={lesson} name="detail" onChange={(val) => setLesson(val)} />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+                            <Button className="btn" style={{ width: "40px" }} onClick={handleAddLesson}>
+                                {LessonModalStatus?.edited ? "Update" : "Save"}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
         </>
     )
 }
