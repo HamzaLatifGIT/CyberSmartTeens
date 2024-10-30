@@ -153,12 +153,14 @@
     border-top: none !important;
     border-left: none !important;
     border-right: none !important;
-    border-bottom: 1px solid black !important;
+    // border-bottom: 1px solid black !important;
+    border-bottom: none !important;
     border-radius: 0% !important;
     transition: ease-in-out .2s;
 
     &:hover {
-        border-bottom: 1px solid rgb(71 250 198) !important;
+        // border-bottom: 1px solid rgb(71 250 198) !important;
+        border-bottom: none !important;
     }
 }
 

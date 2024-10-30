@@ -24,6 +24,7 @@ import ReactQuill from 'react-quill';
 import './style/AddCourse.scss';
 
 import 'react-quill/dist/quill.snow.css';
+import { GetAllQuizesAPI } from '../Api/quiz';
 
 
 
@@ -64,21 +65,17 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
         image: null,
         quote: "",
         slug: "",
+        quiz: null,
         categories: [],
     })
+    const [quizzes, setQuizzes] = useState([])
+
     const [lesson, setLesson] = useState("")
     const [lessons, setLessons] = useState([])
-
     const [LessonModalStatus, setLessonModalStatus] = useState({
         open: false,
         edited: false,
         index: null
-    })
-    const [formError, setFormError] = useState({
-        title: null,
-        detail: null,
-        quote: null,
-        slug: null,
     })
 
     const [imageUrl, setImageUrl] = useState(null)
@@ -201,16 +198,7 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
         setLesson("")
     }
 
-    const gettingAllCategories = async () => {
-        setCategoryLoading(true);
-        let res = await GetAllCategoriesAPI();
-        if (res.error != null) {
-            toast.error(res?.error);
-        } else {
-            setAllCategories(res?.data?.result || [])
-        }
-        setCategoryLoading(false)
-    }
+
     const validateForm = () => {
         const errors = {};
         const requiredFields = ["title", "quote", "slug"];
@@ -225,6 +213,27 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
     }
 
 
+    const gettingAllCategories = async () => {
+        setCategoryLoading(true);
+        let res = await GetAllCategoriesAPI();
+        if (res.error != null) {
+            toast.error(res?.error);
+        } else {
+            setAllCategories(res?.data?.result || [])
+        }
+        setCategoryLoading(false)
+    }
+    const fetchQuizzes = async () => {
+        const result = await GetAllQuizesAPI();
+        if (result.error) {
+            toast.error(result.error);
+        } else {
+            let quizzes = result.data.result;
+            setQuizzes(quizzes || []);
+        }
+    };
+
+
     useEffect(() => {
         if (selectedCourse) {
             setFormData({
@@ -232,6 +241,7 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                 quote: selectedCourse?.quote,
                 detail: selectedCourse?.detail,
                 slug: selectedCourse?.slug,
+                quiz: selectedCourse?.quiz,
                 categories: selectedCourse?.categories.map(cat => cat?._id) || [],
                 // image: selectedCourse?.image
             })
@@ -243,6 +253,7 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                 quote: "",
                 detail: "",
                 slug: "",
+                quiz: null,
                 categories: [],
             })
             setLessons([])
@@ -251,6 +262,7 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
     }, [selectedCourse])
     useEffect(() => {
         gettingAllCategories()
+        fetchQuizzes();
     }, [])
 
     const handleUploadBlog = async () => {
@@ -465,8 +477,6 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                                 <Input prefix={<FaQuoteLeft />} size='large' className='blogInput' type="text" placeholder='Course Quote' name="quote" onChange={enterFormData} value={formData?.quote} />
                                 {formErrors.quote && <div className="errorMessage">{formErrors.quote}</div>}
                             </div>
-                        </div>
-                        <div className="Inputfield">
                             <div className="field1 field" id='category'>
                                 <div className="lableName">Category</div>
                                 <div className="inputselect">
@@ -485,9 +495,30 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                                         filterOption={filterOptions}
                                     />
                                 </div>
+                            </div>
+                        </div>
+                        <div className="Inputfield">
+                            <div className="field1 field" id='category'>
+                                <div className="lableName">Quiz</div>
+                                <div className="inputselect">
+                                    <div className="selecticon"><BiCategoryAlt size={24} className='iconInfo' /></div>
+                                    <Select
+                                        showSearch
+                                        value={formData.quiz}
+                                        placeholder="Select Quiz"
+                                        variant={"borderless"}
+                                        className='selector'
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        onChange={(v) => enterFormData({ target: { name: "quiz", value: v } })}
+                                        options={quizzes && quizzes?.map(quiz => ({ value: quiz?._id, label: quiz?.title }))}
+                                    />
+                                </div>
 
                             </div>
                         </div>
+
                         <div className="field2 field descriptionMain">
                             <div className="flex descriptionHeader heading">
                                 <h3> Lessons List </h3>

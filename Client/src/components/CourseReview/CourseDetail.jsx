@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 // Components :
 import Navbar from '../Navbar';
 import Footer from '../Footer';
 
+// APIs :
+import { GetAllPublicCoursesAPI } from '../../Api/course';
+// Helpers:
 import ImgURLGen from "../../Utils/ImgUrlGen"
 
 // CSS :
@@ -21,13 +24,32 @@ const CourseDetail = () => {
   let Data = Location.state?.data
   let AllCourses = Location.state?.allCourses
 
+  const [selectedLesson, setSelectedLesson] = useState(0)
+  const [AllQuizzes, setAllQuizzes] = useState([])
 
   const ViewDetails = (course) => {
     Navigate("/course", { state: { data: course, allCourses: AllCourses } })
   }
+  const ViewQuiz = (quiz) => {
+    if (quiz?.type == "flash" || quiz?.type == "puzzle") {
+      Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
+    } else {
+      Navigate("/mcqs", { state: quiz })
+    }
+  }
 
+
+  const fetchCourses = async () => {
+    try {
+      const response = await GetAllPublicCoursesAPI();
+      setAllQuizzes(response.data?.result || [])
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
   useEffect(() => {
     window.scrollTo(0, 0)
+    fetchCourses()
   }, [])
 
   return (
@@ -50,16 +72,18 @@ const CourseDetail = () => {
               <span>“</span> {Data?.quote} <span>”</span>
             </blockquote>
             <div className="courseContent" dangerouslySetInnerHTML={{ __html: Data?.detail }} />
-            {/* <p>
-              Quran is the holy book of Islam. It is written in Arabic and is the revealed word of Allah (God) to the
-              prophet Muhammad. Quran consists of 114 chapters that are each subdivided into verses...
-            </p>
+            {
+              Data?.lessons && Data?.lessons?.length >= 1 &&
+              <>
+                <div className="lessonList">
+                  {
+                    Data?.lessons?.map((data, index) => <> <div key={index} onClick={() => setSelectedLesson(index)} style={selectedLesson == index ? { backgroundColor: "rgb(71, 250, 198)" } : {}} className="lessonNumber"> Lesson {index + 1} </div> </>)
+                  }
+                </div>
+                <div className="courseContent" dangerouslySetInnerHTML={{ __html: Data?.lessons[selectedLesson] }} />
 
-            <h2>The Benefits Of Learning Quran Online</h2>
-
-            <p>
-              One of the benefits of learning the Quran online is that you will learn at your own pace...
-            </p> */}
+              </>
+            }
           </div>
         </div>
 
@@ -71,6 +95,17 @@ const CourseDetail = () => {
             {
               Data?.categories?.map((cat, index) => <div key={index} className="tag">{cat?.name}</div>)
             }
+          </div>
+          <div className="popular-posts">
+            <div className="tags">Related Quiz</div>
+            <div className="popular-post" onClick={() => ViewQuiz(Data?.quiz)}>
+              <img src={Data?.quiz?.image && ImgURLGen(Data?.quiz?.image)} alt="Popular post" />
+              <div className="popular-post-content">
+                <h4>{Data?.quiz?.title}</h4>
+                <p>{Data?.quiz?.quote?.length >= 49 ? `${Data?.quiz?.quote?.slice(0, 49)} ...` : Data?.quiz?.quote}</p>
+                <span>Sep 27, 2024</span>
+              </div>
+            </div>
           </div>
           <div className="popular-posts">
             <div className="tags">Recent Added Courses</div>

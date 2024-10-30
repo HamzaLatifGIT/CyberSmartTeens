@@ -79,7 +79,7 @@ const App = () => {
     }
 
     const ViewDetails = (quiz) => {
-        if (quiz?.type == "flash" || data?.type == "puzzle") {
+        if (quiz?.type == "flash" || quiz?.type == "puzzle") {
             Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
         } else {
             Navigate("/mcqs", { state: quiz })

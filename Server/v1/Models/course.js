@@ -29,6 +29,10 @@ const CourseSchema = new mongoose.Schema({
         unique: true,
         required: [true, "Slug is Required"]
     },
+    quiz: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "quiz"
+    },
     categories: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "CategoryModel"
@@ -69,7 +73,7 @@ const CourseSchema = new mongoose.Schema({
 
 // BuildIn Methods :
 CourseSchema.pre("find", function (next) {
-    this.populate("auther categories comments.UserData")
+    this.populate("auther categories quiz comments.UserData")
     next();
 })
 

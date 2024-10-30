@@ -68,6 +68,34 @@
                 color: black
             }
         }
+
+        .lessonList {
+            display: flex;
+            background-color: rgba(128, 128, 128, 0.3);
+            padding: .5rem;
+            border-radius: .2rem;
+            gap: 1rem;
+            margin: 1.5rem 0;
+
+            .lessonNumber {
+                background-color: #fff;
+                cursor: pointer;
+                padding: .2rem .4rem;
+                border-radius: .2rem;
+                font-size: .9rem;
+                width: 80px;
+                text-align: center;
+
+                &:hover {
+                    background-color: rgb(71, 250, 198);
+                }
+
+            }
+        }
+
+        .courseContent {
+            padding: 0 1rem;
+        }
     }
 }
 
@@ -89,7 +117,7 @@
         min-height: 50px;
     }
 
-    .tagsList{
+    .tagsList {
         display: flex;
         flex-wrap: wrap;
         gap: .5rem;
