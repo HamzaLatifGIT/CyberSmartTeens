@@ -69,7 +69,7 @@ const QuizSchema = new mongoose.Schema({
         type: String,
         require: true,
         enum: {
-            values: ["flash", "mcq", "puzzle"],
+            values: ["flash", "mcq", "puzzle", "true", "open"],
             message: "Type must Be flash, mcq",
         },
     },

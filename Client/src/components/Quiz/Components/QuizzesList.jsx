@@ -41,7 +41,7 @@ const QuizzesList = () => {
     const ShowDetails = (data) => {
         if (data?.type == "flash" || data?.type == "puzzle") {
             Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
-        } else if (data?.type == "mcq") {
+        } else if (data?.type == "mcq" || data?.type == "true") {
             Navigate("/mcqs", { state: data })
         }
     }

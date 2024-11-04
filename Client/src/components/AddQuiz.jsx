@@ -66,6 +66,7 @@ const PuzzleSampleCode = `{
       "6": { "clue": "Virus", "answer": "VIRUS", "row": 1, "col": 5 }
     }
 }`
+const QuizTypes = [{ value: "mcq", label: "MCQ" }, { value: "flash", label: "Flash Cards" }, { value: "puzzle", label: "Puzzle" }, { value: "true", label: "True / False" }, { value: "open", label: "Open Question Answer" }]
 export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
 
     const crosswordRef = useRef();
@@ -496,7 +497,7 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                                         value={formData?.type}
                                         onChange={(e) => enterFormData({ target: { name: "type", value: e } })}
                                         getPopupContainer={() => document.getElementById('quiztype')}
-                                        options={[{ value: "mcq", label: "MCQ" }, { value: "flash", label: "Flash Cards" }, { value: "puzzle", label: "Puzzle" }]}
+                                        options={QuizTypes}
                                     />
                                 </div>
                             </div>
@@ -553,7 +554,6 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                                     </div>
                                     <div className="descriptionPara">
                                         <Table dataSource={questions} columns={columns} rowKey="title" />
-
                                     </div>
                                 </div>
                         }
@@ -585,7 +585,25 @@ export default function AddCourse({ allQuizes, selectedQuiz, closeSubPage }) {
                         <div className="Inputfield">
                             <div className="field1 field">
                                 <div className="lableName">Answer</div>
-                                <Input prefix={<AiOutlineSolution />} size='large' className='blogInput' type="text" placeholder='Answer' name="answer" onChange={enterQuestionData} value={questionData?.answer} />
+                                {
+                                    formData.type == "true" ?
+                                        <>
+                                            <div className="inputselect">
+                                                <div className="selecticon"><AiOutlineSolution size={24} className='iconInfo' /></div>
+                                                <Select
+                                                    placeholder='True or False'
+                                                    variant={"borderless"}
+                                                    className='selector'
+                                                    value={questionData?.answer || null}
+                                                    onChange={(e) => enterQuestionData({ target: { name: "answer", value: e } })}
+                                                    getPopupContainer={() => document.getElementById('quiztype')}
+                                                    options={[{ value: "true", label: "True" }, { value: "false", label: "False" }]}
+                                                />
+                                            </div>
+                                        </>
+                                        :
+                                        <Input prefix={<AiOutlineSolution />} size='large' className='blogInput' type="text" placeholder='Answer' name="answer" onChange={enterQuestionData} value={questionData?.answer} />
+                                }
                             </div>
                         </div>
                         {

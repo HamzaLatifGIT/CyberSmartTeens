@@ -95,26 +95,21 @@ function IndexMcqs() {
             <div className="McqDetail">
                 <div className="McqContainer">
                     <h1 style={{ display: "flex", justifyContent: "center" }}>
-                        Cyber Security MCQS
+                        Cyber Security {quizData.type}
                     </h1>
                     {questions.map((q, index) => (
-                        <MCQQuestion
-                            key={index}
-                            question={q.question}
-                            options={q.options}
-                            correctAnswer={q.correctAnswer}
-                            selectedData={selectedData[index]}
-                            onAnswerChange={(option) =>
-                                handleAnswerChange(
-                                    index,
-                                    option,
-                                    q.question,
-                                    q.options,
-                                    q.correctAnswer
-                                )
-                            }
-                        />
-                    ))}
+  <MCQQuestion
+    key={index}
+    question={q.question}
+    options={quizData.type === 'mcq' ? q.options : ['true', 'false']}
+    correctAnswer={q.correctAnswer}
+    selectedData={selectedData[index]}
+    onAnswerChange={(option) =>
+      handleAnswerChange(index, option, q.question, q.options, q.correctAnswer)
+    }
+  />
+))}
+
                     <div style={{ display: "flex", justifyContent: "center" }}>
                         <button className="btn" onClick={handleSubmit}>
                             Submit
