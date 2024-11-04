@@ -12,7 +12,7 @@ import Quiz from './Quiz';
 import { IoIosArrowForward } from "react-icons/io";
 import logo from "../assets/zeropark-logo-color-cm.svg";
 import { RiProfileFill, RiDashboardFill } from "react-icons/ri";
-import { MdLibraryBooks, MdQuiz, MdSettingsApplications } from "react-icons/md";
+import { MdLibraryBooks, MdQuiz, MdSettingsApplications, MdSubject } from "react-icons/md";
 import { FaListAlt } from "react-icons/fa";
 import resposivelogo from '../assets/Untitled (4).svg'
 
@@ -119,9 +119,19 @@ const MyAccount = () => {
                                 </NavLink>
                             </li>
                         </ul>
+                        <ul>
+                            <li>
+                                <NavLink
+                                    to="subjective"
+                                    className={({ isActive }) => (isActive ? "active" : "")}
+                                >
+                                    <div className="flex"> <MdSubject size={20} /> <span> Subjectives</span></div> <IoIosArrowForward />
+                                </NavLink>
+                            </li>
+                        </ul>
                     </>
                 }
-             
+
             </div>
             <div className="content">
                 <Routes>
@@ -130,6 +140,7 @@ const MyAccount = () => {
                     <Route path="courses" element={<Courses />} />
                     <Route path="list" element={<List />} />
                     <Route path="quiz" element={<Quiz />} />
+                    <Route path="subjective" element={<Quiz />} />
                     <Route path="addCourse" element={<AddCourse />} />
                     <Route path="*" element={<Navigate to="profile" />} />
                 </Routes>

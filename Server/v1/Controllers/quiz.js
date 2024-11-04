@@ -1,5 +1,6 @@
 const express = require("express");
 const QuizModel = require("../Models/quiz");
+const SubjectiveQuizModel = require("../Models/subjectiveQuizzes");
 const UserModel = require("../Models/users.model")
 const { uploadFile } = require("../../Utilities/uploader");
 
@@ -227,4 +228,32 @@ const AttemptQuiz = async (req, res) => {
     }
 }
 
-module.exports = { addQuiz, getAllQuiz, getPublicQuiz, getQuizById, userReview, userComment, reviewQuiz, updateQuizById, deleteQuizById, AttemptQuiz };
+
+const GetSubjectiveQuizzes = async (req, res) => {
+    const currentUser = req.UserData
+    try {
+        const result = await SubjectiveQuizModel.find()
+        return res.status(200).json({ message: "Operation Successful", result })
+    } catch (err) {
+        res.status(400).json({ message: "Server Error", err })
+    }
+}
+
+const SubjectiveQuiz = async (req, res) => {
+    const currentUser = req.UserData
+    let AttemptData = req.body;
+    try {
+        const FindOne = await QuizModel.findById(AttemptData?.quizData)
+        if (!FindOne) {
+            return res.status(400).json({ message: "Not Found" })
+        }
+
+        AttemptData.studentData = currentUser?._id
+        let SubjectiveQuizData = await SubjectiveQuizModel.create(AttemptData)
+        return res.status(200).json({ message: "Operation Successful" })
+    } catch (err) {
+        res.status(400).json({ message: "Server Error", err })
+    }
+}
+
+module.exports = { addQuiz, getAllQuiz, getPublicQuiz, getQuizById, userReview, userComment, reviewQuiz, updateQuizById, deleteQuizById, AttemptQuiz, SubjectiveQuiz, GetSubjectiveQuizzes };

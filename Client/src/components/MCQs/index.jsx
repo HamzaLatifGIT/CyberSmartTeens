@@ -6,6 +6,7 @@ import { Modal, Button } from "antd";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import MCQQuestion from "./MCQs";
+import SubjectiveQuestion from "./Subjectives";
 import { attemptQuiz } from "../../Api/quiz";
 import toast from "react-hot-toast";
 
@@ -26,6 +27,8 @@ function IndexMcqs() {
             correctAnswer: q.correctAnswer,
         }))
     );
+
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (quizData) {
@@ -84,6 +87,22 @@ function IndexMcqs() {
             toast.success(res.message);
         }
     };
+    const handleSubmitOpenQuestions = async () => {
+        setLoading(true)
+        const params = {
+            correct: 0,
+            wrong: 0,
+            quizData: quizData?._id,
+            attempts: selectedData,
+        };
+        const res = await attemptQuiz(params);
+        if (res.error != null) {
+            toast.error(res.error);
+        } else {
+            toast.success("Quiz Submitted Success");
+        }
+        setLoading(false)
+    };
 
     const handleModalClose = () => {
         setIsModalVisible(false);
@@ -95,23 +114,36 @@ function IndexMcqs() {
             <div className="McqDetail">
                 <div className="McqContainer">
                     <h1 style={{ display: "flex", justifyContent: "center" }}>
-                        Cyber Security {quizData.type}
+                        Cyber Security {quizData.type == "mcq" ? "MCQs" : quizData.type == "open" ? "Subjective" : "True / False"}
                     </h1>
                     {questions.map((q, index) => (
-  <MCQQuestion
-    key={index}
-    question={q.question}
-    options={quizData.type === 'mcq' ? q.options : ['true', 'false']}
-    correctAnswer={q.correctAnswer}
-    selectedData={selectedData[index]}
-    onAnswerChange={(option) =>
-      handleAnswerChange(index, option, q.question, q.options, q.correctAnswer)
-    }
-  />
-))}
+                        quizData.type == "open" ?
+                            <SubjectiveQuestion
+                                key={index}
+                                number={index}
+                                question={q.question}
+                                options={q.options}
+                                correctAnswer={q.correctAnswer}
+                                selectedData={selectedData[index]}
+                                onAnswerChange={(option) =>
+                                    handleAnswerChange(index, option, q.question, q.options, q.correctAnswer)
+                                }
+                            />
+                            :
+                            <MCQQuestion
+                                key={index}
+                                question={q.question}
+                                options={quizData.type === 'mcq' ? q.options : ['true', 'false']}
+                                correctAnswer={q.correctAnswer}
+                                selectedData={selectedData[index]}
+                                onAnswerChange={(option) =>
+                                    handleAnswerChange(index, option, q.question, q.options, q.correctAnswer)
+                                }
+                            />
+                    ))}
 
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                        <button className="btn" onClick={handleSubmit}>
+                        <button className="btn" onClick={quizData?.type == "open" ? handleSubmitOpenQuestions : handleSubmit}>
                             Submit
                         </button>
                     </div>
@@ -125,15 +157,6 @@ function IndexMcqs() {
                             }
                         </div>
                     </div>
-                    {/* <div className="tags">Score</div> */}
-                    {/* <div className="detail">
-                        <div>
-                            <strong>Total Mcqs:</strong> <span>{questions.length}</span>
-                        </div>
-                        <div>
-                            <strong>Attempts:</strong> <span>{correct}</span>
-                        </div>
-                    </div> */}
                 </div>
             </div>
 

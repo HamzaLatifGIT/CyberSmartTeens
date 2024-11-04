@@ -34,7 +34,7 @@ function Topics() {
   const ShowDetails = (data) => {
     if (data?.type == "flash" || data?.type == "puzzle") {
       Navigate("/card", { state: data })
-    } else if (data?.type == "mcq" || data?.type == "true") {
+    } else if (data?.type == "mcq" || data?.type == "open" || data?.type == "true") {
       Navigate("/mcqs", { state: data })
     }
   }
