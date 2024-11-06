@@ -7,6 +7,7 @@ import Settings from './Settings';
 import Profile from './Profile';
 import Courses from './Courses';
 import Quiz from './Quiz';
+import Subjectives from './Subjectives';
 
 // Assets | ICONS:
 import { IoIosArrowForward } from "react-icons/io";
@@ -140,7 +141,7 @@ const MyAccount = () => {
                     <Route path="courses" element={<Courses />} />
                     <Route path="list" element={<List />} />
                     <Route path="quiz" element={<Quiz />} />
-                    <Route path="subjective" element={<Quiz />} />
+                    <Route path="subjective" element={<Subjectives />} />
                     <Route path="addCourse" element={<AddCourse />} />
                     <Route path="*" element={<Navigate to="profile" />} />
                 </Routes>

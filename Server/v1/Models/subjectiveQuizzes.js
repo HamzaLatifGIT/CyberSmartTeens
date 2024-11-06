@@ -19,7 +19,8 @@ const SubjectiveQuizSchema = new mongoose.Schema({
         question: String,
         options: Array,
         correctAnswer: String,
-        attempt: String
+        attempt: String,
+        isCorrect: Boolean
     }],
 
     status: {

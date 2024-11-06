@@ -170,4 +170,76 @@ const attemptQuiz = async (formData) => {
     return resolved;
 }
 
-export { GetAllPublicQuizesAPI, GetAllQuizesAPI, CreatQuizAPI, ApproveQuizAPI, DeleteQuizAPI, UpdateQuizAPI, attemptQuiz };
+
+const SubjectiveQuizAttemptAPI = async (formData) => {
+    let resolved = {
+        error: null,
+        data: null
+    }
+
+    try {
+        let res = await axios({
+            url: `/quiz/subjective`,
+            method: "POST",
+            data: formData,
+            headers: GetAuthToken()
+        })
+        resolved.data = res.data
+    } catch (err) {
+        if (err && err.response && err?.response?.data?.message) {
+            resolved.error = err.response.data.message
+        } else {
+            resolved.error = "Something went Wrong"
+        }
+    }
+    return resolved;
+}
+
+const GetAllSubjectivesAPI = async () => {
+    let resolved = {
+        error: null,
+        data: null
+    }
+
+    try {
+        let res = await axios({
+            url: "/quiz/subjective",
+            method: "GET",
+            headers: GetAuthToken()
+        })
+        resolved.data = res.data
+    } catch (err) {
+        if (err && err.response && err?.response?.data?.message) {
+            resolved.error = err.response.data.message
+        } else {
+            resolved.error = "Something went Wrong"
+        }
+    }
+    return resolved;
+}
+
+const SubjectivesQuizResultAPI = async (data) => {
+    let resolved = {
+        error: null,
+        data: null
+    }
+
+    try {
+        let res = await axios({
+            url: "/quiz/subjective/result",
+            method: "POST",
+            data,
+            headers: GetAuthToken()
+        })
+        resolved.data = res.data
+    } catch (err) {
+        if (err && err.response && err?.response?.data?.message) {
+            resolved.error = err.response.data.message
+        } else {
+            resolved.error = "Something went Wrong"
+        }
+    }
+    return resolved;
+}
+
+export { GetAllPublicQuizesAPI, GetAllQuizesAPI, CreatQuizAPI, ApproveQuizAPI, DeleteQuizAPI, UpdateQuizAPI, attemptQuiz, GetAllSubjectivesAPI, SubjectiveQuizAttemptAPI, SubjectivesQuizResultAPI };

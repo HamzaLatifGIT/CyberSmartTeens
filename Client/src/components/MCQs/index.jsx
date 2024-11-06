@@ -7,7 +7,7 @@ import Navbar from "../Navbar";
 import Footer from "../Footer";
 import MCQQuestion from "./MCQs";
 import SubjectiveQuestion from "./Subjectives";
-import { attemptQuiz } from "../../Api/quiz";
+import { attemptQuiz, SubjectiveQuizAttemptAPI } from "../../Api/quiz";
 import toast from "react-hot-toast";
 
 function IndexMcqs() {
@@ -95,11 +95,14 @@ function IndexMcqs() {
             quizData: quizData?._id,
             attempts: selectedData,
         };
-        const res = await attemptQuiz(params);
+        const res = await SubjectiveQuizAttemptAPI(params);
         if (res.error != null) {
             toast.error(res.error);
         } else {
             toast.success("Quiz Submitted Success");
+            setTimeout(() => {
+                window.location.href = "/"
+            }, 1500);
         }
         setLoading(false)
     };

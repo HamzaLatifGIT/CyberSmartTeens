@@ -140,6 +140,7 @@ body {
   padding: .5rem 3px;
 }
 
+
 .QuizModal {
   .InputFields {
     display: flex;
@@ -152,6 +153,22 @@ body {
       font-size: 14px;
       font-weight: 400;
       padding: .5rem 3px;
+    }
+
+    .question {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .answer {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      i {
+        width: fit-content;
+      }
     }
 
     .Inputfield {
