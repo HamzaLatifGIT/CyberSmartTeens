@@ -58,10 +58,10 @@ const Quizes = () => {
       render: (text) => new Date(text).toLocaleDateString(), // Formatting the date
     },
     {
-      title: 'No of Questions',
-      dataIndex: 'questions',
-      key: 'questions',
-      render: (questions) => questions.length, // Formatting the date
+      title: 'Types',
+      dataIndex: 'types',
+      key: 'types',
+      render: (types) => types?.length >= 1 && types.join(" , "), // Formatting the date
     },
     {
       title: 'Actions',

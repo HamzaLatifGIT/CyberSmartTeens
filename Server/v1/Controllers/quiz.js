@@ -14,14 +14,16 @@ const addQuiz = async (req, res) => {
     data.auther = currentUser?._id
 
     try {
-        if (!data.title || data.title == "" || !data.type || data.type == "" || !req.file || req.file == "") {
+        if (!data.title || data.title == "" || !data.types || data.types == "" || !req.file || req.file == "") {
             return res.status(400).json({ message: "Required Fields Missing" })
         }
         data.image = await uploadFile(req.file, data?.image?.url || null);
-        if (req.body?.questions) {
-            data.questions = JSON.parse(req.body.questions)
+        if (req.body?.types?.length >= 1) {
+            data.types = JSON.parse(req.body.types)
         }
-        console.log(typeof data.questions);
+        if (req.body?.quizzes?.length >= 1) {
+            data.quizzes = JSON.parse(req.body.quizzes)
+        }
 
         const newData = new QuizModel(data)
         await newData.save()
@@ -178,8 +180,11 @@ const updateQuizById = async (req, res) => {
                 data.image = await uploadFile(req.file, data?.image?.url || null);
             }
         }
-        if (req.body?.questions) {
-            data.questions = JSON.parse(req.body.questions)
+        if (req.body?.types?.length >= 1) {
+            data.types = JSON.parse(req.body.types)
+        }
+        if (req.body?.quizzes?.length >= 1) {
+            data.quizzes = JSON.parse(req.body.quizzes)
         }
         // data.status = "pending";
         const result = await QuizModel.findByIdAndUpdate(QuizId, data, { new: true });

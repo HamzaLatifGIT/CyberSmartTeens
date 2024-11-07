@@ -134,9 +134,9 @@ const App = () => {
                             </>
                     }
                     <div className="post-content">
-                        <blockquote className="quote">
+                        {/* <blockquote className="quote">
                             <span>“</span> {CardsState?.quote} <span>”</span>
-                        </blockquote>
+                        </blockquote> */}
                         <div className="courseContent" dangerouslySetInnerHTML={{ __html: CardsState?.detail }} />
                     </div>
                 </div>

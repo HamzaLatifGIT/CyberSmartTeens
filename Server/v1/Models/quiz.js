@@ -12,6 +12,18 @@ const QuestionsSchema = new mongoose.Schema({
     },
     answer: String,
 }, { _id: false })
+const QuizzesSchema = new mongoose.Schema({
+    title: String,
+    type: {
+        type: String,
+        require: true,
+        enum: {
+            values: ["flash", "mcq", "puzzle", "true", "open"],
+            message: "Type must Be flash, mcq",
+        },
+    },
+    questions: [QuestionsSchema],
+}, { _id: false })
 const QuizSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -40,7 +52,7 @@ const QuizSchema = new mongoose.Schema({
         unique: true,
         required: [true, "Slug is Required"]
     },
-    questions: [QuestionsSchema],
+    quizzes: [QuizzesSchema],
     puzzleData: String,
     categories: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -65,14 +77,14 @@ const QuizSchema = new mongoose.Schema({
             default: Date.now
         }
     }],
-    type: {
+    types: [{
         type: String,
         require: true,
         enum: {
             values: ["flash", "mcq", "puzzle", "true", "open"],
             message: "Type must Be flash, mcq",
         },
-    },
+    }],
     status: {
         type: String,
         enum: {
