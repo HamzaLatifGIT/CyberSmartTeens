@@ -38,11 +38,12 @@ function Dashboard() {
 
 
   const handleStartQuiz = (data) => {
-    if (data?.type == "flash" || data?.type == "puzzle") {
-      Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
-    } else if (data?.type == "mcq" || data?.type == "open" || data?.type == "true") {
-      Navigate("/mcqs", { state: data })
-    }
+    // if (data?.type == "flash" || data?.type == "puzzle") {
+    //   Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
+    // } else if (data?.type == "mcq" || data?.type == "open" || data?.type == "true") {
+    //   Navigate("/mcqs", { state: data })
+    // }
+    Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
   }
   const quizColumns = [
     {
@@ -57,16 +58,16 @@ function Dashboard() {
       render: (_, record) => (record?.categories?.map(cat => cat?.name)).join(",")
     },
     {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
-      render: (_, record) => (record?.type?.toLocaleUpperCase())
+      title: 'Types',
+      dataIndex: 'types',
+      key: 'types',
+      render: (_, record) => (record?.types?.join(" , ")?.toLocaleUpperCase())
     },
     {
-      title: 'Number of Questions',
+      title: 'Number of Quizzes',
       dataIndex: 'questions',
       key: 'questions',
-      render: (_, record) => record?.questions?.length || 0
+      render: (_, record) => record?.quizzes?.length || 0
     },
     {
       title: 'Actions',

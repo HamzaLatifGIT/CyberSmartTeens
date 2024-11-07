@@ -23,7 +23,7 @@ const QuizzesSchema = new mongoose.Schema({
         },
     },
     questions: [QuestionsSchema],
-}, { _id: false })
+})
 const QuizSchema = new mongoose.Schema({
     title: {
         type: String,

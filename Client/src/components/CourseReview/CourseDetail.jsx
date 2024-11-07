@@ -31,11 +31,12 @@ const CourseDetail = () => {
     Navigate("/course", { state: { data: course, allCourses: AllCourses } })
   }
   const ViewQuiz = (quiz) => {
-    if (quiz?.type == "flash" || quiz?.type == "puzzle") {
-      Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
-    } else if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
-      Navigate("/mcqs", { state: quiz })
-    }
+    // if (quiz?.type == "flash" || quiz?.type == "puzzle") {
+    //   Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
+    // } else if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
+    //   Navigate("/mcqs", { state: quiz })
+    // }
+    Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
   }
 
 

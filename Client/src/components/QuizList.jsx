@@ -32,11 +32,12 @@ function Topics() {
 
 
   const ShowDetails = (data) => {
-    if (data?.type == "flash" || data?.type == "puzzle") {
-      Navigate("/card", { state: data })
-    } else if (data?.type == "mcq" || data?.type == "open" || data?.type == "true") {
-      Navigate("/mcqs", { state: data })
-    }
+    // if (data?.type == "flash" || data?.type == "puzzle") {
+    //   Navigate("/card", { state: data })
+    // } else if (data?.type == "mcq" || data?.type == "open" || data?.type == "true") {
+    //   Navigate("/mcqs", { state: data })
+    // }
+    Navigate("/card", { state: { data , AllQuizzes: courses } })
   }
 
   useEffect(() => {
@@ -116,7 +117,7 @@ function Topics() {
                       <h4>Category:</h4> <p> {course?.categories?.map(cat => cat?.name).join(" , ") || 'Course Categories'} </p>
                     </div>
                     <div className="title">
-                      <h4>Type:</h4> <p> {course?.type?.toLocaleUpperCase() || 'Course Categories'} </p>
+                      <h4>Types:</h4> <p> {course?.types?.join(" , ")?.toLocaleUpperCase() || 'Course Categories'} </p>
                     </div>
                     <div className="title">
                       <h4>Details:</h4> <p> {course?.quote.length > 78 ? `${course?.quote.slice(0, 78)} ...` : course?.quote || 'Course description goes here.'} </p>

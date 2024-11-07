@@ -151,7 +151,7 @@ function IndexMcqs() {
                         </button>
                     </div>
                 </div>
-                <div className="side-dashboard">
+                {/* <div className="side-dashboard">
                     <div className="tags">Categories</div>
                     <div className="tagsList">
                         <div className="tagsList">
@@ -160,7 +160,7 @@ function IndexMcqs() {
                             }
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <Modal

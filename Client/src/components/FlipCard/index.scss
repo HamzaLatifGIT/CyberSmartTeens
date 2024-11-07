@@ -1,4 +1,4 @@
-.FlashCardContainer {
+.QuizContainer {
     display: flex;
     gap: 20px;
     margin: 0 auto;
@@ -6,7 +6,7 @@
     max-width: 1200px;
 }
 
-.FlashCardBox {
+.QuizBox {
     flex: 3;
     background-color: #fff;
     padding: 20px;
@@ -45,6 +45,59 @@
         font-size: 24px;
         margin-bottom: 20px;
         font-weight: bold;
+    }
+
+    .Quizzes {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+    }
+
+    .FlashCardBox,
+    .MCQBox,
+    .TrueFalseBox,
+    .OpenQuestionBox {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+
+        .title {
+            text-align: center;
+            font-size: 1.7rem;
+            font-weight: 500;
+            background-color: rgb(71, 250, 198);
+            padding: 1rem;
+            border-radius: .3rem;
+        }
+
+        .FlashCard {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            .subTitle {
+                font-size: 1.5rem;
+                color: gray;
+            }
+        }
+
+        .MCQ,
+        .TrueFalse,
+        .OpenQuestion {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(128, 128, 128, 0.3);
+            padding: .5rem;
+            border-radius: .3rem;
+
+            .subTitle {
+                font-size: 1.2rem;
+                color: black;
+            }
+
+        }
     }
 
     .post-content {

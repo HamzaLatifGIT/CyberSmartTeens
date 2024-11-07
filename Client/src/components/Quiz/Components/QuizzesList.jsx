@@ -6,8 +6,6 @@ import { Card, Select, Skeleton, Space } from "antd";
 import { Button, Rate } from 'antd';
 
 // Assets | ICONS :
-import { BsBag } from 'react-icons/bs';
-import { Bag2, Sort } from 'iconsax-react';
 import { CaretDownOutlined } from "@ant-design/icons";
 
 // APIs :

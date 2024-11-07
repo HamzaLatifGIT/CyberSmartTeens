@@ -27,6 +27,9 @@ const App = () => {
     console.log(QuizData);
 
     const [FlashCardsData, SetFlashCardsData] = useState([])
+    const [TrueFalseData, SetTrueFalseData] = useState([])
+    const [OpenQuestionsData, SetOpenQuestionsData] = useState([])
+    const [MCQsData, SetMCQsData] = useState([])
 
 
     const ViewDetails = (quiz) => {
@@ -37,15 +40,40 @@ const App = () => {
         // }
         Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
     }
+    const ViewAttemptDetails = (quiz) => {
+        if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
+            Navigate("/mcqs", { state: quiz })
+        }
+    }
 
     useEffect(() => {
         if (QuizData) {
+            let FindFlashCardsQuizzes = QuizData?.quizzes?.filter(data => data?.type == "flash")
+            let FindTrueFalseQuizzes = QuizData?.quizzes?.filter(data => data?.type == "true")
+            let FindOpenQuestionQuizzes = QuizData?.quizzes?.filter(data => data?.type == "open")
+            let FindMCQQuizzes = QuizData?.quizzes?.filter(data => data?.type == "mcq")
 
-            let FindFlashCardsQuizzes = QuizData?.quizzes?.find(data => data?.type == "flash")
             if (FindFlashCardsQuizzes?.length >= 1) {
                 SetFlashCardsData(FindFlashCardsQuizzes)
             } else {
                 SetFlashCardsData([])
+            }
+
+            if (FindTrueFalseQuizzes?.length >= 1) {
+                SetTrueFalseData(FindTrueFalseQuizzes)
+            } else {
+                SetTrueFalseData([])
+            }
+
+            if (FindOpenQuestionQuizzes?.length >= 1) {
+                SetOpenQuestionsData(FindOpenQuestionQuizzes)
+            } else {
+                SetOpenQuestionsData([])
+            }
+            if (FindMCQQuizzes?.length >= 1) {
+                SetMCQsData(FindMCQQuizzes)
+            } else {
+                SetMCQsData([])
             }
         }
     }, [QuizData])
@@ -56,32 +84,105 @@ const App = () => {
     return (
         <>
             <Navbar />
-            <div className="FlashCardContainer">
-                <div className="FlashCardBox">
+            <div className="QuizContainer">
+                <div className="QuizBox">
                     <div className="post-header">
                         <div className="date">PUBLISHED ON: Sep 27, 2024</div>
                     </div>
                     <h1 className="post-title">{QuizData?.title}</h1>
-                    {
-                        FlashCardsData?.length >= 1 &&
-                        <>
-                            <div className="flashCardBox">
-                                <div className="title"> FLASH CARDS </div>
-                                {
-                                    FlashCardsData.map((data, index) => {
-                                        return (
-                                            <>
-                                                <div className="subTitle">
-                                                    {data?.title}
-                                                </div>
-                                                <FlashCardContainer key={index} CardsState={data} />
-                                            </>
-                                        )
-                                    })
-                                }
-                            </div>
-                        </>
-                    }
+                    <div className="post-image">
+                        <img src={ImgURLGen(QuizData?.image)} alt="" />
+                    </div>
+                    <div className="Quizzes">
+                        {
+                            FlashCardsData?.length >= 1 &&
+                            <>
+                                <div className="FlashCardBox">
+                                    <div className="title"> FLASH CARDS </div>
+                                    {
+                                        FlashCardsData.map((data, index) => {
+                                            return (
+                                                <>
+                                                    <div className="FlashCard">
+                                                        <div className="subTitle">
+                                                            {data?.title}
+                                                        </div>
+                                                        <FlashCardContainer key={index} CardsState={data} />
+                                                    </div>
+                                                </>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </>
+                        }
+                        {
+                            MCQsData?.length >= 1 &&
+                            <>
+                                <div className="MCQBox">
+                                    <div className="title"> MCQs Quizzes </div>
+                                    {
+                                        MCQsData.map((data, index) => {
+                                            return (
+                                                <>
+                                                    <div className="MCQ">
+                                                        <div className="subTitle">
+                                                            {index + 1}.  {data?.title}
+                                                        </div>
+                                                        <Button className="btn" onClick={() => ViewAttemptDetails(data)}> Attempt </Button>
+                                                    </div>
+                                                </>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </>
+                        }
+                        {
+                            TrueFalseData?.length >= 1 &&
+                            <>
+                                <div className="TrueFalseBox">
+                                    <div className="title"> True-False Quizzes </div>
+                                    {
+                                        TrueFalseData.map((data, index) => {
+                                            return (
+                                                <>
+                                                    <div className="TrueFalse">
+                                                        <div className="subTitle">
+                                                            {data?.title}
+                                                        </div>
+                                                        <Button className="btn" onClick={() => ViewAttemptDetails(data)}> Attempt </Button>
+                                                    </div>
+                                                </>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </>
+                        }
+                        {
+                            OpenQuestionsData?.length >= 1 &&
+                            <>
+                                <div className="OpenQuestionBox">
+                                    <div className="title"> Open / Subjective Quizzes </div>
+                                    {
+                                        OpenQuestionsData.map((data, index) => {
+                                            return (
+                                                <>
+                                                    <div className="OpenQuestion">
+                                                        <div className="subTitle">
+                                                            {index + 1}. {data?.title}
+                                                        </div>
+                                                        <Button className="btn" onClick={() => ViewAttemptDetails(data)}> Attempt </Button>
+                                                    </div>
+                                                </>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </>
+                        }
+                    </div>
                     <div className="post-content">
                         {/* <blockquote className="quote">
                             <span>“</span> {QuizData?.quote} <span>”</span>
