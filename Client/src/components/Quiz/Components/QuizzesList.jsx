@@ -39,11 +39,12 @@ const QuizzesList = () => {
 
 
     const ShowDetails = (data) => {
-        if (data?.type == "flash" || data?.type == "puzzle") {
-            Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
-        } else if (data?.type == "mcq" || data?.type == "open" || data?.type == "true") {
-            Navigate("/mcqs", { state: data })
-        }
+        // if (data?.type == "flash" || data?.type == "puzzle") {
+        //     Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
+        // } else if (data?.type == "mcq" || data?.type == "open" || data?.type == "true") {
+        //     Navigate("/mcqs", { state: data })
+        // }
+        Navigate("/card", { state: { data: data, AllQuizzes: quizzes } })
     }
 
 
@@ -62,7 +63,7 @@ const QuizzesList = () => {
                             // let FilteredCourses = response.data?.result?.filter(course =>
                             //     course?.categories.some(category => category.name == cat)
                             // );
-                            let FilteredQuizes = response.data?.result?.filter(quiz => quiz?.type?.includes(type));
+                            let FilteredQuizes = response.data?.result?.filter(quiz => quiz?.types?.includes(type));
                             setQuizzes(FilteredQuizes);
                         }
                     }
@@ -121,18 +122,8 @@ const QuizzesList = () => {
                 <div className="category-cards container">
                     <div className="flex-heading">
                         <h3>QUIZZES LIST</h3>
-                        <div className="flex gap-2">
+                        {/* <div className="flex gap-2">
                             <div className="mr-3 flex items-center justify-center font-semibold">Sort By : </div>
-                            {/* <Select
-                                labelInValue
-                                onChange={(value) => handleChange(value?.value)}
-                                defaultValue="all"
-                                style={{
-                                    width: 120,
-                                }}
-                                value={cat}
-                                options={allCategories}
-                            /> */}
                             <Select
                                 labelInValue
                                 onChange={(value) => handleChange(value?.value)}
@@ -144,7 +135,7 @@ const QuizzesList = () => {
                                 options={sortOptions}
                             />
 
-                        </div>
+                        </div> */}
                     </div>
                     <div className="items">
                         {loading ? (
@@ -171,7 +162,7 @@ const QuizzesList = () => {
                                                         <h4>Category:</h4> <p> {course?.categories?.map(cat => cat?.name).join(" , ") || 'Course Categories'} </p>
                                                     </div>
                                                     <div className="title">
-                                                        <h4>Type:</h4> <p> {course?.type?.toLocaleUpperCase() || 'Course Categories'} </p>
+                                                        <h4>Type:</h4> <p> {course?.types?.join(" , ").toLocaleUpperCase() || 'Course Categories'} </p>
                                                     </div>
                                                     <div className="title">
                                                         <h4>Details:</h4> <p> {course?.quote.length > 78 ? `${course?.quote.slice(0, 78)} ...` : course?.quote || 'Course description goes here.'} </p>

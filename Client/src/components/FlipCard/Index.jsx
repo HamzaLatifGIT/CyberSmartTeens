@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import BottomNav from "./BottomNav"
-import FlashCard from "./FlashCard"
+import FlashCardContainer from "./FlashCard"
 import CrossWordComponent from "./CrossWordComponent"
 
 import { Grid2 } from "@mui/material"
@@ -21,83 +21,34 @@ const App = () => {
     const Navigate = useNavigate()
     const Location = useLocation()
 
-    const CardsState = Location?.state?.data
+    const QuizData = Location?.state?.data
     const AllQuizzes = Location?.state?.AllQuizzes
 
-    console.log(CardsState);
+    console.log(QuizData);
 
+    const [FlashCardsData, SetFlashCardsData] = useState([])
 
-    const [CardsData, setCardsData] = useState({
-        current: 0, // index of current visible card
-        flipped: false,
-        cards: [
-            {
-                // State is an Array of Flashcards With a Front and Back. The id is the array index
-                id: 0,
-                front: {
-                    title: "Question 1",
-                    content: "What is Redux Toolkit? (click anywhere on the card to flip)"
-                },
-                back: {
-                    title: "",
-                    content:
-                        "Redux Toolkit is the official, opinionated, batteries-included toolset for efficient Redux development and is intended to be the standard way to write Redux logic."
-                }
-            },
-            {
-                // State is an Array of Flashcards With a Front and Back. The id is the array index
-                id: 1,
-                front: {
-                    title: "About This Project",
-                    content:
-                        "This project was built with React, React-Router, Redux, Redux Toolkit, React-Redux & a Custom Designed MaterialUI Theme"
-                },
-                back: {
-                    title: "More info",
-                    content:
-                        "Click the GitHub icon in the top right of the screen to view the source code!"
-                }
-            }
-        ]
-    })
-
-    const Flip = () => {
-        setCardsData({
-            ...CardsData,
-            flipped: !CardsData.flipped
-        })
-    }
-    const Previous = () => {
-        setCardsData({
-            ...CardsData,
-            flipped: false,
-            current: CardsData.current - 1
-        })
-    }
-    const Next = () => {
-        setCardsData({
-            ...CardsData,
-            flipped: false,
-            current: CardsData.current + 1
-        })
-    }
 
     const ViewDetails = (quiz) => {
-        if (quiz?.type == "flash" || quiz?.type == "puzzle") {
-            Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
-        } else if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
-            Navigate("/mcqs", { state: quiz })
-        }
+        // if (quiz?.type == "flash" || quiz?.type == "puzzle") {
+        //     Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
+        // } else if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
+        //     Navigate("/mcqs", { state: quiz })
+        // }
+        Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
     }
 
     useEffect(() => {
-        if (CardsState) {
-            setCardsData({
-                ...CardsData,
-                cards: CardsState?.questions.map((data, index) => ({ id: index, front: { title: `Card No. ${index + 1}`, content: data?.question }, back: { title: `Answer`, content: data?.answer } }))
-            })
+        if (QuizData) {
+
+            let FindFlashCardsQuizzes = QuizData?.quizzes?.find(data => data?.type == "flash")
+            if (FindFlashCardsQuizzes?.length >= 1) {
+                SetFlashCardsData(FindFlashCardsQuizzes)
+            } else {
+                SetFlashCardsData([])
+            }
         }
-    }, [CardsState])
+    }, [QuizData])
     useEffect(() => {
         window.scroll(0, 0);
     }, []);
@@ -110,34 +61,32 @@ const App = () => {
                     <div className="post-header">
                         <div className="date">PUBLISHED ON: Sep 27, 2024</div>
                     </div>
-                    <h1 className="post-title">{CardsState?.title}</h1>
+                    <h1 className="post-title">{QuizData?.title}</h1>
                     {
-                        CardsState?.type == "puzzle" ?
-                            <CrossWordComponent code={CardsState?.puzzleData} />
-                            :
-                            <>
-                                <Grid2 item xs={10} sm={8} md={6} xl={4}>
-                                    <FlashCard
-                                        id={CardsData.current}
-                                        front={CardsData.cards[CardsData.current].front}
-                                        back={CardsData.cards[CardsData.current].back}
-                                        flipped={CardsData.flipped}
-                                        handleFlip={Flip}
-                                    />
-                                </Grid2>
-                                <BottomNav
-                                    nextCard={Next}
-                                    prevCard={Previous}
-                                    current={CardsData?.current}
-                                    length={CardsData?.cards?.length}
-                                />
-                            </>
+                        FlashCardsData?.length >= 1 &&
+                        <>
+                            <div className="flashCardBox">
+                                <div className="title"> FLASH CARDS </div>
+                                {
+                                    FlashCardsData.map((data, index) => {
+                                        return (
+                                            <>
+                                                <div className="subTitle">
+                                                    {data?.title}
+                                                </div>
+                                                <FlashCardContainer key={index} CardsState={data} />
+                                            </>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </>
                     }
                     <div className="post-content">
                         {/* <blockquote className="quote">
-                            <span>“</span> {CardsState?.quote} <span>”</span>
+                            <span>“</span> {QuizData?.quote} <span>”</span>
                         </blockquote> */}
-                        <div className="courseContent" dangerouslySetInnerHTML={{ __html: CardsState?.detail }} />
+                        <div className="courseContent" dangerouslySetInnerHTML={{ __html: QuizData?.detail }} />
                     </div>
                 </div>
                 <div className="sidebar">
@@ -146,7 +95,7 @@ const App = () => {
                     </div>
                     <div className="tagsList">
                         {
-                            CardsState?.categories?.map((cat, index) => <div key={index} className="tag">{cat?.name}</div>)
+                            QuizData?.categories?.map((cat, index) => <div key={index} className="tag">{cat?.name}</div>)
                         }
                     </div>
                     <div className="popular-posts">
