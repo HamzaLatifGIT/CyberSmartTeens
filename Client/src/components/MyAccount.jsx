@@ -7,6 +7,7 @@ import Settings from './Settings';
 import Profile from './Profile';
 import Courses from './Courses';
 import Quiz from './Quiz';
+import FlashCard from '../Pages/Dashboard/FlashCards/index';
 import Subjectives from './Subjectives';
 
 // Assets | ICONS:
@@ -16,6 +17,7 @@ import { RiProfileFill, RiDashboardFill } from "react-icons/ri";
 import { MdLibraryBooks, MdQuiz, MdSettingsApplications, MdSubject } from "react-icons/md";
 import { FaListAlt } from "react-icons/fa";
 import resposivelogo from '../assets/Untitled (4).svg'
+import { IoFlash } from "react-icons/io5";
 
 // Redux :
 import { useSelector } from 'react-redux';
@@ -123,6 +125,16 @@ const MyAccount = () => {
                         <ul>
                             <li>
                                 <NavLink
+                                    to="flash"
+                                    className={({ isActive }) => (isActive ? "active" : "")}
+                                >
+                                    <div className="flex"> <IoFlash size={20} /> <span> FlashCards</span></div>    <IoIosArrowForward />
+                                </NavLink>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>
+                                <NavLink
                                     to="subjective"
                                     className={({ isActive }) => (isActive ? "active" : "")}
                                 >
@@ -141,6 +153,7 @@ const MyAccount = () => {
                     <Route path="courses" element={<Courses />} />
                     <Route path="list" element={<List />} />
                     <Route path="quiz" element={<Quiz />} />
+                    <Route path="flash" element={<FlashCard />} />
                     <Route path="subjective" element={<Subjectives />} />
                     <Route path="addCourse" element={<AddCourse />} />
                     <Route path="*" element={<Navigate to="profile" />} />
