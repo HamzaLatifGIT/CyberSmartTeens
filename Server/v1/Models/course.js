@@ -33,6 +33,10 @@ const CourseSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "quiz"
     },
+    flashCard: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "flashCard"
+    },
     categories: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "CategoryModel"
@@ -73,7 +77,7 @@ const CourseSchema = new mongoose.Schema({
 
 // BuildIn Methods :
 CourseSchema.pre("find", function (next) {
-    this.populate("auther categories quiz comments.UserData")
+    this.populate("auther categories quiz flashCard comments.UserData")
     next();
 })
 

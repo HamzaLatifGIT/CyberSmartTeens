@@ -38,7 +38,7 @@ const App = () => {
         // } else if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
         //     Navigate("/mcqs", { state: quiz })
         // }
-        Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
+        Navigate("/course", { state: { data: quiz, AllQuizzes: AllQuizzes } })
     }
     const ViewAttemptDetails = (quiz) => {
         if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
@@ -47,7 +47,9 @@ const App = () => {
     }
 
     useEffect(() => {
-        if (QuizData) {
+        if (QuizData?.type == "flash") {
+            SetFlashCardsData([QuizData])
+        } else if (QuizData) {
             let FindFlashCardsQuizzes = QuizData?.quizzes?.filter(data => data?.type == "flash")
             let FindTrueFalseQuizzes = QuizData?.quizzes?.filter(data => data?.type == "true")
             let FindOpenQuestionQuizzes = QuizData?.quizzes?.filter(data => data?.type == "open")
@@ -89,10 +91,10 @@ const App = () => {
                     <div className="post-header">
                         <div className="date">PUBLISHED ON: Sep 27, 2024</div>
                     </div>
-                    <h1 className="post-title">{QuizData?.title}</h1>
                     <div className="post-image">
                         <img src={ImgURLGen(QuizData?.image)} alt="" />
                     </div>
+                    <h1 className="post-title">{QuizData?.title}</h1>
                     <div className="Quizzes">
                         {
                             FlashCardsData?.length >= 1 &&

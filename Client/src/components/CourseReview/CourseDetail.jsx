@@ -98,6 +98,17 @@ const CourseDetail = () => {
             }
           </div>
           <div className="popular-posts">
+            <div className="tags">Related FlashCards</div>
+            <div className="popular-post" onClick={() => ViewQuiz(Data?.flashCard)}>
+              <img src={Data?.quiz?.image && ImgURLGen(Data?.flashCard?.image)} alt="Popular post" />
+              <div className="popular-post-content">
+                <h4>{Data?.flashCard?.title}</h4>
+                <p>{Data?.flashCard?.quote?.length >= 49 ? `${Data?.flashCard?.quote?.slice(0, 49)} ...` : Data?.flashCard?.quote}</p>
+                <span>Sep 27, 2024</span>
+              </div>
+            </div>
+          </div>
+          <div className="popular-posts">
             <div className="tags">Related Quiz</div>
             <div className="popular-post" onClick={() => ViewQuiz(Data?.quiz)}>
               <img src={Data?.quiz?.image && ImgURLGen(Data?.quiz?.image)} alt="Popular post" />

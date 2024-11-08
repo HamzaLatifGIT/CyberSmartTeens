@@ -10,11 +10,14 @@ import { FaEye } from 'react-icons/fa';
 import { MdDelete, MdEdit, MdOutlineSubtitles } from "react-icons/md";
 import { FaQuoteLeft } from "react-icons/fa";
 import { BiCategoryAlt } from "react-icons/bi";
+import { IoFlash } from "react-icons/io5";
 
 
 // API's
 import { CreatCoursesAPI, UpdateCourseAPI } from '../Api/course';
 import { GetAllCategoriesAPI, AddCategoryAPI } from '../Api/category';
+import { GetAllQuizesAPI } from '../Api/quiz';
+import { GetAllFlashCardsAPI } from '../Api/flashcard';
 // Helper :
 import { toast } from 'react-hot-toast';
 import ImgURLGEN from '../Utils/ImgUrlGen';
@@ -24,7 +27,6 @@ import ReactQuill from 'react-quill';
 import './style/AddCourse.scss';
 
 import 'react-quill/dist/quill.snow.css';
-import { GetAllQuizesAPI } from '../Api/quiz';
 
 
 
@@ -66,9 +68,11 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
         quote: "",
         slug: "",
         quiz: null,
+        flashCard: null,
         categories: [],
     })
     const [quizzes, setQuizzes] = useState([])
+    const [flashCards, setFlashCards] = useState([])
 
     const [lesson, setLesson] = useState("")
     const [lessons, setLessons] = useState([])
@@ -232,6 +236,14 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
             setQuizzes(quizzes || []);
         }
     };
+    const fetchFlashCards = async () => {
+        const result = await GetAllFlashCardsAPI();
+        if (result.error) {
+            toast.error(result.error);
+        } else {
+            setFlashCards(result?.data?.result || []);
+        }
+    };
 
 
     useEffect(() => {
@@ -241,7 +253,8 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                 quote: selectedCourse?.quote,
                 detail: selectedCourse?.detail,
                 slug: selectedCourse?.slug,
-                quiz: selectedCourse?.quiz,
+                quiz: selectedCourse?.quiz?._id,
+                flashCard: selectedCourse?.flashCard?._id,
                 categories: selectedCourse?.categories.map(cat => cat?._id) || [],
                 // image: selectedCourse?.image
             })
@@ -254,6 +267,7 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                 detail: "",
                 slug: "",
                 quiz: null,
+                flashCard: null,
                 categories: [],
             })
             setLessons([])
@@ -263,6 +277,7 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
     useEffect(() => {
         gettingAllCategories()
         fetchQuizzes();
+        fetchFlashCards();
     }, [])
 
     const handleUploadBlog = async () => {
@@ -515,7 +530,24 @@ export default function AddCourse({ allBlogs, selectedCourse, closeSubPage }) {
                                         options={quizzes && quizzes?.map(quiz => ({ value: quiz?._id, label: quiz?.title }))}
                                     />
                                 </div>
-
+                            </div>
+                            <div className="field1 field" id='category'>
+                                <div className="lableName">FlashCard</div>
+                                <div className="inputselect">
+                                    <div className="selecticon"><IoFlash size={24} className='iconInfo' /></div>
+                                    <Select
+                                        showSearch
+                                        value={formData.flashCard}
+                                        placeholder="Select FlashCard"
+                                        variant={"borderless"}
+                                        className='selector'
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        onChange={(v) => enterFormData({ target: { name: "flashCard", value: v } })}
+                                        options={flashCards && flashCards?.map(flash => ({ value: flash?._id, label: flash?.title }))}
+                                    />
+                                </div>
                             </div>
                         </div>
 

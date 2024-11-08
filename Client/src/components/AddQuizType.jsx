@@ -23,7 +23,7 @@ import 'react-quill/dist/quill.snow.css';
 
 
 
-const QuizTypes = [{ value: "mcq", label: "MCQ" }, { value: "flash", label: "Flash Cards" }, { value: "true", label: "True / False" }, { value: "open", label: "Open Question Answer" }]
+const QuizTypes = [{ value: "mcq", label: "MCQ" }, { value: "true", label: "True / False" }, { value: "open", label: "Open Question Answer" }]
 export default function AddCourseType({ selectedQuizType, closeSubPage, SaveQuizType }) {
 
     const [formData, setFormData] = useState({
