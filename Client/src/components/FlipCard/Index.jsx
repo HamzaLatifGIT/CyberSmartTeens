@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import BottomNav from "./BottomNav"
-import FlashCardContainer from "./FlashCard"
-import CrossWordComponent from "./CrossWordComponent"
+// ANT-D :
+import { Button } from "antd"
 
-import { Grid2 } from "@mui/material"
+// Components :
+import FlashCardContainer from "./FlashCard"
 import Navbar from "../Navbar"
 import Footer from "../Footer"
+
+// APIs :
+// Helpers :
 import ImgURLGen from "../../Utils/ImgUrlGen"
+
+// CSS :
 import "./index.scss"
-import { Button } from "antd"
-import { GrFormPrevious, GrFormNext } from "react-icons/gr";
+import { GetAllPublicQuizesAPI } from "../../Api/quiz"
+import { GetAllPublicCoursesAPI } from "../../Api/course"
+
 
 
 
@@ -22,9 +28,12 @@ const App = () => {
     const Location = useLocation()
 
     const QuizData = Location?.state?.data
-    const AllQuizzes = Location?.state?.AllQuizzes
+    // const AllQuizzes = Location?.state?.AllQuizzes
 
     console.log(QuizData);
+
+    const [AllQuizzes, setAllQuizzes] = useState([])
+    const [AllCourses, setAllCourses] = useState([])
 
     const [FlashCardsData, SetFlashCardsData] = useState([])
     const [TrueFalseData, SetTrueFalseData] = useState([])
@@ -32,18 +41,14 @@ const App = () => {
     const [MCQsData, SetMCQsData] = useState([])
 
 
-    const ViewDetails = (quiz) => {
-        // if (quiz?.type == "flash" || quiz?.type == "puzzle") {
-        //     Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
-        // } else if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
-        //     Navigate("/mcqs", { state: quiz })
-        // }
+    const ViewCourseDetails = (quiz) => {
         Navigate("/course", { state: { data: quiz, AllQuizzes: AllQuizzes } })
     }
-    const ViewAttemptDetails = (quiz) => {
-        if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
-            Navigate("/mcqs", { state: quiz })
-        }
+    const ViewQuizDetails = (quiz) => {
+        Navigate("/card", { state: { data: quiz } })
+    }
+    const ViewAttemptDetails = () => {
+        Navigate("/mcqs", { state: { QuizDetails: QuizData, MCQsData, TrueFalseData, OpenQuestionsData } })
     }
 
     useEffect(() => {
@@ -79,7 +84,26 @@ const App = () => {
             }
         }
     }, [QuizData])
+
+    const getAllQuizzes = async () => {
+        const response = await GetAllPublicCoursesAPI();
+        if (response.error != null) {
+
+        } else {
+            setAllCourses(response?.data?.result || [])
+        }
+    };
+    const getAllCourses = async () => {
+        const response = await GetAllPublicQuizesAPI();
+        if (response.error != null) {
+
+        } else {
+            setAllQuizzes(response?.data?.result || [])
+        }
+    };
     useEffect(() => {
+        getAllQuizzes()
+        getAllCourses()
         window.scroll(0, 0);
     }, []);
 
@@ -131,7 +155,7 @@ const App = () => {
                                                         <div className="subTitle">
                                                             {index + 1}.  {data?.title}
                                                         </div>
-                                                        <Button className="btn" onClick={() => ViewAttemptDetails(data)}> Attempt </Button>
+                                                        {/* <Button className="btn" onClick={() => ViewAttemptDetails(data)}> Attempt </Button> */}
                                                     </div>
                                                 </>
                                             )
@@ -151,9 +175,9 @@ const App = () => {
                                                 <>
                                                     <div className="TrueFalse">
                                                         <div className="subTitle">
-                                                            {data?.title}
+                                                            {index + 1}.  {data?.title}
                                                         </div>
-                                                        <Button className="btn" onClick={() => ViewAttemptDetails(data)}> Attempt </Button>
+                                                        {/* <Button className="btn" onClick={() => ViewAttemptDetails(data)}> Attempt </Button> */}
                                                     </div>
                                                 </>
                                             )
@@ -175,7 +199,7 @@ const App = () => {
                                                         <div className="subTitle">
                                                             {index + 1}. {data?.title}
                                                         </div>
-                                                        <Button className="btn" onClick={() => ViewAttemptDetails(data)}> Attempt </Button>
+                                                        {/* <Button className="btn" onClick={() => ViewAttemptDetails(data)}> Attempt </Button> */}
                                                     </div>
                                                 </>
                                             )
@@ -183,6 +207,10 @@ const App = () => {
                                     }
                                 </div>
                             </>
+                        }
+                        {
+                            [...MCQsData, ...TrueFalseData, ...OpenQuestionsData].length >= 1 &&
+                            <Button className="attemptBtn" onClick={() => ViewAttemptDetails()}> Attempt </Button>
                         }
                     </div>
                     <div className="post-content">
@@ -204,9 +232,9 @@ const App = () => {
                     <div className="popular-posts">
                         <div className="tags">Recent Added Courses</div>
                         {
-                            AllQuizzes?.map((data, index) => {
+                            AllCourses?.map((data, index) => {
                                 return (
-                                    <div className="popular-post" key={index} onClick={() => ViewDetails(data)}>
+                                    <div className="popular-post" key={index} onClick={() => ViewCourseDetails(data)}>
                                         <img src={data?.image && ImgURLGen(data?.image)} alt="Popular post" />
                                         <div className="popular-post-content">
                                             <h4>{data?.title}</h4>
@@ -217,7 +245,24 @@ const App = () => {
                                 )
                             })
                         }
-
+                    </div>
+                    <div className="popular-posts">
+                        <div className="tags">Recent Added Quizzes</div>
+                        {
+                            AllQuizzes?.map((data, index) => {
+                                return (
+                                    data?._id != QuizData?._id &&
+                                    <div className="popular-post" key={index} onClick={() => ViewQuizDetails(data)}>
+                                        <img src={data?.image && ImgURLGen(data?.image)} alt="Popular post" />
+                                        <div className="popular-post-content">
+                                            <h4>{data?.title}</h4>
+                                            <p>{data?.quote?.length >= 49 ? `${data?.quote?.slice(0, 49)} ...` : data?.quote}</p>
+                                            <span>Sep 27, 2024</span>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </div>
             </div>

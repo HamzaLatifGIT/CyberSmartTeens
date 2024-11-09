@@ -22,13 +22,13 @@ const CourseDetail = () => {
   const Location = useLocation();
 
   let Data = Location.state?.data
-  let AllCourses = Location.state?.allCourses
+  // let AllCourses = Location.state?.allCourses
 
   const [selectedLesson, setSelectedLesson] = useState(0)
-  const [AllQuizzes, setAllQuizzes] = useState([])
+  const [AllCourses, setAllCourses] = useState([])
 
   const ViewDetails = (course) => {
-    Navigate("/course", { state: { data: course, allCourses: AllCourses } })
+    Navigate("/course", { state: { data: course } })
   }
   const ViewQuiz = (quiz) => {
     // if (quiz?.type == "flash" || quiz?.type == "puzzle") {
@@ -36,14 +36,14 @@ const CourseDetail = () => {
     // } else if (quiz?.type == "mcq" || quiz?.type == "open" || quiz?.type == "true") {
     //   Navigate("/mcqs", { state: quiz })
     // }
-    Navigate("/card", { state: { data: quiz, AllQuizzes: AllQuizzes } })
+    Navigate("/card", { state: { data: quiz } })
   }
 
 
   const fetchCourses = async () => {
     try {
       const response = await GetAllPublicCoursesAPI();
-      setAllQuizzes(response.data?.result || [])
+      setAllCourses(response.data?.result || [])
     } catch (error) {
       console.error('Error fetching courses:', error);
     }
@@ -124,6 +124,7 @@ const CourseDetail = () => {
             {
               AllCourses?.map((data, index) => {
                 return (
+                  data?._id != Data?._id &&
                   <div className="popular-post" key={index} onClick={() => ViewDetails(data)}>
                     <img src={data?.image && ImgURLGen(data?.image)} alt="Popular post" />
                     <div className="popular-post-content">

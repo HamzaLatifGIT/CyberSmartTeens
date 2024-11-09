@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import "./MCQs.scss";
 
-const MCQQuestion = ({ question, options, correctAnswer, onAnswerChange, selectedData }) => {
+const MCQQuestion = ({ question, options, correctAnswer, onAnswerChange, selectedData, submited }) => {
   const questionData = { question, options, correctAnswer };
   const [showAnswer, setShowAnswer] = useState(false);
 
@@ -14,7 +13,7 @@ const MCQQuestion = ({ question, options, correctAnswer, onAnswerChange, selecte
   };
 
   return (
-    <div className="mcq-question">
+    <div className="mcq-question" style={submited ? { cursor: "no-drop" } : {}}>
       <h2>{question}</h2>
       <ul className="options-list">
         {options.map((option, index) => (

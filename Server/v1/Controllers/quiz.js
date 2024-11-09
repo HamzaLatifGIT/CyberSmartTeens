@@ -220,10 +220,10 @@ const AttemptQuiz = async (req, res) => {
     const currentUser = req.UserData
     let AttemptData = req.body;
     try {
-        const FindOne = await QuizModel.findById(AttemptData?.quizData)
-        if (!FindOne) {
-            return res.status(400).json({ message: "Not Found" })
-        }
+        // const FindOne = await QuizModel.findById(AttemptData?.quizData)
+        // if (!FindOne) {
+        //     return res.status(400).json({ message: "Not Found" })
+        // }
         let FindUSer = await UserModel?.findById(currentUser?._id)
         FindUSer.quizAttempts.push(AttemptData)
         await FindUSer.save();
