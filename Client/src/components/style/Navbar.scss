@@ -136,6 +136,7 @@ $hover-text: #00000080;
                 }
             }
         }
+      
     }
 
     &__auth {
@@ -192,6 +193,7 @@ $hover-text: #00000080;
                 align-items: flex-end;
                 justify-content: center;
                 gap: 0.3rem;
+                
             }
         }
 
@@ -221,4 +223,7 @@ $hover-text: #00000080;
             font-size: 1.5rem;
         }
     }
+   .profile{
+    cursor: pointer;
+   }
 }
