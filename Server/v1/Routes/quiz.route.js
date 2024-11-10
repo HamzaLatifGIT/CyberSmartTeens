@@ -11,6 +11,7 @@ router.use(verifyToken)
 router.post("/", Multer.single("file"), QuizController.addQuiz);
 router.get("/", QuizController.getAllQuiz);
 router.post("/attempt", QuizController.AttemptQuiz);
+router.get("/result", QuizController.GetAllQuizzesResult);
 router.get("/subjective", QuizController.GetSubjectiveQuizzes);
 router.post("/subjective", QuizController.SubjectiveQuiz);
 router.post("/subjective/result", QuizController.SubjectiveQuizResult);

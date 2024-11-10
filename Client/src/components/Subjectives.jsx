@@ -48,7 +48,7 @@ const Quizes = () => {
       title: 'No of Questions',
       dataIndex: 'questions',
       key: 'questions',
-      render: (_, data) => data?.quizData?.questions.length, // Formatting the date
+      render: (_, data) => data?.quizData?.quizzes?.find(quiz => quiz?._id == data?.quizId).questions.length, // Formatting the date
     },
     {
       title: 'Status',

@@ -26,6 +26,7 @@ import { useSelector } from 'react-redux';
 import './style/MyAccount.scss';
 import List from './List';
 import AddCourse from './AddCourse';
+import Result from './Result';
 
 
 
@@ -86,6 +87,16 @@ const MyAccount = () => {
                             className={({ isActive }) => (isActive ? "active" : "")}
                         >
                             <div className="flex"><RiDashboardFill size={20} /><span>  Dashboard </span></div> <IoIosArrowForward />
+                        </NavLink>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <NavLink
+                            to="scores"
+                            className={({ isActive }) => (isActive ? "active" : "")}
+                        >
+                            <div className="flex"> <MdSubject size={20} /> <span> Quizzes Score</span></div> <IoIosArrowForward />
                         </NavLink>
                     </li>
                 </ul>
@@ -155,6 +166,7 @@ const MyAccount = () => {
                     <Route path="quiz" element={<Quiz />} />
                     <Route path="flash" element={<FlashCard />} />
                     <Route path="subjective" element={<Subjectives />} />
+                    <Route path="scores" element={<Result />} />
                     <Route path="addCourse" element={<AddCourse />} />
                     <Route path="*" element={<Navigate to="profile" />} />
                 </Routes>

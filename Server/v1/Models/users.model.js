@@ -46,6 +46,7 @@ const userSchema = mongoose.Schema(
       {
         correct: Number,
         wrong: Number,
+        quizId: String,
         quizData: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "quiz"

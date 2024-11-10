@@ -220,10 +220,13 @@ const AttemptQuiz = async (req, res) => {
     const currentUser = req.UserData
     let AttemptData = req.body;
     try {
-        // const FindOne = await QuizModel.findById(AttemptData?.quizData)
-        // if (!FindOne) {
-        //     return res.status(400).json({ message: "Not Found" })
-        // }
+        const FindOne = await QuizModel.findOne({ "quizzes._id": AttemptData?.quizData })
+        if (!FindOne) {
+            return res.status(400).json({ message: "Not Found" })
+        }
+
+        AttemptData.quizId = AttemptData.quizData
+        AttemptData.quizData = FindOne?._id
         let FindUSer = await UserModel?.findById(currentUser?._id)
         FindUSer.quizAttempts.push(AttemptData)
         await FindUSer.save();
@@ -248,11 +251,13 @@ const SubjectiveQuiz = async (req, res) => {
     const currentUser = req.UserData
     let AttemptData = req.body;
     try {
-        const FindOne = await QuizModel.findById(AttemptData?.quizData)
+        const FindOne = await QuizModel.findOne({ "quizzes._id": AttemptData?.quizData })
         if (!FindOne) {
             return res.status(400).json({ message: "Not Found" })
         }
 
+        AttemptData.quizId = AttemptData.quizData
+        AttemptData.quizData = FindOne?._id
         AttemptData.studentData = currentUser?._id
         let SubjectiveQuizData = await SubjectiveQuizModel.create(AttemptData)
         return res.status(200).json({ message: "Operation Successful" })
@@ -280,6 +285,7 @@ const SubjectiveQuizResult = async (req, res) => {
             correct: Payload.correct,
             wrong: Payload.wrong,
             quizData: FindOne?.quizData?._id,
+            quizId: FindOne?.quizId,
             attempts: Payload?.attempts
         }
         let FindUSer = await UserModel?.findById(FindOne?.studentData?._id)
@@ -292,4 +298,15 @@ const SubjectiveQuizResult = async (req, res) => {
     }
 }
 
-module.exports = { addQuiz, getAllQuiz, getPublicQuiz, getQuizById, userReview, userComment, reviewQuiz, updateQuizById, deleteQuizById, AttemptQuiz, SubjectiveQuiz, GetSubjectiveQuizzes, SubjectiveQuizResult };
+
+const GetAllQuizzesResult = async (req, res) => {
+    const currentUser = req.UserData
+    try {
+        const result = await UserModel.findById(currentUser?._id).populate("quizAttempts.quizData")
+        return res.status(200).json({ message: "Operation Successful", result })
+    } catch (err) {
+        res.status(400).json({ message: "Server Error", err })
+    }
+}
+
+module.exports = { addQuiz, getAllQuiz, getPublicQuiz, getQuizById, userReview, userComment, reviewQuiz, updateQuizById, deleteQuizById, AttemptQuiz, SubjectiveQuiz, GetSubjectiveQuizzes, SubjectiveQuizResult, GetAllQuizzesResult };

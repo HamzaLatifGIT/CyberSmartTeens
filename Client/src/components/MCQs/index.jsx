@@ -8,6 +8,7 @@ import Attempt from "./Attempt"
 
 // CSS :
 import "./Index.scss";
+import { Button } from "antd";
 
 
 
@@ -18,6 +19,7 @@ function IndexMcqs() {
     let { QuizDetails, MCQsData, TrueFalseData, OpenQuestionsData } = location?.state;
 
     const [ScoreList, setScoreList] = useState({})
+    const [clicked, setIsClicked] = useState(false)
 
     const HandleSaveScore = (score) => {
         setScoreList({
@@ -40,7 +42,7 @@ function IndexMcqs() {
                             {
                                 MCQsData?.map((data, index) => {
                                     return (
-                                        <Attempt data={data} SaveScore={HandleSaveScore} />
+                                        <Attempt clicked={clicked} data={data} SaveScore={HandleSaveScore} />
                                     )
                                 })
                             }
@@ -56,7 +58,7 @@ function IndexMcqs() {
                             {
                                 TrueFalseData?.map((data, index) => {
                                     return (
-                                        <Attempt data={data} SaveScore={HandleSaveScore} />
+                                        <Attempt clicked={clicked} data={data} SaveScore={HandleSaveScore} />
                                     )
                                 })
                             }
@@ -72,13 +74,18 @@ function IndexMcqs() {
                             {
                                 OpenQuestionsData?.map((data, index) => {
                                     return (
-                                        <Attempt data={data} SaveScore={HandleSaveScore} />
+                                        <Attempt clicked={clicked} data={data} SaveScore={HandleSaveScore} />
                                     )
                                 })
                             }
                         </>
 
                     }
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <Button style={clicked ? { cursor: "no-drop" } : {}} className="attemptBtn" onClick={()=> setIsClicked(true)}>
+                            {clicked ? "Submited" : "Submit"}
+                        </Button>
+                    </div>
                 </div>
                 <div className="sidebar">
                     <div className="tags">Quiz Details</div>

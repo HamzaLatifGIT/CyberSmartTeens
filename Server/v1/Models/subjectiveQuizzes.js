@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-
+const QuizModel = require("./quiz")
 
 
 
@@ -11,6 +11,7 @@ const SubjectiveQuizSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"
     },
+    quizId: String,
     quizData: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "quiz"

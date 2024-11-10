@@ -8,7 +8,7 @@ import SubjectiveQuestion from "./Subjectives";
 import { attemptQuiz, SubjectiveQuizAttemptAPI } from "../../Api/quiz";
 import toast from "react-hot-toast";
 
-function IndexMcqs({ data, SaveScore }) {
+function IndexMcqs({ data, SaveScore, clicked }) {
     let location = useLocation();
     let quizData = data;
 
@@ -70,7 +70,7 @@ function IndexMcqs({ data, SaveScore }) {
 
         setCorrect(newCorrect);
         setWrong(newWrong);
-        setIsModalVisible(true);
+        // setIsModalVisible(true);
 
         const params = {
             correct: newCorrect,
@@ -83,7 +83,7 @@ function IndexMcqs({ data, SaveScore }) {
         if (res.error != null) {
             toast.error(res.error);
         } else {
-            toast.success(res.message);
+            // toast.success(res.message);
             setSubmited(true)
             SaveScore({ [quizData._id]: newCorrect })
         }
@@ -103,7 +103,7 @@ function IndexMcqs({ data, SaveScore }) {
             toast.success("Quiz Submitted Success");
             setTimeout(() => {
                 window.location.href = "/"
-            }, 1500);
+            }, 2500);
         }
         setLoading(false)
     };
@@ -111,6 +111,18 @@ function IndexMcqs({ data, SaveScore }) {
     const handleModalClose = () => {
         setIsModalVisible(false);
     };
+
+    useEffect(() => {
+        if (clicked == true) {
+            if (!submited) {
+                if (quizData?.type == "open") {
+                    handleSubmitOpenQuestions()
+                } else {
+                    handleSubmit()
+                }
+            }
+        }
+    }, [clicked])
 
     return (
         <>
@@ -148,22 +160,12 @@ function IndexMcqs({ data, SaveScore }) {
                             />
                     ))}
 
-                    <div style={{ display: "flex", justifyContent: "center" }}>
+                    {/* <div style={{ display: "flex", justifyContent: "center" }}>
                         <Button style={submited ? { cursor: "no-drop" } : {}} className="attemptBtn" onClick={quizData?.type == "open" ? handleSubmitOpenQuestions : handleSubmit}>
                             {submited ? "Submited" : "Submit"}
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
-                {/* <div className="side-dashboard">
-                    <div className="tags">Categories</div>
-                    <div className="tagsList">
-                        <div className="tagsList">
-                            {
-                                quizData?.categories?.map((cat, index) => <div key={index} className="tag">{cat?.name}</div>)
-                            }
-                        </div>
-                    </div>
-                </div> */}
             </div>
 
             <Modal
